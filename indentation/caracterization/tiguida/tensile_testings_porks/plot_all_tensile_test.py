@@ -7,6 +7,9 @@ from scipy.signal import find_peaks
 from scipy.stats import pearsonr
 import seaborn as sns
 import utils
+import indentation.caracterization.tiguida.tensile_testings_porks as sk_ttp
+import indentation.caracterization.tiguida.tensile_testings_porks.figures.utils as ttp_fu
+
 plt.ion()
 
 all_datas, cochon_ids, nb_of_cochons = utils.load_data()
@@ -95,11 +98,13 @@ def ax_settings(ax):
 for ax in list_of_axes :
     ax_settings(ax)
     
-save_results_to = r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc'
+
+save_results_to = ttp_fu.make_folder_for_figures()
 
 for i, fig in enumerate(list_of_figures) :
     fig_label = list_of_fig_labels[i]
-    fig.savefig(save_results_to + '/tensile_testing_' + fig_label + '_all_cochons.jpg', dpi=300)
+    filename = '/tensile_testing_' + fig_label + '_all_cochons.jpg'
+    fig.savefig(save_results_to /filename, dpi=300)
 
 
 

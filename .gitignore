@@ -131,3 +131,10 @@ dmypy.json
 # images
 *.jpg
 *.png
+*.pdf
+*tiff
+*.gif
+
+# presentations
+*.ppt
+*.pptx
