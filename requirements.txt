@@ -1,0 +1,6 @@
+python==3.9.1
+scipy==1.5.4
+numpy==1.19.4
+mpmath==1.1.0
+matplotplib==3.3.3
+argparse==1.1
