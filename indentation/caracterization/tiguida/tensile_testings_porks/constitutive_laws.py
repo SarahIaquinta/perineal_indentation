@@ -5,12 +5,13 @@ import glob
 from matplotlib.lines import Line2D
 from scipy.signal import find_peaks
 from scipy.stats import pearsonr
-
+import utils
+import indentation.caracterization.tiguida.tensile_testings_porks as sk_ttp
+import indentation.caracterization.tiguida.tensile_testings_porks.figures.utils as ttp_fu
 
 plt.ion()
 
-
-
+# Constitutive laws
 def yeoh_simple(x, a, b):
     return 2*(x - 1/x**2)*(a + 2*b*(x**2 + 2/x - 3))
 
@@ -33,16 +34,14 @@ def martins(x,c1,c2,c3,c4):
     return 2*(x - 1/x**2)*c1*c2*np.exp(c2*(x**2 + 2/x - 3)) + 2*(x-1)*c3*c4*np.exp(c3*(x-1)**2)
 
 
+
 # DIRECTORY OF THE FILES
-datas_cochon7 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation_02_Caracterisation\Tiguida\Traction_porc\data_traction\%07*-1%**.txt',recursive = True))
-datas_cochon4 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation_02_Caracterisation\Tiguida\Traction_porc\data_traction\%04*-1%**.txt',recursive = True))
-datas_cochon5 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation_02_Caracterisation\Tiguida\Traction_porc\data_traction\%05*-1%**.txt',recursive = True))
-datas_cochon8 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation_02_Caracterisation\Tiguida\Traction_porc\data_traction\%08*-1%**.txt',recursive = True))
-datas_cochon9 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation_02_Caracterisation\Tiguida\Traction_porc\data_traction\%09*-1%**.txt',recursive = True))
-all_datas = [datas_cochon7, datas_cochon4, datas_cochon5, datas_cochon8, datas_cochon9]
-cochon_ids = [7, 4, 5, 8, 9]
+
+all_datas, cochon_ids, _ = utils.load_data()
+
 
 col = ["red", "blue", "brown", "green", "purple", "gold", "turquoise", "orange", "magenta", "gray"]
+save_results_to = ttp_fu.make_folder_for_figures()
 
 
 for i in range(len(all_datas)):
@@ -99,7 +98,7 @@ for i in range(len(all_datas)):
 
         # TO PLOT ALL MODELS FOR THE SAME EXPERIMENTAL CURVE
 
-        ax.plot(strainu, yeoh(stretchu, *popt1), ':', color=col[1], label='Yeoh')
+        # ax.plot(strainu, yeoh(stretchu, *popt1), ':', color=col[1], label='Yeoh')
         # ax.plot(strainu, mooney(stretchu, *popt2), ':', color=col[2], label='Mooney-Rivlin')
         # ax.plot(strainu, ogden(stretchu, *popt3), '-.', color=col[3], label='Ogden')
         # ax.plot(strainu, humphrey(stretchu, *popt4), linestyle=(0, (1, 10)), color=col[4], label='Humphrey')
@@ -114,9 +113,8 @@ for i in range(len(all_datas)):
 
     # TO SAVE THE FIGURE
 
-    save_results_to = r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc'
-    fig.savefig(save_results_to + '/identification_yeoh_cochon-' + str(cochon_id) + '.jpg', dpi=300)
 
 
-
+    filename = 'identification_yeoh_cochon-' + str(cochon_id) + '.jpg'
+    fig.savefig(save_results_to /filename, dpi=300)
 
