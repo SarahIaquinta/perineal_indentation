@@ -134,6 +134,7 @@ dmypy.json
 *.pdf
 *tiff
 *.gif
+*.svg
 
 # presentations
 *.ppt
