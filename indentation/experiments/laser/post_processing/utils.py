@@ -64,7 +64,7 @@ def get_path_to_processe_data():
 
 def define_filename(filename, format):
     path_to_processed_data = get_path_to_processe_data()
-    pkl_name = filename + format
+    pkl_name = filename[:-4] + format
     complete_pkl_filename = path_to_processed_data / pkl_name
     return complete_pkl_filename
 
