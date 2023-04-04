@@ -4,6 +4,8 @@ from math import nan
 from pathlib import Path
 import utils
 import os
+from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
+
 
 class Files:
     """
@@ -127,40 +129,8 @@ def read_datafile(filename):
     utils.export_data_output_as_pkl(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
     return vec_time_rescaled, vec_pos_axis, mat_Z
 
-def plot_Z_profile(filename):
-    mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
-    plt.imshow(mat_Z)
-    plt.show()
-    plt.close()
-    
-
-def plot_profile_at_time(filename, time):
-    mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
-    time_index = int(time)
-    experiment_time_in_millisecond = vec_time[time_index]
-    experiment_time_in_second = experiment_time_in_millisecond / 1e6
-    Z_at_time = mat_Z[time_index, :]
-    Z_not_nan_indices = np.where([np.isnan(Z_at_time) == False])[1]
-    Z_at_time_not_nan = [Z_at_time[i] for i in Z_not_nan_indices[:-1]]
-    vec_pos_axis_not_nan = [vec_pos_axis[i] for i in Z_not_nan_indices[:-1]]
-    plt.figure()
-    plt.plot(vec_pos_axis_not_nan, Z_at_time_not_nan, label = 't = ' + str(np.round(experiment_time_in_second, 4)) + ' s')
-    plt.legend()
-    # plt.close
-    
-
 
 
 
 if __name__ == "__main__":
-    current_path = utils.get_current_path()
-    experiment_date = '230403'
-    path_to_data = utils.reach_data_path(experiment_date)
-    print(path_to_data)
-    files = Files('FF')
-    list_of_FF_files = files.import_files(experiment_date)
-    filename_0 =list_of_FF_files[1]
-    # read_datafile(filename_0)
-    # plot_Z_profile(filename_0)
     print('hello')
-    plot_profile_at_time(filename_0, 1000)

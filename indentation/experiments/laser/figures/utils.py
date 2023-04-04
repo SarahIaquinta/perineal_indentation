@@ -57,5 +57,9 @@ class CreateFigure:
     def square_figure_7(self, pixels):
         fig = plt.figure(figsize=(7, 7), dpi=pixels, constrained_layout=True)
         return fig
+    
+    def rectangle_vertical_rz_figure(self, pixels):
+        fig = plt.figure(figsize=(6, 9), dpi=pixels, constrained_layout=True)
+        return fig
 
 
