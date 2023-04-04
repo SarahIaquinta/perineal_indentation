@@ -4,12 +4,26 @@ from math import nan
 from pathlib import Path
 
 def get_current_path(): 
-    return Path.cwd() / 'indentation\experiments\laser'
+    """
+    Return the current path
+
+    Parameters:
+        ----------
+        None
+
+    Returns:
+        -------
+        current_path: str (Path)
+            Path format string
+
+    """
+    current_path = Path.cwd() / 'indentation\experiments\laser'
+    return current_path
 
 
 def reach_data_path(date):
     """
-    Return the path where the data is stored
+    Returns the path where the data is stored
 
     Parameters:
         ----------
