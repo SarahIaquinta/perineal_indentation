@@ -141,3 +141,6 @@ dmypy.json
 
 # data
 *.csv
+
+# scripts
+*.m
