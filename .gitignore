@@ -138,3 +138,6 @@ dmypy.json
 # presentations
 *.ppt
 *.pptx
+
+# data
+*.csv
