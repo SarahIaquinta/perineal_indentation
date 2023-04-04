@@ -72,9 +72,6 @@ class Files:
         return datafile_list
 
 
-
-
-
 def read_datafile(filename):
     date = filename[0:6]
     path_to_data = utils.reach_data_path(date)
@@ -124,10 +121,11 @@ def read_datafile(filename):
             l_vec_Z.append(vec_Z) 
     mat_Z = np.vstack(l_vec_Z)
     vec_time = np.array(l_time)
+    vec_time_rescaled = vec_time - min(vec_time)
     
-    utils.export_data_output_as_txt(filename, mat_Z, vec_time, vec_pos_axis)
-    utils.export_data_output_as_pkl(filename, mat_Z, vec_time, vec_pos_axis)
-    return vec_time, vec_pos_axis, mat_Z
+    utils.export_data_output_as_txt(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
+    utils.export_data_output_as_pkl(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
+    return vec_time_rescaled, vec_pos_axis, mat_Z
 
 def plot_Z_profile(filename):
     mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
@@ -135,6 +133,24 @@ def plot_Z_profile(filename):
     plt.show()
     plt.close()
     
+
+def plot_profile_at_time(filename, time):
+    mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+    time_index = int(time)
+    experiment_time_in_millisecond = vec_time[time_index]
+    experiment_time_in_second = experiment_time_in_millisecond / 1e6
+    Z_at_time = mat_Z[time_index, :]
+    Z_not_nan_indices = np.where([np.isnan(Z_at_time) == False])[1]
+    Z_at_time_not_nan = [Z_at_time[i] for i in Z_not_nan_indices[:-1]]
+    vec_pos_axis_not_nan = [vec_pos_axis[i] for i in Z_not_nan_indices[:-1]]
+    plt.figure()
+    plt.plot(vec_pos_axis_not_nan, Z_at_time_not_nan, label = 't = ' + str(np.round(experiment_time_in_second, 4)) + ' s')
+    plt.legend()
+    # plt.close
+    
+
+
+
 
 if __name__ == "__main__":
     current_path = utils.get_current_path()
@@ -144,6 +160,7 @@ if __name__ == "__main__":
     files = Files('FF')
     list_of_FF_files = files.import_files(experiment_date)
     filename_0 =list_of_FF_files[1]
-    read_datafile(filename_0)
-    plot_Z_profile(filename_0)
+    # read_datafile(filename_0)
+    # plot_Z_profile(filename_0)
     print('hello')
+    plot_profile_at_time(filename_0, 1000)
