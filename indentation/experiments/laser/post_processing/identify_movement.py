@@ -8,10 +8,7 @@ from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, Sav
 import indentation.experiments.laser.post_processing.read_file as rf
 import indentation.experiments.laser.post_processing.display_profiles as dp
 from indentation.experiments.laser.post_processing.read_file import Files
-
-
-# def get_diff_Z(filename):
-#     mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+import seaborn as sns
     
 class Recovery:
     """
@@ -92,20 +89,55 @@ class Recovery:
         savefigure.save_as_png(fig, "zx_profile_indent_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
         savefigure.save_as_svg(fig, "zx_profile_indent_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
 
+
+    def combine_profile_timelapse(self, filename, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
+        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+        vec_pos_axis_indent, mat_Z_indent = self.region_identification(mat_Z, vec_time, vec_pos_axis)
+        nb_of_time_steps = len(vec_time)
+        if abs(nb_of_time_increments_to_plot - nb_of_time_steps) < 1.1:
+            nb_of_time_increments_to_plot = nb_of_time_steps 
+            print('ok')
+        time_steps_to_plot = np.linspace(0, nb_of_time_steps - 1, nb_of_time_increments_to_plot + 1, dtype=int)
+        blues = sns.color_palette("Blues", nb_of_time_increments_to_plot + 1 )
+        fig, ax, _ = dp.create_fig_profile_at_time(mat_Z_indent, vec_time, vec_pos_axis_indent, 0, createfigure, savefigure, fonts)    
+        kwargs = {"linewidth": 2}
+        for i in range(1, len(time_steps_to_plot)):
+            t = time_steps_to_plot[i]
+            experiment_time_in_second = vec_time[t] / 1e6
+            ax.plot(vec_pos_axis_indent, mat_Z_indent[t, :], '-', color = blues[i], label = 't = ' + str(np.round(experiment_time_in_second, 1)) + ' s',  **kwargs)
+        ax.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
+        savefigure.save_as_png(fig, "zx_profile_indent_timelapse_" + filename[0:-4])
+        savefigure.save_as_svg(fig, "zx_profile_indent_timelapse_" + filename[0:-4])
+
+
+
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
     
     current_path = utils.get_current_path()
-    experiment_date = '230403'
-    path_to_data = utils.reach_data_path(experiment_date)
-    print(path_to_data)
-    files = Files('FF')
-    list_of_FF_files = files.import_files(experiment_date)
-    filename_0 =list_of_FF_files[1]
-    mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename_0)
+    experiment_dates = ['230331', '230327']
 
-    recovery = Recovery([10, 40])
+    recovery = Recovery([0, 30])
+    
+    for experiment_date in experiment_dates:
+        path_to_data = utils.reach_data_path(experiment_date)
+        print(path_to_data)
+        files = Files('FF')
+        list_of_FF_files = files.import_files(experiment_date)
+        nb_of_time_increments_to_plot = 10
+        for filename in list_of_FF_files :
+            rf.read_datafile(filename)
+            mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+            recovery.combine_profile_timelapse(filename, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
+        files = Files('RDG')
+        list_of_FF_files = files.import_files(experiment_date)
+        nb_of_time_increments_to_plot = 10
+        for filename in list_of_FF_files :
+            rf.read_datafile(filename)
+            mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+            recovery.combine_profile_timelapse(filename, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
+
     # vec_pos_axis_indent, mat_Z_indent = recovery.region_identification(mat_Z, vec_time, vec_pos_axis)
-    recovery.plot_profile_region(filename_0, 0, createfigure, savefigure, fonts)
+    # recovery.plot_profile_region(filename_0, 0, createfigure, savefigure, fonts)
