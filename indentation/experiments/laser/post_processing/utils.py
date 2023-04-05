@@ -21,7 +21,6 @@ def get_current_path():
     current_path = Path.cwd() / 'indentation\experiments\laser'
     return current_path
 
-
 def reach_data_path(date):
     """
     Returns the path where the data is stored
@@ -42,7 +41,6 @@ def reach_data_path(date):
     current_path = get_current_path() / 'raw_data'
     path_to_data = current_path / date
     return path_to_data
-
 
 def get_path_to_processed_data():
     """
@@ -86,8 +84,6 @@ def define_filename(filename, format):
     complete_pkl_filename = path_to_processed_data / pkl_name
     return complete_pkl_filename
 
-
-
 def export_data_output_as_pkl(filename, mat_Z, vec_time, vec_pos_axis):
     complete_pkl_filename = define_filename(filename, '.pkl')
     with open(complete_pkl_filename, "wb") as f:
@@ -102,7 +98,6 @@ def extract_data_from_pkl(filename):
         [mat_Z, vec_time, vec_pos_axis] = pickle.load(f)
     return mat_Z, vec_time, vec_pos_axis
         
-        
 def export_data_output_as_txt(filename, mat_Z, vec_time, vec_pos_axis):
     filename_time = filename[:-4] + '_time.txt'
     filename_axis = filename[:-4] + '_axis.txt'
@@ -110,6 +105,4 @@ def export_data_output_as_txt(filename, mat_Z, vec_time, vec_pos_axis):
     np.savetxt(get_path_to_processed_data() / filename_time, vec_time)
     np.savetxt(get_path_to_processed_data() / filename_axis, vec_pos_axis)
     np.savetxt(get_path_to_processed_data() / filename_Z, mat_Z)
-        
 
-    
