@@ -131,6 +131,17 @@ def read_datafile(filename):
 
 
 
-
 if __name__ == "__main__":
-    print('hello')
+    createfigure = CreateFigure()
+    fonts = Fonts()
+    savefigure = SaveFigure()
+    
+    current_path = utils.get_current_path()
+    experiment_date = '230403'
+    path_to_data = utils.reach_data_path(experiment_date)
+    print(path_to_data)
+    files = Files('FF')
+    list_of_FF_files = files.import_files(experiment_date)
+    filename_0 =list_of_FF_files[1]
+    read_datafile(filename_0)
+
