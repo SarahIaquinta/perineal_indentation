@@ -31,8 +31,7 @@ def plot_Z_profile(filename, createfigure, savefigure, fonts):
     savefigure.save_as_svg(fig, "matZ_" + filename[0:-4] )
     
 
-def plot_profile_at_time(filename, time, createfigure, savefigure, fonts):
-    mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+def create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure, savefigure, fonts):
     time_index = int(time)
     experiment_time_in_microsecond = vec_time[time_index]
     experiment_time_in_second = experiment_time_in_microsecond / 1e6
@@ -45,14 +44,18 @@ def plot_profile_at_time(filename, time, createfigure, savefigure, fonts):
     ax = fig.gca()
     kwargs = {"linewidth": 2}
     ax.plot(vec_pos_axis_not_nan, Z_at_time_not_nan, '-k', label = 't = ' + str(np.round(experiment_time_in_second, 4)) + ' s', **kwargs)
-    # ax.set_ylim((-3, 4.1))
-    # ax.set_xlim((-10, 10))
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlabel(r"$x$ [mm]", font=fonts.serif(), fontsize=24)
     ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=22)
     ax.legend(prop=fonts.serif(), loc='lower right', framealpha=0.7)
+    return fig, ax, experiment_time_in_millisecond
+
+def plot_profile_at_time(filename, time, createfigure, savefigure, fonts):
+    mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+    fig, ax, experiment_time_in_millisecond = create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure, savefigure, fonts)
     savefigure.save_as_png(fig, "zx_profile_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
     savefigure.save_as_svg(fig, "zx_profile_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
+
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
@@ -67,6 +70,6 @@ if __name__ == "__main__":
     list_of_FF_files = files.import_files(experiment_date)
     filename_0 =list_of_FF_files[1]
     # read_datafile(filename_0)
-    plot_Z_profile(filename_0, createfigure, savefigure, fonts)
+    # plot_Z_profile(filename_0, createfigure, savefigure, fonts)
     print('hello')
-    # plot_profile_at_time(filename_0, 1000, createfigure, savefigure, fonts)
+    plot_profile_at_time(filename_0, 1000, createfigure, savefigure, fonts)
