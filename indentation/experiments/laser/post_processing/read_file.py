@@ -136,8 +136,9 @@ def read_all_files(experiment_dates, meat_pieces):
             files_meat_piece = Files(meat_piece)
             list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
             for filename in tqdm(list_of_meat_piece_files) :
-                if filename not in existing_processed_filenames:
-                    print ('currently processing ' + filename)
+                # print (filename , ' : currently evaluating')
+                if filename[0:-4] not in existing_processed_filenames:
+                    # print (filename , ' not processed yet : processing has been launched')
                     files_meat_piece.read_datafile(filename)       
 
 
@@ -145,10 +146,9 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    
-    experiment_dates = ['230331', '230327', '230404']
+    experiment_dates = ['230331', '230327', '230403']
     meat_pieces = ['FF', 'RDG']
-    read_all_files(experiment_dates, meat_pieces)
+    # read_all_files(experiment_dates, meat_pieces)
 
 
 
