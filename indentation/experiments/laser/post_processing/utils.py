@@ -3,6 +3,8 @@ from matplotlib import pyplot as plt
 from math import nan
 from pathlib import Path
 import pickle
+from os import listdir
+from os.path import isfile, join
 
 def get_current_path(): 
     """
@@ -106,3 +108,8 @@ def export_data_output_as_txt(filename, mat_Z, vec_time, vec_pos_axis):
     np.savetxt(get_path_to_processed_data() / filename_axis, vec_pos_axis)
     np.savetxt(get_path_to_processed_data() / filename_Z, mat_Z)
 
+def get_existing_processed_data():
+    path_to_processed_data = get_path_to_processed_data()
+    all_existing_filenames = {f for f in listdir(path_to_processed_data) if isfile(join(path_to_processed_data, f))}
+    all_existing_pkl = [i[0:-4] for i in all_existing_filenames if i.endswith('.pkl')]
+    return all_existing_pkl
