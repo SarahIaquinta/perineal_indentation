@@ -5,6 +5,7 @@ from pathlib import Path
 import utils
 import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
+from tqdm import tqdm
 
 
 class Files:
@@ -74,61 +75,70 @@ class Files:
         return datafile_list
 
 
-def read_datafile(filename):
-    date = filename[0:6]
-    path_to_data = utils.reach_data_path(date)
-    path_to_filename = path_to_data / filename
-    cur_file = open(path_to_filename,'r')
-    all_line = cur_file.readlines()
+    def read_datafile(self, filename):
+        date = filename[0:6]
+        path_to_data = utils.reach_data_path(date)
+        path_to_filename = path_to_data / filename
+        cur_file = open(path_to_filename,'r')
+        all_line = cur_file.readlines()
 
-    flag_continue = False
-    l_vec_Z = []
-    l_time = []
-    for cur_line in all_line:
-        if cur_line[0:12] == 'Frame,Source':
-            II = cur_line.find('Axis')
-            cur_line0 = cur_line[II+5:]
-            II = [pos for pos, char in enumerate(cur_line0) if char == ',']
-            vec_pos_axis = np.zeros(len(II)+1)
-            vec_pos_axis[0] = float(cur_line0[0:II[0]])
-            for it_c in range(len(II)-1):
-                vec_pos_axis[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
-            
-            vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
-            flag_continue = True
-        
-        elif flag_continue and (len(cur_line)>10):
-            II = [pos for pos, char in enumerate(cur_line) if char == ',']
-            l_time.append(float(cur_line[II[1]+1:II[2]]))
-            II = cur_line.find('Z')
-            cur_line0 = cur_line[II+1:]
-            II = [pos for pos, char in enumerate(cur_line0) if char == ',']
-            vec_Z = np.zeros(len(II)+1)
-            if II[0]==0:
-                vec_Z[0] = nan
-            else:
-                vec_Z[0] = float(cur_line0[0:II[0]])
-            
-            for it_c in range(len(II)-1):
-                if (II[it_c]+1)==(II[it_c+1]):
-                    vec_Z[it_c+1] = nan
-                else:    
-                    vec_Z[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
-            
-            if (II[-1]+2)==len(cur_line0):
-                vec_Z[0] = nan
-            else:
+        flag_continue = False
+        l_vec_Z = []
+        l_time = []
+        for cur_line in all_line:
+            if cur_line[0:12] == 'Frame,Source':
+                II = cur_line.find('Axis')
+                cur_line0 = cur_line[II+5:]
+                II = [pos for pos, char in enumerate(cur_line0) if char == ',']
+                vec_pos_axis = np.zeros(len(II)+1)
+                vec_pos_axis[0] = float(cur_line0[0:II[0]])
+                for it_c in range(len(II)-1):
+                    vec_pos_axis[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
+                
                 vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
+                flag_continue = True
             
-            l_vec_Z.append(vec_Z) 
-    mat_Z = np.vstack(l_vec_Z)
-    vec_time = np.array(l_time)
-    vec_time_rescaled = vec_time - min(vec_time)
-    
-    utils.export_data_output_as_txt(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
-    utils.export_data_output_as_pkl(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
-    return vec_time_rescaled, vec_pos_axis, mat_Z
+            elif flag_continue and (len(cur_line)>10):
+                II = [pos for pos, char in enumerate(cur_line) if char == ',']
+                l_time.append(float(cur_line[II[1]+1:II[2]]))
+                II = cur_line.find('Z')
+                cur_line0 = cur_line[II+1:]
+                II = [pos for pos, char in enumerate(cur_line0) if char == ',']
+                vec_Z = np.zeros(len(II)+1)
+                if II[0]==0:
+                    vec_Z[0] = nan
+                else:
+                    vec_Z[0] = float(cur_line0[0:II[0]])
+                
+                for it_c in range(len(II)-1):
+                    if (II[it_c]+1)==(II[it_c+1]):
+                        vec_Z[it_c+1] = nan
+                    else:    
+                        vec_Z[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
+                
+                if (II[-1]+2)==len(cur_line0):
+                    vec_Z[0] = nan
+                else:
+                    vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
+                
+                l_vec_Z.append(vec_Z) 
+        mat_Z = np.vstack(l_vec_Z)
+        vec_time = np.array(l_time)
+        vec_time_rescaled = vec_time - min(vec_time)
+        
+        utils.export_data_output_as_txt(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
+        utils.export_data_output_as_pkl(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
 
+def read_all_files(experiment_dates, meat_pieces):
+    existing_processed_filenames = utils.get_existing_processed_data()
+    for experiment_date in tqdm(experiment_dates):
+        for meat_piece in tqdm(meat_pieces) :
+            files_meat_piece = Files(meat_piece)
+            list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
+            for filename in tqdm(list_of_meat_piece_files) :
+                if filename not in existing_processed_filenames:
+                    print ('currently processing ' + filename)
+                    files_meat_piece.read_datafile(filename)       
 
 
 if __name__ == "__main__":
@@ -136,12 +146,10 @@ if __name__ == "__main__":
     fonts = Fonts()
     savefigure = SaveFigure()
     
-    current_path = utils.get_current_path()
-    experiment_date = '230403'
-    path_to_data = utils.reach_data_path(experiment_date)
-    print(path_to_data)
-    files = Files('FF')
-    list_of_FF_files = files.import_files(experiment_date)
-    filename_0 =list_of_FF_files[1]
-    read_datafile(filename_0)
+    experiment_dates = ['230331', '230327', '230404']
+    meat_pieces = ['FF', 'RDG']
+    read_all_files(experiment_dates, meat_pieces)
+
+
+
 
