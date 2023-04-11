@@ -27,7 +27,7 @@ class Recovery:
 
     """
 
-    def __init__(self, location):
+    def __init__(self, filename, location):
         """
         Constructs all the necessary attributes for the files object.
 
@@ -43,6 +43,7 @@ class Recovery:
         """
 
         self.location = location
+        self.filename = filename
 
     def find_location_indices(self, vec_pos_axis):
         [x_min, x_max] = self.location
@@ -82,24 +83,34 @@ class Recovery:
             mat_Z_indent[:, i] = mat_Z_at_position
         return vec_pos_axis_indent, mat_Z_indent
 
-    def plot_profile_region(self, filename, time, createfigure, savefigure, fonts):
-        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
-        vec_pos_axis_indent, mat_Z_indent = self.region_identification(mat_Z, vec_time, vec_pos_axis)
-        fig, ax, experiment_time_in_millisecond = dp.create_fig_profile_at_time(mat_Z_indent, vec_time, vec_pos_axis_indent, time, createfigure, savefigure, fonts)
-        savefigure.save_as_png(fig, "zx_profile_indent_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
-        savefigure.save_as_svg(fig, "zx_profile_indent_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
+    def smooth_Z_profile(self, mat_Z, vec_time, n):
+        smoothed_Z = np.zeros_like(mat_Z)
+        for i in range(len(vec_time)):
+            vec_Z_at_time = mat_Z[i, :]
+            smoothed_Z_at_time = np.convolve(vec_Z_at_time,1/n*np.ones(n),'same')
+            smoothed_Z[i, :] = smoothed_Z_at_time
+        return smoothed_Z
 
-    def find_x_index_where_z_indent_is_max(self, filename):
-        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+    def plot_profile_region(self, time, createfigure, savefigure, fonts):
+        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(self.filename)
+        smoothed_Z = self.smooth_Z_profile(mat_Z, vec_time, 10)
+        vec_pos_axis_indent, mat_Z_indent = self.region_identification(smoothed_Z, vec_time, vec_pos_axis)
+        fig, ax, experiment_time_in_millisecond = dp.create_fig_profile_at_time(mat_Z_indent, vec_time, vec_pos_axis_indent, time, createfigure, savefigure, fonts)
+        savefigure.save_as_png(fig, "zx_profile_indent_" + self.filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
+        savefigure.save_as_svg(fig, "zx_profile_indent_" + self.filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
+
+    def find_x_index_where_z_indent_is_max(self):
+        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(self.filename)
         _, mat_Z_indent = self.region_identification(mat_Z, vec_time, vec_pos_axis)
         vec_Z_at_time_indent = mat_Z_indent[0, :]
         index_where_z_is_max = np.nanargmax(vec_Z_at_time_indent)
         return index_where_z_is_max
         
                 
-    def combine_profile_timelapse(self, filename, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
-        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
-        vec_pos_axis_indent, mat_Z_indent = self.region_identification(mat_Z, vec_time, vec_pos_axis)
+    def combine_profile_timelapse(self, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
+        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(self.filename)
+        smoothed_Z = self.smooth_Z_profile(mat_Z, vec_time, 10)
+        vec_pos_axis_indent, mat_Z_indent = self.region_identification(smoothed_Z, vec_time, vec_pos_axis)
         nb_of_time_steps = len(vec_time)
         if abs(nb_of_time_increments_to_plot - nb_of_time_steps) < 1.1:
             nb_of_time_increments_to_plot = nb_of_time_steps 
@@ -109,7 +120,7 @@ class Recovery:
         reds = sns.color_palette("Reds", nb_of_time_increments_to_plot + 1 )
         fig, ax, _ = dp.create_fig_profile_at_time(mat_Z_indent, vec_time, vec_pos_axis_indent, 0, createfigure, savefigure, fonts)    
         kwargs = {"linewidth": 2}
-        index_where_z_is_max = self.find_x_index_where_z_indent_is_max(filename)
+        index_where_z_is_max = self.find_x_index_where_z_indent_is_max()
         for i in range(1, len(time_steps_to_plot)):
             t = time_steps_to_plot[i]
             experiment_time_in_second = vec_time[t] / 1e6
@@ -117,21 +128,21 @@ class Recovery:
             ax.plot(vec_pos_axis_indent, vec_Z_at_time_indent, '-', color = blues[i], label = 't = ' + str(np.round(experiment_time_in_second, 1)) + ' s',  **kwargs)
             ax.plot([vec_pos_axis_indent[index_where_z_is_max]], [vec_Z_at_time_indent[index_where_z_is_max]], marker="o", markersize=8, markeredgecolor="k", markerfacecolor = reds[i], alpha=0.8)
         ax.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-        savefigure.save_as_png(fig, "zx_profile_indent_timelapse_" + filename[0:-4])
-        savefigure.save_as_svg(fig, "zx_profile_indent_timelapse_" + filename[0:-4])
+        savefigure.save_as_png(fig, "zx_smoothed_profile_indent_timelapse_" + self.filename[0:-4])
+        savefigure.save_as_svg(fig, "zx_smoothed_profile_indent_timelapse_" + self.filename[0:-4])
 
-    def compute_recovery_with_time(self, filename):
-        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
+    def compute_recovery_with_time(self):
+        mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(self.filename)
         vec_pos_axis_indent, mat_Z_indent = self.region_identification(mat_Z, vec_time, vec_pos_axis)
-        index_where_z_is_max = self.find_x_index_where_z_indent_is_max(filename)
+        index_where_z_is_max = self.find_x_index_where_z_indent_is_max(self.filename)
         recovery_positions = np.zeros_like(vec_time)
         for t in range(1, len(vec_time)):
             vec_Z_at_time_indent = mat_Z_indent[t, :]
             recovery_positions[t] = vec_Z_at_time_indent[index_where_z_is_max]
         return recovery_positions
 
-    def compute_delta_d_star(self, filename):
-        recovery_positions = self.compute_recovery_with_time(filename)
+    def compute_delta_d_star(self):
+        recovery_positions = self.compute_recovery_with_time()
         last_recovery_index = (~np.isnan(np.array(recovery_positions))).cumsum().argmax()
         last_recovery = recovery_positions[last_recovery_index]
         index_recovery_position_is_min = np.nanargmin(recovery_positions)
@@ -140,18 +151,18 @@ class Recovery:
         delta_d_star = np.abs(delta_d / min_recovery_position)
         return index_recovery_position_is_min, last_recovery, delta_d, delta_d_star
     
-    def plot_recovery(self, filename, createfigure, savefigure, fonts):
-        recovery_positions = self.compute_recovery_with_time(filename)
-        _, vec_time, _ = utils.extract_data_from_pkl(filename)
+    def plot_recovery(self, createfigure, savefigure, fonts):
+        recovery_positions = self.compute_recovery_with_time()
+        _, vec_time, _ = utils.extract_data_from_pkl(self.filename)
         fig = createfigure.rectangle_rz_figure(pixels=180)
         ax = fig.gca()
         kwargs = {"linewidth": 2}
-        index_recovery_position_is_min, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star(filename)
+        index_recovery_position_is_min, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star()
         recovery_time_at_beginning = vec_time[index_recovery_position_is_min] /1e6
         recovery_position_at_beginning = recovery_positions[index_recovery_position_is_min]
         recovery_time_at_end = vec_time[-2]/1e6
         recovery_position_at_end = last_recovery
-        ax.plot(vec_time[1:]/1e6, recovery_positions[:-1], '-k', label = filename[0:-4], **kwargs)
+        ax.plot(vec_time[1:]/1e6, recovery_positions[:-1], '-k', label = self.filename[0:-4], **kwargs)
         ax.plot([recovery_time_at_beginning], [recovery_position_at_beginning], label = 'beginning', marker="*", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         ax.plot([recovery_time_at_end], [recovery_position_at_end], label = 'end', marker="o", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         # ax.text(str(delta_d_star))
@@ -161,8 +172,8 @@ class Recovery:
         ax.set_xlabel(r"$time$ [s]", font=fonts.serif(), fontsize=24)
         ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=22)
         ax.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
-        savefigure.save_as_png(fig, "recovery_" + filename[0:-4])
-        savefigure.save_as_svg(fig, "recovery_" + filename[0:-4])
+        savefigure.save_as_png(fig, "recovery_" + self.filename[0:-4])
+        savefigure.save_as_svg(fig, "recovery_" + self.filename[0:-4])
 
 
 
@@ -175,9 +186,9 @@ def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, nb_of_t
             if location_key in location_keys :
                 list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
                 location_at_date_meat_piece = locations[experiment_date + '_' + meat_piece]
-                recovery_at_date_meat_piece = Recovery(location_at_date_meat_piece)
                 for filename in list_of_meat_piece_files:
-                    recovery_at_date_meat_piece.combine_profile_timelapse(filename, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
+                    recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
+                    recovery_at_date_meat_piece.combine_profile_timelapse(nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
            
 def plot_all_recoveries(experiment_dates, meat_pieces, locations, failed_laser_acqusitions, createfigure, savefigure, fonts):
     location_keys = [key for key in locations]
@@ -188,10 +199,10 @@ def plot_all_recoveries(experiment_dates, meat_pieces, locations, failed_laser_a
             if location_key in location_keys :
                 list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
                 location_at_date_meat_piece = locations[experiment_date + '_' + meat_piece]
-                recovery_at_date_meat_piece = Recovery(location_at_date_meat_piece)
                 for filename in list_of_meat_piece_files:
                     if filename[:-4] not in failed_laser_acqusitions:
-                        recovery_at_date_meat_piece.plot_recovery(filename, createfigure, savefigure, fonts)
+                        recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
+                        recovery_at_date_meat_piece.plot_recovery(createfigure, savefigure, fonts)
                
     
 def export_delta_d_star(experiment_dates, meat_pieces, locations, failed_laser_acqusitions):
@@ -206,10 +217,10 @@ def export_delta_d_star(experiment_dates, meat_pieces, locations, failed_laser_a
             if location_key in location_keys :
                 list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
                 location_at_date_meat_piece = locations[experiment_date + '_' + meat_piece]
-                recovery_at_date_meat_piece = Recovery(location_at_date_meat_piece)
                 for filename in list_of_meat_piece_files:
                     if filename[:-4] not in failed_laser_acqusitions:
-                        _, _, delta_d, delta_d_star = recovery_at_date_meat_piece.compute_delta_d_star(filename)
+                        recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
+                        _, _, delta_d, delta_d_star = recovery_at_date_meat_piece.compute_delta_d_star()
                         delta_d_stars_to_export.append(delta_d_star)
                         delta_d_to_export.append(delta_d)
                         filenames_to_export.append(filename[:-4])
