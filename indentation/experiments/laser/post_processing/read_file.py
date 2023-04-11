@@ -74,7 +74,6 @@ class Files:
                 datafile_list.append(outfile)
         return datafile_list
 
-
     def read_datafile(self, filename):
         date = filename[0:6]
         path_to_data = utils.reach_data_path(date)
@@ -94,7 +93,6 @@ class Files:
                 vec_pos_axis[0] = float(cur_line0[0:II[0]])
                 for it_c in range(len(II)-1):
                     vec_pos_axis[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
-                
                 vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
                 flag_continue = True
             
@@ -146,9 +144,9 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230331', '230327', '230403']
-    meat_pieces = ['FF', 'RDG']
-    # read_all_files(experiment_dates, meat_pieces)
+    experiment_dates = ['230407']#, '230411']#'230331', '230327', '230403']
+    meat_pieces = ['FF']#, 'RDG']
+    read_all_files(experiment_dates, meat_pieces)
 
 
 
