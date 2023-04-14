@@ -148,14 +148,14 @@ class Recovery:
         min_recovery_position = recovery_positions[index_recovery_position_is_min]
         delta_d = last_recovery - min_recovery_position
         delta_d_star = np.abs(delta_d / min_recovery_position)
-        return index_recovery_position_is_min, last_recovery, delta_d, delta_d_star
+        return index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star
     
     def plot_recovery(self, createfigure, savefigure, fonts):
         recovery_positions = self.compute_recovery_with_time()
         fig = createfigure.rectangle_rz_figure(pixels=180)
         ax = fig.gca()
         kwargs = {"linewidth": 2}
-        index_recovery_position_is_min, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star()
+        index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star()
         recovery_time_at_beginning = self.vec_time[index_recovery_position_is_min] /1e6
         recovery_position_at_beginning = recovery_positions[index_recovery_position_is_min]
         recovery_time_at_end = self.vec_time[-2]/1e6
@@ -166,12 +166,13 @@ class Recovery:
         # ax.text(str(delta_d_star))
         # ax.set_aspect("equal", adjustable="box")
         ax.set_title(r'$\Delta d$ = ' + str(np.round(delta_d,2)) +  r'  $\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif_rz_legend())
+        ax.set_xscale('log')
         # ax.text(5, 1, r'$\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif(), fontsize=24)
-        ax.set_xlabel(r"$time$ [s]", font=fonts.serif(), fontsize=24)
+        ax.set_xlabel(r"$log (time) $ [s]", font=fonts.serif(), fontsize=24)
         ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=22)
         ax.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
-        savefigure.save_as_png(fig, "recovery_" + self.filename[0:-4])
-        savefigure.save_as_svg(fig, "recovery_" + self.filename[0:-4])
+        savefigure.save_as_png(fig, "recovery_logx_" + self.filename[0:-4])
+        savefigure.save_as_svg(fig, "recovery_logx_" + self.filename[0:-4])
 
 
 def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
@@ -205,6 +206,7 @@ def export_delta_d_star(experiment_dates, meat_pieces, locations, failed_laser_a
     location_keys = [key for key in locations]
     delta_d_to_export = []
     delta_d_stars_to_export = []
+    d_min_to_export = [] 
     filenames_to_export = [] 
     for experiment_date in experiment_dates:
         for meat_piece in meat_pieces:
@@ -216,15 +218,16 @@ def export_delta_d_star(experiment_dates, meat_pieces, locations, failed_laser_a
                 for filename in list_of_meat_piece_files:
                     if filename[:-4] not in failed_laser_acqusitions:
                         recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
-                        _, _, delta_d, delta_d_star = recovery_at_date_meat_piece.compute_delta_d_star()
+                        _, min_recovery_position, _, delta_d, delta_d_star = recovery_at_date_meat_piece.compute_delta_d_star()
                         delta_d_stars_to_export.append(delta_d_star)
                         delta_d_to_export.append(delta_d)
+                        d_min_to_export.append(min_recovery_position)
                         filenames_to_export.append(filename[:-4])
     filename_export_all_delta_d_star = "recoveries.txt"
     path_to_processed_data = utils.get_path_to_processed_data()
     path_to_export_file = path_to_processed_data / filename_export_all_delta_d_star
     f = open(path_to_export_file, "w")
-    f.write("test Id \t delta d , \t delta d star \n")
+    f.write("test Id \t delta d , \t delta d star \t d_min \n")
     # mat_to_export = np.zeros((len(filenames_to_export), 2))
     for i in range(len(filenames_to_export)):
         f.write(
@@ -233,6 +236,8 @@ def export_delta_d_star(experiment_dates, meat_pieces, locations, failed_laser_a
             + str(delta_d_to_export[i])
             + "\t"
             + str(delta_d_stars_to_export[i])
+            + "\t"
+            + str(d_min_to_export[i])
             + "\n"
         )
         # mat_to_export[i, 0] = filenames_to_export[i]
@@ -287,4 +292,4 @@ if __name__ == "__main__":
                                 ]
     
     # delta_d_stars_to_export, filenames_to_export = export_delta_d_star(experiment_dates, meat_pieces, locations, failed_laser_acqusitions)
-    # plot_all_recoveries(experiment_dates, meat_pieces, locations, failed_laser_acqusitions, createfigure, savefigure, fonts)
+    plot_all_recoveries(experiment_dates, meat_pieces, locations, failed_laser_acqusitions, createfigure, savefigure, fonts)
