@@ -42,10 +42,10 @@ def create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure
     fig = createfigure.rectangle_rz_figure(pixels=180)
     ax = fig.gca()
     kwargs = {"linewidth": 2}
-    ax.plot(vec_pos_axis_not_nan, Z_at_time_not_nan, '-k', label = 't = ' + str(np.round(experiment_time_in_second, 4)) + ' s', **kwargs)
+    ax.plot(vec_pos_axis_not_nan, Z_at_time_not_nan, '-k', alpha=1, label = 't = ' + str(np.round(experiment_time_in_second, 4)) + ' s', **kwargs)
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlabel(r"$x$ [mm]", font=fonts.serif(), fontsize=24)
-    ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=22)
+    ax.set_xlabel(r"$x$ [mm]", font=fonts.serif(), fontsize=26)
+    ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
     # ax.legend(prop=fonts.serif(), loc='lower right', framealpha=0.7)
     return fig, ax, experiment_time_in_millisecond
 

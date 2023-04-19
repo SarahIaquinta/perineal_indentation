@@ -116,17 +116,22 @@ class Recovery:
         blues = sns.color_palette("Blues", nb_of_time_increments_to_plot + 1 )
         reds = sns.color_palette("Reds", nb_of_time_increments_to_plot + 1 )
         fig, ax, _ = dp.create_fig_profile_at_time(mat_Z_indent, self.vec_time, vec_pos_axis_indent, 0, createfigure, savefigure, fonts)    
-        kwargs = {"linewidth": 2}
+        kwargs = {"linewidth": 3}
         index_where_z_is_max = self.find_x_index_where_z_indent_is_max()
         for i in range(1, len(time_steps_to_plot)):
             t = time_steps_to_plot[i]
             experiment_time_in_second = self.vec_time[t] / 1e6
             vec_Z_at_time_indent = mat_Z_indent[t, :]
             ax.plot(vec_pos_axis_indent, vec_Z_at_time_indent, '-', color = blues[i], label = 't = ' + str(np.round(experiment_time_in_second, 1)) + ' s',  **kwargs)
-            ax.plot([vec_pos_axis_indent[index_where_z_is_max]], [vec_Z_at_time_indent[index_where_z_is_max]], marker="o", markersize=8, markeredgecolor="k", markerfacecolor = reds[i], alpha=0.8)
-        ax.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-        savefigure.save_as_png(fig, "zx_smoothed_profile_indent_timelapse_" + self.filename[0:-4])
-        savefigure.save_as_svg(fig, "zx_smoothed_profile_indent_timelapse_" + self.filename[0:-4])
+            ax.plot([vec_pos_axis_indent[index_where_z_is_max]], [vec_Z_at_time_indent[index_where_z_is_max]], marker="o", markersize=12, markeredgecolor="k", markerfacecolor = reds[i], alpha=0.8)
+        ax.set_xticks([-10, -5, 0, 5, 10])
+        ax.set_xticklabels(['-10', '-5', '0', '5', '10'], font=fonts.serif(), fontsize=24)
+        ax.set_yticks([-5, 0, 5])
+        ax.set_yticklabels([-5, 0, 5], font=fonts.serif(), fontsize=24)
+        # ax.set_ylim(-6, 2)
+        # ax.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
+        savefigure.save_as_png(fig, "0_zx_smoothed_profile_indent_timelapse_" + self.filename[0:-4])
+        savefigure.save_as_svg(fig, "0_zx_smoothed_profile_indent_timelapse_" + self.filename[0:-4])
 
     def compute_recovery_with_time(self):
         _, mat_Z_indent = self.region_identification()
@@ -154,25 +159,32 @@ class Recovery:
         recovery_positions = self.compute_recovery_with_time()
         fig = createfigure.rectangle_rz_figure(pixels=180)
         ax = fig.gca()
-        kwargs = {"linewidth": 2}
+        kwargs = {"linewidth": 3}
         index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star()
         recovery_time_at_beginning = self.vec_time[index_recovery_position_is_min] /1e6
         recovery_position_at_beginning = recovery_positions[index_recovery_position_is_min]
         recovery_time_at_end = self.vec_time[-2]/1e6
         recovery_position_at_end = last_recovery
-        ax.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', label = self.filename[0:-4], **kwargs)
+        # ax.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', label = self.filename[0:-4], **kwargs)
+        ax.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', **kwargs)
         ax.plot([recovery_time_at_beginning], [recovery_position_at_beginning], label = 'beginning', marker="*", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         ax.plot([recovery_time_at_end], [recovery_position_at_end], label = 'end', marker="o", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         # ax.text(str(delta_d_star))
         # ax.set_aspect("equal", adjustable="box")
         ax.set_title(r'$\Delta d$ = ' + str(np.round(delta_d,2)) +  r'  $\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif_rz_legend())
         ax.set_xscale('log')
-        # ax.text(5, 1, r'$\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif(), fontsize=24)
-        ax.set_xlabel(r"$log (time) $ [s]", font=fonts.serif(), fontsize=24)
-        ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=22)
-        ax.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
-        savefigure.save_as_png(fig, "recovery_logx_" + self.filename[0:-4])
-        savefigure.save_as_svg(fig, "recovery_logx_" + self.filename[0:-4])
+        # ax.set_xlim(1, 40.5)
+        # ax.set_ylim(-5.5, -3.5)
+        # ax.set_xticks([1, 10, 100])
+        # ax.set_xticklabels([1, 10, 100],  font=fonts.serif(), fontsize=24)
+        # ax.set_yticks([-6, -5, -4])
+        # ax.set_yticklabels([-6, -5, -4],  font=fonts.serif(), fontsize=24)
+        
+        ax.set_xlabel(r"$log(time) $ [s]", font=fonts.serif(), fontsize=26)
+        ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
+        ax.legend(prop=fonts.serif_horizontalfigure(), loc='upper right', framealpha=0.7)
+        savefigure.save_as_png(fig, "0_recovery_logx_" + self.filename[0:-4])
+        savefigure.save_as_svg(fig, "0_recovery_logx_" + self.filename[0:-4])
 
 
 def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
@@ -275,10 +287,11 @@ if __name__ == "__main__":
                  "230407_RDG": [-30, -10],
                  "230411_FF": [-10, 10],
                  "230411_FF2_ENTIER": [-10, 10],
-                 "230411_RDG": [-10, 10],}
+                 "230411_RDG": [-10, 10],
+                 "230411_RDG2D": [-10, 10],}
     
-    experiment_dates = ['230411', '230407', '230403', '230331', '230327']
-    meat_pieces = ['FF', "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
+    experiment_dates = ['230411']#, '230407', '230403', '230331', '230327']
+    meat_pieces = ["RDG2D"]#'FF', "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
     # plot_all_combined_profiles(experiment_dates, meat_pieces, locations, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
     failed_laser_acqusitions = ['230403_FF1B',
                                 '230403_FF1D',
