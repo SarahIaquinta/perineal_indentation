@@ -13,64 +13,6 @@ C			De igual manera, compruebe la existencia del fichero
 C			param_umat.txt, actualice el numero de nudos y elementos de usuario
 C			y los flag segun use fibras, preten, crecimiento
 C --------------------------------------------------------------------------
-C        1         2         3         4         5         6         7
-C234567890123456789012345678901234567890123456789012345678901234567890
-C
-      SUBROUTINE UEXTERNALDB(LOP,LRESTART,TIME,DTIME,KSTEP,KINC)
-C
-      INCLUDE 'aba_param.inc'
-      INCLUDE 'param_umat.txt'
-C
-C Bloques de datos:
-C  KFIB: Datos con la orientacion de las fibras en cada nodo (FIBORI)
-C        FIBORI(KNODES,7): Direccion de cada familia de fibras
-C                         en cada nudo
-      COMMON /KIDX/ NEFIB,NPOSFIB,NEF0,NPOSF0
-      COMMON /KFIB/ NEIDXF0,NEIDXOR,FIBORI,F0EL
-
-      DIMENSION TIME(2)
-      DIMENSION NEIDXF0(KELEM),NEIDXOR(KELEM)
-      REAL*8 FIBORI(KELEM,KNPG,6),F0EL(KELEM,KNPG,9)
-      real*8 TEMPVEC(9)
-      CHARACTER(256) FILENAME
-      CHARACTER(256) JOBDIR
-
-C
-      if(LOP.EQ.0) then
-        CALL GETOUTDIR(JOBDIR,LENJOBDIR)
-C
-!C     Fichero con la orientacion de las fibras en cada nudo
-C
-        if (FIB_FICHERO.EQ.1.0) then
-          FILENAME=JOBDIR(:LENJOBDIR)//'/orientation.inp'
-		open(9,file=FILENAME)
-          do I=1,KELEM
-            read(9,*) NEIDXOR(i)
-            do j=1,KNPG
-             read(9,*) (FIBORI(i,j,k),k=1,6)
-            enddo
-          end do
-          close(9)
-          NEFIB=NEIDXOR(1); NPOSFIB=1
-        end if
-C
-C     Leyendo informacion para pretension
-C
-        if (PRETEN_FLAG.EQ.1.0) then
-          FILENAME=JOBDIR(:LENJOBDIR)//'/U0.inp'
-          open(9,file=FILENAME)
-          do i=1,KELEM
-            read(9,*) NEIDXF0(i)
-            do j=1,KNPG
-             read(9,*) (F0EL(i,j,k),k=1,9)
-            enddo
-          end do
-          close(9)
-          NEF0=NEIDXF0(1); NPOSF0=1
-        endif
-      end if
-      RETURN
-      END SUBROUTINE UEXTERNALDB
 C
 C --------------------------------------------------------------------------
 C Subrutina UMAT para material hiperelastico anisotropo inelastico (da�o y viscoelasticidad)
