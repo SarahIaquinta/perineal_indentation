@@ -274,15 +274,6 @@ C vena y arteria y luego realizar el grafting
 C
 C        1         2         3         4         5         6         7
 C234567890123456789012345678901234567890123456789012345678901234567890
-C ------------------------------------------------------------------------------
-      SUBROUTINE  DISP(U,KSTEP,KINC,TIME,NODE,NOEL,JDOF,COORDS)
-C
-      INCLUDE 'aba_param.inc'
-C
-       DIMENSION U(3),TIME(2),COORDS(3)
-C
-       RETURN
-      END
 C
 C ------------------------------------------------------------------------------
 C subroutine derW
