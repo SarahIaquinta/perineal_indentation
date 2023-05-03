@@ -269,17 +269,6 @@ C
        END SUBROUTINE UMAT
 C
 C ------------------------------------------------------------------------------
-      SUBROUTINE  URDFIL(LSTOP,LOVRWRT,KSTEP,KINC,DTIME,TIME)
-      INCLUDE 'aba_param.inc'
-C
-       DIMENSION TIME(2)
-       DIMENSION ARRAY(513),JRRAY(NPRECD,513)
-       EQUIVALENCE (ARRAY(1),JRRAY(1,1))
-
-      RETURN
-      END
-C
-C ------------------------------------------------------------------------------
 C Subrutina para imporner los desplazamientos para cerrar la
 C vena y arteria y luego realizar el grafting
 C
