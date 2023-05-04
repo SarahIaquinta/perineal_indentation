@@ -405,32 +405,36 @@ C---------------------------------------------------
       INCLUDE 'aba_param.inc'
       integer, intent(in)   :: nprop
       real*8, intent(in)    :: de(nprop),inva(4),invabar(2)
-      real*8, intent(out)   :: w,dw1(4),dw2(10)
+      real*8, intent(out)   :: w,dw1,dw2
       real*8                :: C10,C01,C20,C11,C02
       real*8                :: I1,I2
 
-      C10=de(3); C01=de(4); C20=de(5); C11=de(6); C02=de(7);
+
       a1=de(1); a2=de(2); a3=de(3)
       I1=inva(1); I2=inva(2) ; I4=inva(3)
       I1bar=invabar(1); I4bar=invabar(2)
 C
 C Strain energy density function
 C
-      w1 = a1*(I1bar - 3)
-      w2 = a2*(I1bar - 3)**2
-      w3 = a3*(I1bar - 3)**2
-      w = w1 + w2 + w3
+      wa = a1*(I1bar - 3)
+      wb = a2*(I1bar - 3)**2
+      wc = a3*(I1bar - 3)**3
+      w = wa + wb + wc
 C
 C First derivative
 C     
-      dw1(1)=C10+C11*(I2-3.0)+2.0*C20*(I1-3.0)
-      dw1(2)=C01+C11*(I1-3.0)+2.0*C02*(I2-3.0)
+      dw1a = a1
+      dw1b = 2*a2*(I1bar - 3)
+      dw1c = 3*a3*(I1bar - 3)**2
+      dw1 = dw1a + dw1b + dw1c
 C
 C Second derivative
 C     
-      dw2(1)=2*C20
-      dw2(2)=2*C02
-      dw2(5)=C11
+      dw2a = 0
+      dw2b = 2*a2*I1bar
+      dw2c = 6*a3*(I1bar - 3)
+      dw2 = dw2a + dw2b + dw2c
+
       end subroutine
 
 C --------------------------------------------------------------------
