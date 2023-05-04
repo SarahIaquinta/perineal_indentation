@@ -338,7 +338,7 @@ C ------------------------------------------------------------------------------
 	elseif (abs(de(1)-10.0) <= 1.0E-6) then  
 	   call W_AneuGrowthHolz(nprop,de,inva,aneurg,w,dw1,dw2)
       elseif (abs(de(1)-11.0) <= 1.0E-6) then
-         call W_HGOYeoh(nprop,de,inva,w,dw1,dw2)
+         call W_HGOYeoh(nprop,de,inva,invabar,w,dw1,dw2)
       endif
        end subroutine derW
 C ------------------------------------------------------------------------------
@@ -386,7 +386,7 @@ C
       end subroutine
 
 C ------------------------------------------------------------------------------
-      subroutine W_HGOYeoh(nprop,de,inva,w,dw1,dw2)
+      subroutine W_HGOYeoh(nprop,de,inva,invabar,w,dw1,dw2)
 C ------------------------------------------------------------------------------
 C
 C Evaluates the Isotropic Strain energy density function
@@ -396,6 +396,7 @@ C---------------------------------------------------
 C
 C de      ... array of material properties
 C inv     ... array with invariants
+C invabar ... array with invariants bar
 C dam     ... auxiliary vector -notused-
 C w       ... Strain energy
 C dw1     ... First derivative of the Strain energy
@@ -403,20 +404,22 @@ C dw2     ... Second derivative of the Strain energy
 C---------------------------------------------------
       INCLUDE 'aba_param.inc'
       integer, intent(in)   :: nprop
-      real*8, intent(in)    :: de(nprop),inva(4)
-      real*8, intent(out)   :: w(4),dw1(4),dw2(10)
+      real*8, intent(in)    :: de(nprop),inva(4),invabar(2)
+      real*8, intent(out)   :: w,dw1(4),dw2(10)
       real*8                :: C10,C01,C20,C11,C02
       real*8                :: I1,I2
 
       C10=de(3); C01=de(4); C20=de(5); C11=de(6); C02=de(7);
+      a1=de(1); a2=de(2); a3=de(3)
       I1=inva(1); I2=inva(2) ; I4=inva(3)
-
+      I1bar=invabar(1); I4bar=invabar(2)
 C
 C Strain energy density function
 C
-      w(2)= C10*(I1-3.0)+C01*(I2-3.0)+C20*(I1-3.0)**2  
-      w(2)= w(2)+C11*(I1-3.0)*(I2-3.0)+C02*(I2-3.0)**2
-      w(1)= w(2) 
+      w1 = a1*(I1bar - 3)
+      w2 = a2*(I1bar - 3)**2
+      w3 = a3*(I1bar - 3)**2
+      w = w1 + w2 + w3
 C
 C First derivative
 C     
