@@ -269,13 +269,6 @@ C
        END SUBROUTINE UMAT
 C
 C ------------------------------------------------------------------------------
-C Subrutina para imporner los desplazamientos para cerrar la
-C vena y arteria y luego realizar el grafting
-C
-C        1         2         3         4         5         6         7
-C234567890123456789012345678901234567890123456789012345678901234567890
-C
-C ------------------------------------------------------------------------------
 C subroutine derW
 C ------------------------------------------------------------------------------
 C Function to calculate the derivatives of the deviatoric component of the srain 
@@ -343,6 +336,8 @@ C ------------------------------------------------------------------------------
 	   call W_Gasser(nprop,de,inva,w,dw1,dw2)
 	elseif (abs(de(1)-10.0) <= 1.0E-6) then  
 	   call W_AneuGrowthHolz(nprop,de,inva,aneurg,w,dw1,dw2)
+      elseif (abs(de(1)-11.0) <= 1.0E-6) then
+         call W_HGOYeoh(nprop,de,inva,w,dw1,dw2)
       endif
        end subroutine derW
 C ------------------------------------------------------------------------------
@@ -388,6 +383,51 @@ C
       dw2(2)=2*C02
       dw2(5)=C11
       end subroutine
+
+C ------------------------------------------------------------------------------
+      subroutine W_HGOYeoh(nprop,de,inva,w,dw1,dw2)
+C ------------------------------------------------------------------------------
+C
+C Evaluates the Isotropic Strain energy density function
+C and its derivative
+C
+C---------------------------------------------------
+C
+C de      ... array of material properties
+C inv     ... array with invariants
+C dam     ... auxiliary vector -notused-
+C w       ... Strain energy
+C dw1     ... First derivative of the Strain energy
+C dw2     ... Second derivative of the Strain energy
+C---------------------------------------------------
+      INCLUDE 'aba_param.inc'
+      integer, intent(in)   :: nprop
+      real*8, intent(in)    :: de(nprop),inva(4)
+      real*8, intent(out)   :: w(4),dw1(4),dw2(10)
+      real*8                :: C10,C01,C20,C11,C02
+      real*8                :: I1,I2
+
+      C10=de(3); C01=de(4); C20=de(5); C11=de(6); C02=de(7);
+      I1=inva(1); I2=inva(2)
+C
+C Strain energy density function
+C
+      w(2)= C10*(I1-3.0)+C01*(I2-3.0)+C20*(I1-3.0)**2  
+      w(2)= w(2)+C11*(I1-3.0)*(I2-3.0)+C02*(I2-3.0)**2
+      w(1)= w(2) 
+C
+C First derivative
+C     
+      dw1(1)=C10+C11*(I2-3.0)+2.0*C20*(I1-3.0)
+      dw1(2)=C01+C11*(I1-3.0)+2.0*C02*(I2-3.0)
+C
+C Second derivative
+C     
+      dw2(1)=2*C20
+      dw2(2)=2*C02
+      dw2(5)=C11
+      end subroutine
+
 C --------------------------------------------------------------------
       subroutine W_Delfino(nprop,de,inva,w,dw1,dw2)
 C --------------------------------------------------------------------
