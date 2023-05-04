@@ -1505,8 +1505,8 @@ C
             inva(4)=dot_product(nb0(:,1),vtemp(:,1));
             call det(tenC, detC)
             I3 = detC
-            invabar(1) = I3
-            invabar(2) = I3
+            invabar(1) = inva(1)*I3**(-1/3)
+            invabar(2) = inva(3)*I3**(-1/3)
 C
 C Deformation tensors
 C
