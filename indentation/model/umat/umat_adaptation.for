@@ -286,6 +286,7 @@ C   7    vangelis
 C   8    Vena cava
 C   9    Gasser
 C   10   AneuGrowthHolz
+C   11   HGOYeoh
 C
 C Input
 C
@@ -408,7 +409,8 @@ C---------------------------------------------------
       real*8                :: I1,I2
 
       C10=de(3); C01=de(4); C20=de(5); C11=de(6); C02=de(7);
-      I1=inva(1); I2=inva(2)
+      I1=inva(1); I2=inva(2) ; I4=inva(3)
+
 C
 C Strain energy density function
 C
@@ -1472,6 +1474,47 @@ C
        tenb2(1:3,1)=(/(tenb12(i,i),i=1,3)/)
        tenb2(4:6,1)=(/tenb12(1,2),tenb12(1,3),tenb12(2,3)/)
        end subroutine deftensors
+
+C ------------------------------------------------------------------------------
+      subroutine deftensors_bar(FG,na0,nb0,tenb,tenb2,inva, invabar)
+C ------------------------------------------------------------------------------
+C Calculates invariants and deformation tensors
+C ------------------------------------------------------------------------------
+            INCLUDE 'aba_param.inc'
+
+            real*8, intent(in)  :: FG(3,3),na0(3,1),nb0(3,1)
+            real*8, intent(out) :: tenb(6,1)
+            real*8, intent(out) :: tenb2(6,1),inva(4), invabar(2)
+            real*8              :: tenb1(3,3), tenb12(3,3)
+            real*8              :: tenC(3,3), vtemp(3,1)
+            real*8              :: traceb2
+            integer             :: i
+
+            tenC=matmul(transpose(FG),FG)
+            tenb1=matmul(FG,transpose(FG))
+            tenb12=matmul(tenb1,tenb1);
+C
+C Invariants
+C
+            inva(1)=sum((/(tenb1(i,i),i=1,3)/))
+            traceb2=sum((/(tenb12(i,i),i=1,3)/))
+            inva(2)=0.5*(inva(1)*inva(1)-traceb2)
+            vtemp=matmul(tenC,na0)
+            inva(3)=dot_product(na0(:,1),vtemp(:,1));
+            vtemp=matmul(tenC,nb0)
+            inva(4)=dot_product(nb0(:,1),vtemp(:,1));
+            call det(tenC, detC)
+            I3 = detC
+            invabar(1) = I3
+            invabar(2) = I3
+C
+C Deformation tensors
+C
+            tenb(1:3,1)=(/(tenb1(i,i),i=1,3)/)
+            tenb(4:6,1)=(/tenb1(1,2),tenb1(1,3),tenb1(2,3)/)
+            tenb2(1:3,1)=(/(tenb12(i,i),i=1,3)/)
+            tenb2(4:6,1)=(/tenb12(1,2),tenb12(1,3),tenb12(2,3)/)
+            end subroutine deftensors_bar
 C
 C ------------------------------------------------------------------------------
       subroutine sigma (n_te,p,dw1,inva,na,nb,tenb,tenb2,jac,
