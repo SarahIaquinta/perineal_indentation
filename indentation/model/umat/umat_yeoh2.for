@@ -444,7 +444,7 @@ C---------------------------------------------------
       real*8, intent(in)    :: de(nprop),inva(4)
       real*8, intent(out)   :: w(4),dw1(4),dw2(10)
       real*8                :: C10,C01,C20,C11,C02
-      real*8                :: I1,I2
+      real*8                :: I1
 
       C10=de(3); C20=de(4); C30=de(5);
       I1=inva(1)
@@ -457,14 +457,14 @@ C
 C
 C First derivative
 C     
-      dw1(1)=C10+C11*(I2-3.0)+2.0*C20*(I1-3.0)
-      dw1(2)=C01+C11*(I1-3.0)+2.0*C02*(I2-3.0)
+      dw1(2)=C10+2*C20*(I2-3.0)+3.0*C30*(I1-3.0)**2
+      dw1(1)=dw1(2)
 C
 C Second derivative
 C     
-      dw2(1)=2*C20
-      dw2(2)=2*C02
-      dw2(5)=C11
+      dw2(1)=2*C20+6*C30*(I1-3.0)
+      dw2(2)=dw2(1)
+
       end subroutine
 C --------------------------------------------------------------------
       subroutine W_Delfino(nprop,de,inva,w,dw1,dw2)
