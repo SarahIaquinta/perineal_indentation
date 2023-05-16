@@ -144,8 +144,8 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230407']#, '230411']#'230331', '230327', '230403']
-    meat_pieces = ['FF']#, 'RDG']
+    experiment_dates = ['230515']#, '230411']#'230331', '230327', '230403']
+    meat_pieces = ['P002', 'P011']#, 'RDG']
     read_all_files(experiment_dates, meat_pieces)
 
 

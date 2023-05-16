@@ -62,12 +62,12 @@ if __name__ == "__main__":
     savefigure = SaveFigure()
     
     current_path = utils.get_current_path()
-    experiment_date = '230403'
+    experiment_date = '230515'
     path_to_data = utils.reach_data_path(experiment_date)
     print(path_to_data)
-    files = Files('FF')
-    list_of_FF_files = files.import_files(experiment_date)
-    filename_0 =list_of_FF_files[1]
+    files = Files('P011')
+    list_of_P002_files = files.import_files(experiment_date)
+    filename_0 = list_of_P002_files[1]
     # read_datafile(filename_0)
     # plot_Z_profile(filename_0, createfigure, savefigure, fonts)
     print('hello')
