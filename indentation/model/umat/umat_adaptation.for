@@ -141,8 +141,8 @@ C
        call det(DFGRD1,jac)
        jisoc=jac**(-1.0/3.0)
        FG=jisoc*matmul(DFGRD1,F0)
-       call deftensors(FG,na0,nb0,tenb,tenb2,inva)	      
-	 call derW(NPROPS,PROPS,inva,aneurg,wener,dw1,dw2)
+       call deftensorsbar(FG,na0,nb0,tenb,tenb2,inva,invabar)	      
+	 call derW(NPROPS,PROPS,inva,invabar,aneurg,wener,dw1,dw2)
 C 
 C verificamos si existe da�o en matriz y fibras.
 C Tenemos tres tipos de da�o:
@@ -306,10 +306,10 @@ C dw1=[W1, W2, W4, W6];
 C dw2=[W11, W22, W44, W66, W12, W14, W16, W24, W26, W46];
 C inva=[I1, I2, I4, I6];
 C ------------------------------------------------------------------------------
-      subroutine derW(nprop,de,inva,aneurg,w,dw1,dw2)
+      subroutine derW(nprop,de,inva,invabar,aneurg,w,dw1,dw2)
 
       integer, intent(in)   :: nprop
-      real*8, intent(in)    :: de(nprop),inva(4)
+      real*8, intent(in)    :: de(nprop),inva(4), invabar(2)
       real*8, intent(in out):: aneurg(4)
       real*8, intent(out)   :: w(4),dw1(4),dw2(10)
 
@@ -405,35 +405,46 @@ C---------------------------------------------------
       INCLUDE 'aba_param.inc'
       integer, intent(in)   :: nprop
       real*8, intent(in)    :: de(nprop),inva(4),invabar(2)
-      real*8, intent(out)   :: w,dw1,dw2
+      real*8, intent(out)   :: w(4),dw1(4),dw2(10)
       real*8                :: C10,C01,C20,C11,C02
       real*8                :: I1,I2
 
-
-      a1=de(1); a2=de(2); a3=de(3)
+      D=de(2)
+      a1=de(3); a2=de(4); a3=de(5)
+      c1=de(6); c2=de(7)
       I1=inva(1); I2=inva(2) ; I4=inva(3)
       I1bar=invabar(1); I4bar=invabar(2)
+      J = (I4bar / I4)**(2/3)
 C
 C Strain energy density function
 C
-      wa = a1*(I1bar - 3)
-      wb = a2*(I1bar - 3)**2
-      wc = a3*(I1bar - 3)**3
-      w = wa + wb + wc
+      wisoa = a1*(I1bar - 3)
+      wisob = a2*(I1bar - 3)**2
+      wisoc = a3*(I1bar - 3)**3
+      wiso = wisoa + wisob + wisoc
+      waniso = 0
+      if (abs(I4)-1 <= 1.0E-6) then  
+            waniso = 0
+      elseif (abs(de(1)-7.0) <= 1.0E-6) then 
+            product = exp(c2*(I4bar-1)**2)-1
+            waniso = c1/2/c2 * product
+      endif
+      wvol = (1/D)*(J-1)**2
+      w(1) = wiso + waniso + wvol
 C
 C First derivative
 C     
       dw1a = a1
       dw1b = 2*a2*(I1bar - 3)
       dw1c = 3*a3*(I1bar - 3)**2
-      dw1 = dw1a + dw1b + dw1c
+      dw1(1) = dw1a + dw1b + dw1c
 C
 C Second derivative
 C     
       dw2a = 0
       dw2b = 2*a2*I1bar
       dw2c = 6*a3*(I1bar - 3)
-      dw2 = dw2a + dw2b + dw2c
+      dw2(1) = dw2a + dw2b + dw2c
 
       end subroutine
 
@@ -1483,7 +1494,7 @@ C
        end subroutine deftensors
 
 C ------------------------------------------------------------------------------
-      subroutine deftensors_bar(FG,na0,nb0,tenb,tenb2,inva, invabar)
+      subroutine deftensorsbar(FG,na0,nb0,tenb,tenb2,inva, invabar)
 C ------------------------------------------------------------------------------
 C Calculates invariants and deformation tensors
 C ------------------------------------------------------------------------------

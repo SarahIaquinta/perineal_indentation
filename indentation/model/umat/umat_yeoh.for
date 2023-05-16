@@ -421,8 +421,10 @@ C ------------------------------------------------------------------------------
 	   call W_Gasser(nprop,de,inva,w,dw1,dw2)
 	elseif (abs(de(1)-10.0) <= 1.0E-6) then  
 	   call W_AneuGrowthHolz(nprop,de,inva,aneurg,w,dw1,dw2)
-      endif
-       end subroutine derW
+    elseif (abs(de(1)-11.0) <= 1.0E-6) then  
+        call W_Yeoh(nprop,de,inva,w,dw1,dw2)
+     endif
+    end subroutine derW
 C ------------------------------------------------------------------------------
       subroutine W_Iso(nprop,de,inva,w,dw1,dw2)
 C ------------------------------------------------------------------------------
@@ -466,6 +468,48 @@ C
       dw2(2)=2*C02
       dw2(5)=C11
       end subroutine
+C ------------------------------------------------------------------------------
+        subroutine W_Yeoh(nprop,de,inva,w,dw1,dw2)
+C ------------------------------------------------------------------------------
+C
+C Evaluates the Isotropic Strain energy density function
+C and its derivative
+C
+C---------------------------------------------------
+C
+C de      ... array of material properties
+C inv     ... array with invariants
+C dam     ... auxiliary vector -notused-
+C w       ... Strain energy
+C dw1     ... First derivative of the Strain energy
+C dw2     ... Second derivative of the Strain energy
+C---------------------------------------------------
+        INCLUDE 'aba_param.inc'
+        integer, intent(in)   :: nprop
+        real*8, intent(in)    :: de(nprop),inva(4)
+        real*8, intent(out)   :: w(4),dw1(4),dw2(10)
+        real*8                :: C10,C20,C30
+        real*8                :: I1
+
+        C10=de(3); C20=de(4); C30=de(5)
+        I1=inva(1); 
+C
+C Strain energy density function
+C
+        a = C10*(I1-3.0)+C20*(I1-3.0)**2
+        w(1) = a +C30*(I1-3.0)**3
+        
+
+C
+C First derivative
+C     
+        dw1(1)=C10+2.0*C20*(I1-3.0)+3.0*C30*(I1-3.0)**3
+        
+C
+C Second derivative
+C     
+        dw2(1)=2.0*C20 + 6.0*C30*(I1-3.0)
+        end subroutine    
 C --------------------------------------------------------------------
       subroutine W_Delfino(nprop,de,inva,w,dw1,dw2)
 C --------------------------------------------------------------------

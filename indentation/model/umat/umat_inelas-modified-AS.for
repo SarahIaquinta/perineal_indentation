@@ -400,7 +400,7 @@ C ------------------------------------------------------------------------------
       dw1=0.0; dw2=0.0
 
       if (abs(de(1)) <= 1.0E-6) then  
-         call W_Yeoh(nprop,de,inva,w,dw1,dw2)
+         call W_Iso(nprop,de,inva,w,dw1,dw2)
       elseif (abs(de(1)-1.0) <= 1.0E-6) then  
          call W_Delfino(nprop,de,inva,w,dw1,dw2)
 	elseif (abs(de(1)-2.0) <= 1.0E-6) then  
@@ -424,7 +424,7 @@ C ------------------------------------------------------------------------------
       endif
        end subroutine derW
 C ------------------------------------------------------------------------------
-      subroutine W_Yeoh(nprop,de,inva,w,dw1,dw2)
+      subroutine W_Iso(nprop,de,inva,w,dw1,dw2)
 C ------------------------------------------------------------------------------
 C
 C Evaluates the Isotropic Strain energy density function
@@ -444,22 +444,27 @@ C---------------------------------------------------
       real*8, intent(in)    :: de(nprop),inva(4)
       real*8, intent(out)   :: w(4),dw1(4),dw2(10)
       real*8                :: C10,C01,C20,C11,C02
-      real*8                :: I1
+      real*8                :: I1,I2
 
-      C10=de(3); C20=de(4); C30=de(5);
-      I1=inva(1)
+      C10=de(3); C01=de(4); C20=de(5); C11=de(6); C02=de(7);
+      I1=inva(1); I2=inva(2)
 C
 C Strain energy density function
 C
-      w(1)= C10*(I1-3.0)+C20*(I1-3.0)**2+C30*(I1-3.0)**3
+      w(2)= C10*(I1-3.0)+C01*(I2-3.0)+C20*(I1-3.0)**2  
+      w(2)= w(2)+C11*(I1-3.0)*(I2-3.0)+C02*(I2-3.0)**2
+	w(1)= w(2) 
 C
 C First derivative
 C     
-      dw1(1)=C10+2*C20*(I2-3.0)+3.0*C30*(I1-3.0)**2
+      dw1(1)=C10+C11*(I2-3.0)+2.0*C20*(I1-3.0)
+      dw1(2)=C01+C11*(I1-3.0)+2.0*C02*(I2-3.0)
 C
 C Second derivative
 C     
-      dw2(1)=2*C20+6*C30*(I1-3.0)
+      dw2(1)=2*C20
+      dw2(2)=2*C02
+      dw2(5)=C11
       end subroutine
 C --------------------------------------------------------------------
       subroutine W_Delfino(nprop,de,inva,w,dw1,dw2)
