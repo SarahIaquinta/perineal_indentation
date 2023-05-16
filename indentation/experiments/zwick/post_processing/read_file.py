@@ -90,20 +90,27 @@ class Files_Zwick:
         """
         date = datafile[0:6]
         path_to_datafile = utils.reach_data_path(date)
-        file = pd.ExcelFile(path_to_datafile/datafile)
-        sheets_list = file.sheet_names
+        datafile_as_pds = pd.ExcelFile(path_to_datafile/datafile)
+        sheets_list = datafile_as_pds.sheet_names
         sheets_list_with_data = [i for i in sheets_list if i.startswith(date)]
-        return sheets_list_with_data
+        return datafile_as_pds, sheets_list_with_data
         
+    def read_sheet(self, datafile, sheet):
+        date = datafile[0:6]
+        path_to_datafile = utils.reach_data_path(date)
+        data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
+        print('data') 
 
 if __name__ == "__main__":
     # createfigure = CreateFigure()
     # fonts = Fonts()
     # savefigure = SaveFigure()
     experiment_dates = ['230515']#, '230411']#'230331', '230327', '230403']
-    types_of_essay = ['C_Indentation_relaxation_500N_force']#, 'RDG']
+    types_of_essay = ['C_Indentation_relaxation_500N_force.csv']#, 'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
     datafile_list = files_zwick.import_files(experiment_dates[0])
     datafile = datafile_list[0]
-    sheets_in_datafile = files_zwick.get_sheets_from_datafile(datafile)
+    datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
+    sheet1 = sheets_list_with_data[0]
+    files_zwick.read_sheet(datafile, sheet1)
     print('hello')
