@@ -22,7 +22,6 @@ def find_ids_with_same_imposed_displacement_laser(files_zwick, datafile, imposed
     return ids_where_disp_is_imposed_disp_laser
 
 def plot_recovery_data_for_imposed_displacement_laser(files_zwick, datafile, imposed_displacement, createfigure, savefigure, fonts, locations_laser, failed_laser_acqusitions):
-    date = datafile[0:6]
     metadatafile = files_zwick.import_metadatafile(datafile[0:6])
     ids_where_disp_is_imposed_disp_laser = find_ids_with_same_imposed_displacement_laser(files_zwick, datafile, imposed_displacement)
     file_list = [i + '.csv' for i in ids_where_disp_is_imposed_disp_laser]
@@ -40,7 +39,7 @@ def plot_recovery_data_for_imposed_displacement_laser(files_zwick, datafile, imp
                 time_vector_at_datepig_laser = recovery_at_date_pig.vec_time
                 recovery_positions_laser = recovery_at_date_pig.compute_recovery_with_time(10)
                 imposed_disp = imposed_disp_dict[file_id[:-4]]
-                ax_disp_vs_time_during_recovery.plot(time_vector_at_datepig_laser/1e6, recovery_positions_laser, '-', alpha=0.6, label= file_id[:-4] + ' ; ' + str(imposed_disp) + ' mm')
+                ax_disp_vs_time_during_recovery.plot(time_vector_at_datepig_laser/1e6, recovery_positions_laser - min(recovery_positions_laser), '-', alpha=0.6, label= file_id[:-4] + ' ; ' + str(imposed_disp) + ' mm')
                 ax_disp_vs_time_during_recovery.legend(prop=fonts.serif_rz_legend(), loc='center right', framealpha=0.7)
                 ax_disp_vs_time_during_recovery.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
                 ax_disp_vs_time_during_recovery.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)

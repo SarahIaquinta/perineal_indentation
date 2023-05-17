@@ -24,9 +24,11 @@ def plot_recovery_data_for_imposed_displacement_zwick(files_zwick, datafile, imp
     sheets_list = ids_where_disp_is_imposed_disp_zwick
     fig_force_vs_time_during_recovery = createfigure.rectangle_rz_figure(pixels=180)
     fig_disp_vs_time_during_recovery = createfigure.rectangle_rz_figure(pixels=180)
+    fig_disp_vs_time_during_recovery_laser_format = createfigure.rectangle_rz_figure(pixels=180)
     fig_force_vs_disp_during_recovery = createfigure.rectangle_rz_figure(pixels=180)
     ax_force_vs_time_during_recovery = fig_force_vs_time_during_recovery.gca()
     ax_disp_vs_time_during_recovery = fig_disp_vs_time_during_recovery.gca()
+    ax_disp_vs_time_during_recovery_laser_format = fig_disp_vs_time_during_recovery_laser_format.gca()
     ax_force_vs_disp_during_recovery = fig_force_vs_disp_during_recovery.gca()
     imposed_disp_dict, speed_dict = files_zwick.read_metadatas_zwick(metadatafile)
     marker_dict = {100: 'o', 75: 's', 50: 'D'}
@@ -36,19 +38,27 @@ def plot_recovery_data_for_imposed_displacement_zwick(files_zwick, datafile, imp
         imposed_disp = imposed_disp_dict[sheet]
         ax_force_vs_time_during_recovery.plot(time_during_recovery_correct_pid, force_during_recovery_correct_pid, marker = marker_dict[imposed_speed], lw=0, markersize=2, label= sheet + ' ; ' + str(imposed_disp) + ' mm ; ' + str(imposed_speed) + 'mm/min')
         ax_disp_vs_time_during_recovery.plot(time_during_recovery_correct_pid, disp_during_recovery_correct_pid, marker = marker_dict[imposed_speed], lw=0, markersize=2, label= sheet + ' ; ' + str(imposed_disp) + ' mm ; ' + str(imposed_speed) + 'mm/min')
+        ax_disp_vs_time_during_recovery_laser_format.plot(time_during_recovery_correct_pid, max(disp_during_recovery_correct_pid)-disp_during_recovery_correct_pid, marker = marker_dict[imposed_speed], lw=0, markersize=2, label= sheet + ' ; ' + str(imposed_disp) + ' mm ; ' + str(imposed_speed) + 'mm/min')
         ax_force_vs_disp_during_recovery.plot(force_during_recovery_correct_pid, disp_during_recovery_correct_pid, marker = marker_dict[imposed_speed], lw=0, markersize=2, label= sheet + ' ; ' + str(imposed_disp) + ' mm ; ' + str(imposed_speed) + 'mm/min')
     ax_force_vs_time_during_recovery.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_disp_vs_time_during_recovery.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
+    ax_disp_vs_time_during_recovery_laser_format.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_force_vs_disp_during_recovery.set_xlabel(r"U [mm]", font=fonts.serif(), fontsize=26)
     ax_force_vs_time_during_recovery.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
     ax_disp_vs_time_during_recovery.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
+    ax_disp_vs_time_during_recovery_laser_format.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
     ax_force_vs_disp_during_recovery.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
     ax_force_vs_time_during_recovery.legend(prop=fonts.serif_rz_legend(), loc='center right', framealpha=0.7)
     ax_disp_vs_time_during_recovery.legend(prop=fonts.serif_rz_legend(), loc='center right', framealpha=0.7)
+    ax_disp_vs_time_during_recovery_laser_format.legend(prop=fonts.serif_rz_legend(), loc='center right', framealpha=0.7)
     ax_force_vs_disp_during_recovery.legend(prop=fonts.serif_rz_legend(), loc='center right', framealpha=0.7)
     savefigure.save_as_png(fig_force_vs_time_during_recovery, sheet + "_force_vs_time_during_recovery_imposed_disp_" + str(imposed_displacement))
     savefigure.save_as_png(fig_disp_vs_time_during_recovery, sheet + "_disp_vs_time_during_recovery_imposed_disp_" + str(imposed_displacement))
+    savefigure.save_as_png(fig_disp_vs_time_during_recovery_laser_format, sheet + "_disp_vs_time_during_recovery_laser_format_imposed_disp_" + str(imposed_displacement))
     savefigure.save_as_png(fig_force_vs_disp_during_recovery, sheet + "_force_vs_disp_during_recovery_imposed_disp_" + str(imposed_displacement))    
+
+
+
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
