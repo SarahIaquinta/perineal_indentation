@@ -4,7 +4,7 @@ from math import nan
 from pathlib import Path
 import utils
 import os
-from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
+from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
 from tqdm import tqdm
 import pandas as pd
 
@@ -73,6 +73,18 @@ class Files_Zwick:
             if outfile[0:len_type_of_essay] == type_of_essay_to_test:
                 datafile_list.append(outfile)
         return datafile_list
+    
+    def import_metadatafile(self, date):
+        path_to_data_folder = utils.reach_data_path(date)
+        entries = os.listdir(path_to_data_folder)
+        type_of_essay_to_test = date + '_recap_' + self.type_of_essay
+        len_type_of_essay = len(type_of_essay_to_test)
+        datafile_list = []
+        for i in range(len(entries)):
+            outfile = entries[i]
+            if outfile[0:len_type_of_essay] == type_of_essay_to_test:
+                datafile_list.append(outfile)
+        return datafile_list[0]        
 
     def get_sheets_from_datafile(self, datafile):
         """
@@ -96,6 +108,7 @@ class Files_Zwick:
         sheets_list_with_data = [i for i in sheets_list if i.startswith(date)]
         return datafile_as_pds, sheets_list_with_data
         
+        
     def read_sheet_in_datafile(self, datafile, sheet):
         """
         Extracts the measured time, force and displacement values in a sheet
@@ -116,7 +129,6 @@ class Files_Zwick:
             disp: pandasArray
                 list of the displacement values (in mm) in the sheet of the datafile
 
-
         """
         date = datafile[0:6]
         path_to_datafile = utils.reach_data_path(date) / datafile
@@ -126,11 +138,37 @@ class Files_Zwick:
         disp = data_in_sheet.mm
         return time, force, disp
 
+    def plot_data_from_sheet(self, datafile, sheet, createfigure, savefigure, fonts):
+        time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
+        fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
+        fig_disp_vs_time = createfigure.rectangle_rz_figure(pixels=180)
+        fig_force_vs_disp = createfigure.rectangle_rz_figure(pixels=180)
+        ax_force_vs_time = fig_force_vs_time.gca()
+        ax_disp_vs_time = fig_disp_vs_time.gca()
+        ax_force_vs_disp = fig_force_vs_disp.gca()
+        imposed_disp = max(disp)
+        kwargs = {"color":'k', "linewidth": 2}
+        ax_force_vs_time.plot(time, force, label='Umax = ' + str(imposed_disp), **kwargs)
+        ax_disp_vs_time.plot(time, disp, label='Umax = ' + str(imposed_disp), **kwargs)
+        ax_force_vs_disp.plot(force, disp, label='Umax = ' + str(imposed_disp), **kwargs)
+        ax_force_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
+        ax_disp_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_disp.set_xlabel(r"U [mm]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_time.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
+        ax_disp_vs_time.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_disp.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
+        savefigure.save_as_png(fig_force_vs_time, sheet + "_force_vs_time")
+        savefigure.save_as_png(fig_disp_vs_time, sheet + "_disp_vs_time")
+        savefigure.save_as_png(fig_force_vs_disp, sheet + "_force_vs_disp")
+
+
+
+
 
 if __name__ == "__main__":
-    # createfigure = CreateFigure()
-    # fonts = Fonts()
-    # savefigure = SaveFigure()
+    createfigure = CreateFigure()
+    fonts = Fonts()
+    savefigure = SaveFigure()
     experiment_dates = ['230515']#, '230411']#'230331', '230327', '230403']
     types_of_essay = ['C_Indentation_relaxation_maintienFnulle_500N_trav.xls']#, 'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
@@ -138,5 +176,8 @@ if __name__ == "__main__":
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
-    time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
+    # time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
+    # for sheet in sheets_list_with_data:
+    #     files_zwick.plot_data_from_sheet( datafile, sheet, createfigure, savefigure, fonts)
+    metadatafile = files_zwick.import_metadatafile(experiment_dates[0])
     print('hello')
