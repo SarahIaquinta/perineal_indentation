@@ -96,11 +96,36 @@ class Files_Zwick:
         sheets_list_with_data = [i for i in sheets_list if i.startswith(date)]
         return datafile_as_pds, sheets_list_with_data
         
-    def read_sheet(self, datafile, sheet):
+    def read_sheet_in_datafile(self, datafile, sheet):
+        """
+        Extracts the measured time, force and displacement values in a sheet
+        
+        Parameters:
+            ----------
+            datafile: string
+                name of the datafile to be read
+            sheet: string
+                name of the sheet to be read
+
+        Returns:
+            -------
+            time: pandasArray
+                list of the time values (in seconds) in the sheet of the datafile
+            force: pandasArray
+                list of the force values (in Newtons) in the sheet of the datafile
+            disp: pandasArray
+                list of the displacement values (in mm) in the sheet of the datafile
+
+
+        """
         date = datafile[0:6]
-        path_to_datafile = utils.reach_data_path(date)
-        data_in_sheet = pd.read_excel(open(path_to_datafile, 'rb'), sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
-        print('data') 
+        path_to_datafile = utils.reach_data_path(date) / datafile
+        data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
+        time = data_in_sheet.s
+        force = data_in_sheet.N
+        disp = data_in_sheet.mm
+        return time, force, disp
+
 
 if __name__ == "__main__":
     # createfigure = CreateFigure()
@@ -113,5 +138,5 @@ if __name__ == "__main__":
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
-    files_zwick.read_sheet(datafile, sheet1)
+    time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
     print('hello')
