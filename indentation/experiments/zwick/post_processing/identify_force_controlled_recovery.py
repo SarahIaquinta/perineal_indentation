@@ -31,7 +31,7 @@ def identify_beginning_recovery(files_zwick, datafile, sheet):
     """
     _, _, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
     metadatafile = files_zwick.import_metadatafile(datafile[0:6])
-    imposed_disp_dict, _ = files_zwick.read_metadatas(metadatafile)
+    imposed_disp_dict, _ = files_zwick.read_metadatas_zwick(metadatafile)
     imposed_disp = imposed_disp_dict[sheet]
     disp_as_array = disp.to_numpy()
     disp_as_array[disp_as_array < imposed_disp-0.5] = 0
@@ -66,7 +66,7 @@ def plot_recovery_data_from_sheet(files_zwick, datafile, sheet, createfigure, sa
     ax_force_vs_disp_during_recovery = fig_force_vs_disp_during_recovery.gca()
     date = datafile[0:6]
     metadatafile = files_zwick.import_metadatafile(date)
-    imposed_disp_dict, speed_dict = files_zwick.read_metadatas(metadatafile)
+    imposed_disp_dict, speed_dict = files_zwick.read_metadatas_zwick(metadatafile)
     imposed_disp = imposed_disp_dict[sheet]
     imposed_speed = speed_dict[sheet]
     force_during_recovery_correct_pid, time_during_recovery_correct_pid, disp_during_recovery_correct_pid = remove_error_pid_from_data(files_zwick, datafile, sheet)

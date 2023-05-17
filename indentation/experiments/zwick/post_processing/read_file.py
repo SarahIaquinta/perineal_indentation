@@ -138,7 +138,7 @@ class Files_Zwick:
         disp = data_in_sheet.mm
         return time, force, disp
 
-    def read_metadatas(self, metadatafile):
+    def read_metadatas_zwick(self, metadatafile):
         date = metadatafile[0:6]
         path_to_metadatafile = utils.reach_data_path(date) / metadatafile
         metadatas = pd.read_excel(path_to_metadatafile, sheet_name='zwick', header=1, names=["Id", "imposed_disp", "speed_mm_min" ], usecols="A:C", decimal=',') 
@@ -160,7 +160,7 @@ class Files_Zwick:
         ax_force_vs_disp = fig_force_vs_disp.gca()
         date = datafile[0:6]
         metadatafile = self.import_metadatafile(date)
-        imposed_disp_dict, speed_dict = self.read_metadatas(metadatafile)
+        imposed_disp_dict, speed_dict = self.read_metadatas_zwick(metadatafile)
         imposed_disp = imposed_disp_dict[sheet]
         imposed_speed = speed_dict[sheet]
         kwargs = {"color":'k', "linewidth": 2}
@@ -200,5 +200,5 @@ if __name__ == "__main__":
     for sheet in sheets_list_with_data:
         files_zwick.plot_data_from_sheet( datafile, sheet, createfigure, savefigure, fonts)
     # metadatafile = files_zwick.import_metadatafile(experiment_dates[0])
-    # imposed_disp_dict, speed_dict = files_zwick.read_metadatas(metadatafile)
+    # imposed_disp_dict, speed_dict = files_zwick.read_metadatas_zwick(metadatafile)
     print('hello')

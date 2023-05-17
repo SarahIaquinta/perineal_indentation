@@ -6,7 +6,7 @@ import utils
 import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
 from tqdm import tqdm
-
+import pandas as pd
 
 class Files:
     """
@@ -138,6 +138,16 @@ def read_all_files(experiment_dates, meat_pieces):
                 if filename[0:-4] not in existing_processed_filenames:
                     # print (filename , ' not processed yet : processing has been launched')
                     files_meat_piece.read_datafile(filename)       
+
+
+def read_metadatas_laser(metadatafile):
+    date = metadatafile[0:6]
+    path_to_metadatafile = utils.reach_data_path(date) / metadatafile
+    metadatas = pd.read_excel(path_to_metadatafile, sheet_name='laser', header=1, names=["Id", "imposed_disp"], usecols="A:B", decimal=',') 
+    ids = metadatas.Id
+    imposed_disp = metadatas.imposed_disp
+    imposed_disp_dict = {ids.tolist()[i]: imposed_disp.tolist()[i] for i in range(len(ids.tolist()))}
+    return imposed_disp_dict
 
 
 if __name__ == "__main__":
