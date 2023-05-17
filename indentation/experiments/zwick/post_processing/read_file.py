@@ -8,6 +8,7 @@ from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, Sav
 from tqdm import tqdm
 import pandas as pd
 
+
 class Files_Zwick:
     """
     A class define the .xls files to import.
@@ -98,7 +99,7 @@ class Files_Zwick:
     def read_sheet(self, datafile, sheet):
         date = datafile[0:6]
         path_to_datafile = utils.reach_data_path(date)
-        data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
+        data_in_sheet = pd.read_excel(open(path_to_datafile, 'rb'), sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
         print('data') 
 
 if __name__ == "__main__":
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     # fonts = Fonts()
     # savefigure = SaveFigure()
     experiment_dates = ['230515']#, '230411']#'230331', '230327', '230403']
-    types_of_essay = ['C_Indentation_relaxation_500N_force.csv']#, 'RDG']
+    types_of_essay = ['C_Indentation_relaxation_maintienFnulle_500N_trav.xls']#, 'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
     datafile_list = files_zwick.import_files(experiment_dates[0])
     datafile = datafile_list[0]

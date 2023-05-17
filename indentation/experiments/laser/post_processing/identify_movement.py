@@ -9,7 +9,8 @@ import indentation.experiments.laser.post_processing.read_file as rf
 import indentation.experiments.laser.post_processing.display_profiles as dp
 from indentation.experiments.laser.post_processing.read_file import Files
 import seaborn as sns
-    
+from sklearn.linear_model import LinearRegression
+   
 class Recovery:
     """
     A class define the .csv files to import.
@@ -155,10 +156,32 @@ class Recovery:
         delta_d_star = np.abs(delta_d / min_recovery_position)
         return index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star
     
+    def compute_A(self, n_smooth):
+        recovery_positions = self.compute_recovery_with_time(n_smooth)
+        # recovery_positions_with_NaN = self.compute_recovery_with_time(n_smooth)
+        # recovery_positions_with_inf = recovery_positions_with_NaN[~np.isnan(recovery_positions_with_NaN)]
+        # recovery_positions = recovery_positions_with_inf[np.isfinite(recovery_positions_with_inf)]
+        index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star(n_smooth)
+        recovery_time_at_beginning = self.vec_time[index_recovery_position_is_min] /1e6
+        recovery_position_at_beginning = recovery_positions[index_recovery_position_is_min]
+        recovery_time_at_end = self.vec_time[-2]/1e6
+        recovery_position_at_end = last_recovery
+        log_time_unshaped = np.array([np.log(t/1e6) for t in self.vec_time[1:]]) #TODO check for NaN
+        log_time = log_time_unshaped.reshape((-1, 1))
+        model = LinearRegression()
+        model.fit(log_time, recovery_positions[1:])
+        fitted_response = model.predict(log_time)
+        A = model.coef_
+        return A, fitted_response, log_time
+        
+            
     def plot_recovery(self, n_smooth, createfigure, savefigure, fonts):
         recovery_positions = self.compute_recovery_with_time(n_smooth)
+        A, fitted_response, log_time = self.compute_A(n_smooth)
         fig = createfigure.rectangle_rz_figure(pixels=180)
+        fig_log = createfigure.rectangle_rz_figure(pixels=180)
         ax = fig.gca()
+        ax_log = fig_log.gca()
         kwargs = {"linewidth": 3}
         index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star(n_smooth)
         recovery_time_at_beginning = self.vec_time[index_recovery_position_is_min] /1e6
@@ -172,7 +195,15 @@ class Recovery:
         # ax.text(str(delta_d_star))
         # ax.set_aspect("equal", adjustable="box")
         ax.set_title(r'$\Delta d$ = ' + str(np.round(delta_d,2)) +  r'  $\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif_rz_legend())
-        # ax.set_xscale('log')
+        ax_log.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', **kwargs)
+        ax_log.plot(self.vec_time[1:]/1e6, fitted_response[:-1], ':', 'r', label='A = ' + str(A), **kwargs)
+        ax_log.plot([recovery_time_at_beginning], [recovery_position_at_beginning], label = 'beginning', marker="*", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
+        ax_log.plot([recovery_time_at_end], [recovery_position_at_end], label = 'end', marker="o", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
+        # ax.text(str(delta_d_star))
+        # ax.set_aspect("equal", adjustable="box")
+        ax.set_title(r'$\Delta d$ = ' + str(np.round(delta_d,2)) +  r'  $\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif_rz_legend())
+        ax_log.set_title(r'$\Delta d$ = ' + str(np.round(delta_d,2)) +  r'  $\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif_rz_legend())
+        ax_log.set_xscale('log')
         # ax.set_xlim(1, 40.5)
         # ax.set_ylim(-5.5, -3.5)
         # ax.set_xticks([1, 10, 100])
@@ -181,11 +212,15 @@ class Recovery:
         # ax.set_yticklabels([-6, -5, -4],  font=fonts.serif(), fontsize=24)
         
         ax.set_xlabel(r"$time $ [s]", font=fonts.serif(), fontsize=26)
+        ax_log.set_xlabel(r"$log(time) $ [-]", font=fonts.serif(), fontsize=26)
         ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
+        ax_log.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
         ax.legend(prop=fonts.serif_horizontalfigure(), loc='upper right', framealpha=0.7)
+        ax_log.legend(prop=fonts.serif_horizontalfigure(), loc='upper right', framealpha=0.7)
         savefigure.save_as_png(fig, "recovery_smoothed_n" + str(n_smooth) +self.filename[0:-4])
         savefigure.save_as_svg(fig, "recovery_smoothed_n" + str(n_smooth) +self.filename[0:-4])
-
+        savefigure.save_as_png(fig_log, "recovery_logx_smoothed_n" + str(n_smooth) +self.filename[0:-4])
+        savefigure.save_as_svg(fig_log, "recovery_logx_smoothed_n" + str(n_smooth) +self.filename[0:-4])
 
 def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
     location_keys = [key for key in locations]
@@ -307,5 +342,5 @@ if __name__ == "__main__":
     
     for n_smooth in [1]:
         # delta_d_stars_to_export, filenames_to_export = export_delta_d_star(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions)
-        plot_all_combined_profiles(experiment_dates,  meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
+        # plot_all_combined_profiles(experiment_dates,  meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
         plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, failed_laser_acqusitions, createfigure, savefigure, fonts)
