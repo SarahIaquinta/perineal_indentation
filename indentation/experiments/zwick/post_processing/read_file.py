@@ -138,6 +138,18 @@ class Files_Zwick:
         disp = data_in_sheet.mm
         return time, force, disp
 
+    def read_metadatas(self, metadatafile):
+        date = metadatafile[0:6]
+        path_to_metadatafile = utils.reach_data_path(date) / metadatafile
+        metadatas = pd.read_excel(path_to_metadatafile, sheet_name='zwick', header=1, names=["Id", "imposed_disp", "speed_mm_min" ], usecols="A:C", decimal=',') 
+        ids = metadatas.Id
+        imposed_disp = metadatas.imposed_disp
+        speed = metadatas.speed_mm_min
+        imposed_disp_dict = {ids.tolist()[i]: imposed_disp.tolist()[i] for i in range(len(ids.tolist()))}
+        speed_dict = {ids.tolist()[i]: speed.tolist()[i] for i in range(len(ids.tolist()))}
+        return imposed_disp_dict, speed_dict
+        
+        
     def plot_data_from_sheet(self, datafile, sheet, createfigure, savefigure, fonts):
         time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
         fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
@@ -146,20 +158,28 @@ class Files_Zwick:
         ax_force_vs_time = fig_force_vs_time.gca()
         ax_disp_vs_time = fig_disp_vs_time.gca()
         ax_force_vs_disp = fig_force_vs_disp.gca()
-        imposed_disp = max(disp)
+        date = datafile[0:6]
+        metadatafile = self.import_metadatafile(date)
+        imposed_disp_dict, speed_dict = self.read_metadatas(metadatafile)
+        imposed_disp = imposed_disp_dict[sheet]
+        imposed_speed = speed_dict[sheet]
         kwargs = {"color":'k', "linewidth": 2}
-        ax_force_vs_time.plot(time, force, label='Umax = ' + str(imposed_disp), **kwargs)
-        ax_disp_vs_time.plot(time, disp, label='Umax = ' + str(imposed_disp), **kwargs)
-        ax_force_vs_disp.plot(force, disp, label='Umax = ' + str(imposed_disp), **kwargs)
+        ax_force_vs_time.plot(time, force, label='Umax = ' + str(imposed_disp) + ' mm \n vitesse retour = ' + str(imposed_speed) + 'mm/min', **kwargs)
+        ax_disp_vs_time.plot(time, disp, label='Umax = ' + str(imposed_disp) + ' mm \n vitesse retour = ' + str(imposed_speed) + 'mm/min', **kwargs)
+        ax_force_vs_disp.plot(force, disp, label='Umax = ' + str(imposed_disp) + ' mm \n vitesse retour = ' + str(imposed_speed) + 'mm/min', **kwargs)
         ax_force_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
         ax_disp_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
         ax_force_vs_disp.set_xlabel(r"U [mm]", font=fonts.serif(), fontsize=26)
         ax_force_vs_time.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
         ax_disp_vs_time.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
         ax_force_vs_disp.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_time.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
+        ax_disp_vs_time.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
+        ax_force_vs_disp.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
         savefigure.save_as_png(fig_force_vs_time, sheet + "_force_vs_time")
         savefigure.save_as_png(fig_disp_vs_time, sheet + "_disp_vs_time")
         savefigure.save_as_png(fig_force_vs_disp, sheet + "_force_vs_disp")
+        
 
 
 
@@ -177,7 +197,8 @@ if __name__ == "__main__":
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
     # time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
-    # for sheet in sheets_list_with_data:
-    #     files_zwick.plot_data_from_sheet( datafile, sheet, createfigure, savefigure, fonts)
-    metadatafile = files_zwick.import_metadatafile(experiment_dates[0])
+    for sheet in sheets_list_with_data:
+        files_zwick.plot_data_from_sheet( datafile, sheet, createfigure, savefigure, fonts)
+    # metadatafile = files_zwick.import_metadatafile(experiment_dates[0])
+    # imposed_disp_dict, speed_dict = files_zwick.read_metadatas(metadatafile)
     print('hello')
