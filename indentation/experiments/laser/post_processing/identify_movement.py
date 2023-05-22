@@ -10,7 +10,7 @@ import indentation.experiments.laser.post_processing.display_profiles as dp
 from indentation.experiments.laser.post_processing.read_file import Files
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
-   
+from scipy.signal import lfilter
 class Recovery:
     """
     A class define the .csv files to import.
@@ -157,26 +157,31 @@ class Recovery:
         return index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star
     
     def compute_A(self, n_smooth):
-        recovery_positions = self.compute_recovery_with_time(n_smooth)
-        # recovery_positions_with_NaN = self.compute_recovery_with_time(n_smooth)
-        # recovery_positions_with_inf = recovery_positions_with_NaN[~np.isnan(recovery_positions_with_NaN)]
-        # recovery_positions = recovery_positions_with_inf[np.isfinite(recovery_positions_with_inf)]
         index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star(n_smooth)
-        recovery_time_at_beginning = self.vec_time[index_recovery_position_is_min] /1e6
-        recovery_position_at_beginning = recovery_positions[index_recovery_position_is_min]
-        recovery_time_at_end = self.vec_time[-2]/1e6
-        recovery_position_at_end = last_recovery
-        log_time_unshaped = np.array([np.log(t/1e6) for t in self.vec_time[1:]]) #TODO check for NaN
+        
+        recovery_positions_with_NaN_and_inf = self.compute_recovery_with_time(n_smooth)[index_recovery_position_is_min:-2]
+        log_time_unshaped_wth_NaN_and_inf_recovery = np.array([np.log((t+0.01)/1e6) for t in self.vec_time[index_recovery_position_is_min:-2]]) #TODO check for NaN
+        recovery_positions_with_inf = recovery_positions_with_NaN_and_inf[~np.isnan(recovery_positions_with_NaN_and_inf)]
+        log_time_unshaped_wth_inf_recovery = log_time_unshaped_wth_NaN_and_inf_recovery[~np.isnan(recovery_positions_with_NaN_and_inf)]
+        recovery_positions_unsmoothed = recovery_positions_with_inf[np.isfinite(recovery_positions_with_inf)]
+        recovery_positions = lfilter([1/1]*1, 1, recovery_positions_unsmoothed)
+        log_time_unshaped = log_time_unshaped_wth_inf_recovery[np.isfinite(recovery_positions_with_inf)]
+        
+        # recovery_time_at_beginning = self.vec_time[index_recovery_position_is_min] /1e6
+        # recovery_position_at_beginning = recovery_positions[index_recovery_position_is_min]
+        # recovery_time_at_end = self.vec_time[-2]/1e6
+        # recovery_position_at_end = last_recovery
         log_time = log_time_unshaped.reshape((-1, 1))
         model = LinearRegression()
-        model.fit(log_time, recovery_positions[1:])
+        model.fit(log_time[1:], recovery_positions[1:])
         fitted_response = model.predict(log_time)
         A = model.coef_
         return A, fitted_response, log_time
         
             
     def plot_recovery(self, n_smooth, createfigure, savefigure, fonts):
-        recovery_positions = self.compute_recovery_with_time(n_smooth)
+        recovery_positions_unsmoothed = self.compute_recovery_with_time(n_smooth)
+        recovery_positions = lfilter([1/1]*1, 1, recovery_positions_unsmoothed)
         A, fitted_response, log_time = self.compute_A(n_smooth)
         fig = createfigure.rectangle_rz_figure(pixels=180)
         fig_log = createfigure.rectangle_rz_figure(pixels=180)
@@ -189,14 +194,14 @@ class Recovery:
         recovery_time_at_end = self.vec_time[-2]/1e6
         recovery_position_at_end = last_recovery
         # ax.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', label = self.filename[0:-4], **kwargs)
-        ax.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', **kwargs)
+        ax.plot(self.vec_time[index_recovery_position_is_min:-2]/1e6, recovery_positions[index_recovery_position_is_min:-2], '-k', **kwargs)
         ax.plot([recovery_time_at_beginning], [recovery_position_at_beginning], label = 'beginning', marker="*", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         ax.plot([recovery_time_at_end], [recovery_position_at_end], label = 'end', marker="o", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         # ax.text(str(delta_d_star))
         # ax.set_aspect("equal", adjustable="box")
         ax.set_title(r'$\Delta d$ = ' + str(np.round(delta_d,2)) +  r'  $\Delta d^*$ = ' + str(np.round(delta_d_star, 2)), font=fonts.serif_rz_legend())
-        ax_log.plot(self.vec_time[1:]/1e6, recovery_positions[:-1], '-k', **kwargs)
-        ax_log.plot(self.vec_time[1:]/1e6, fitted_response[:-1], ':', 'r', label='A = ' + str(A), **kwargs)
+        ax_log.plot(self.vec_time[index_recovery_position_is_min:-2]/1e6, recovery_positions[index_recovery_position_is_min:-2], '-k', **kwargs)
+        ax_log.plot(np.exp(log_time), fitted_response, ':r', label='A = ' + str(np.round(A[0], 2)), **kwargs)
         ax_log.plot([recovery_time_at_beginning], [recovery_position_at_beginning], label = 'beginning', marker="*", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         ax_log.plot([recovery_time_at_end], [recovery_position_at_end], label = 'end', marker="o", markersize=12, markeredgecolor="k", markerfacecolor = 'r', linestyle = 'None', alpha=0.8)
         # ax.text(str(delta_d_star))
@@ -215,8 +220,8 @@ class Recovery:
         ax_log.set_xlabel(r"$log(time) $ [-]", font=fonts.serif(), fontsize=26)
         ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
         ax_log.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
-        ax.legend(prop=fonts.serif_horizontalfigure(), loc='upper right', framealpha=0.7)
-        ax_log.legend(prop=fonts.serif_horizontalfigure(), loc='upper right', framealpha=0.7)
+        # ax.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
+        ax_log.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
         savefigure.save_as_png(fig, "recovery_smoothed_n" + str(n_smooth) +self.filename[0:-4])
         savefigure.save_as_svg(fig, "recovery_smoothed_n" + str(n_smooth) +self.filename[0:-4])
         savefigure.save_as_png(fig_log, "recovery_logx_smoothed_n" + str(n_smooth) +self.filename[0:-4])
@@ -248,13 +253,14 @@ def plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, fail
                     if filename[:-4] not in failed_laser_acqusitions:
                         recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
                         recovery_at_date_meat_piece.plot_recovery(n_smooth, createfigure, savefigure, fonts)
-               
-def export_delta_d_star(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions):
+            
+def export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions):
     location_keys = [key for key in locations]
     delta_d_to_export = []
     delta_d_stars_to_export = []
     d_min_to_export = [] 
     filenames_to_export = [] 
+    A_to_export = []
     for experiment_date in experiment_dates:
         for meat_piece in meat_pieces:
             files_meat_piece = Files(meat_piece)
@@ -264,17 +270,20 @@ def export_delta_d_star(experiment_dates, n_smooth, meat_pieces, locations, fail
                 location_at_date_meat_piece = locations[experiment_date + '_' + meat_piece]
                 for filename in list_of_meat_piece_files:
                     if filename[:-4] not in failed_laser_acqusitions:
+                        print(filename[:-4])
                         recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
                         _, min_recovery_position, _, delta_d, delta_d_star = recovery_at_date_meat_piece.compute_delta_d_star(n_smooth)
+                        A, _, _ = recovery_at_date_meat_piece.compute_A(n_smooth)
                         delta_d_stars_to_export.append(delta_d_star)
                         delta_d_to_export.append(delta_d)
                         d_min_to_export.append(min_recovery_position)
                         filenames_to_export.append(filename[:-4])
+                        A_to_export.append(A[0])
     filename_export_all_delta_d_star = "recoveries.txt"
     path_to_processed_data = utils.get_path_to_processed_data()
     path_to_export_file = path_to_processed_data / filename_export_all_delta_d_star
     f = open(path_to_export_file, "w")
-    f.write("test Id \t delta d , \t delta d star \t d_min \n")
+    f.write("test Id \t delta d , \t delta d star \t d_min \t A \n")
     # mat_to_export = np.zeros((len(filenames_to_export), 2))
     for i in range(len(filenames_to_export)):
         f.write(
@@ -285,6 +294,8 @@ def export_delta_d_star(experiment_dates, n_smooth, meat_pieces, locations, fail
             + str(delta_d_stars_to_export[i])
             + "\t"
             + str(d_min_to_export[i])
+            + "\t"
+            + str(A_to_export[i])
             + "\n"
         )
         # mat_to_export[i, 0] = filenames_to_export[i]
@@ -326,8 +337,8 @@ if __name__ == "__main__":
                  "230411_RDG2D": [-10, 10],
                  "230515_P002": [-12, 0],
                  "230515_P011": [-15, -2]}
-    experiment_dates = ['230515']#, '230407', '230403', '230331', '230327']
-    meat_pieces = ["P011"]#'FF', "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
+    experiment_dates = ['230407', '230403', '230331', '230327']
+    meat_pieces = ['FF', "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
     failed_laser_acqusitions = ['230403_FF1B',
                                 '230403_FF1D',
                                 '230403_RDG1B',
@@ -337,10 +348,10 @@ if __name__ == "__main__":
                                 '230331_RDG2_1F',
                                 '230331_RDG1_1E',
                                 '230411_FF2_ENTIER1',
-                                '230515_P002-1'
+                                '230515_P002-1',
                                 ]
     
-    for n_smooth in [1]:
-        # delta_d_stars_to_export, filenames_to_export = export_delta_d_star(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions)
-        # plot_all_combined_profiles(experiment_dates,  meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
-        plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, failed_laser_acqusitions, createfigure, savefigure, fonts)
+    for n_smooth in [2]:
+        delta_d_stars_to_export, filenames_to_export = export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions)
+        # # plot_all_combined_profiles(experiment_dates,  meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
+        # plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, failed_laser_acqusitions, createfigure, savefigure, fonts)
