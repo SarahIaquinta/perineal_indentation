@@ -113,3 +113,10 @@ def get_existing_processed_data():
     all_existing_filenames = {f for f in listdir(path_to_processed_data) if isfile(join(path_to_processed_data, f))}
     all_existing_pkl = [i[0:-4] for i in all_existing_filenames if i.endswith('.pkl')]
     return all_existing_pkl
+
+
+def extract_recovery_data_from_pkl(filename):
+    complete_pkl_filename = get_path_to_processed_data() / filename
+    with open(complete_pkl_filename, "rb") as f:
+        [filenames_to_export, delta_d_to_export, delta_d_stars_to_export, d_min_to_export, A_to_export] = pickle.load(f)
+    return filenames_to_export, delta_d_to_export, delta_d_stars_to_export, d_min_to_export, A_to_export

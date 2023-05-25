@@ -11,6 +11,9 @@ from indentation.experiments.laser.post_processing.read_file import Files
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 from scipy.signal import lfilter
+import pickle
+
+
 class Recovery:
     """
     A class define the .csv files to import.
@@ -308,6 +311,12 @@ def export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations
             + "\n"
         )
     f.close()
+    complete_pkl_filename = utils.get_path_to_processed_data() / 'recovery_meat.pkl'
+    with open(complete_pkl_filename, "wb") as f:
+        pickle.dump(
+            [filenames_to_export, delta_d_to_export, delta_d_stars_to_export, d_min_to_export, A_to_export],
+            f,
+        )
     return delta_d_stars_to_export, filenames_to_export
 
 
@@ -321,6 +330,7 @@ if __name__ == "__main__":
     nb_of_time_increments_to_plot = 10
     
     locations = {"230331_FF": [0, 20],
+                 "230331_FF2_2C": [0, 20],
                  "230331_RDG": [2, 20],
                  "230331_RDG1_ENTIER": [-18, 0],
                  "230331_FF1_recouvrance_et_relaxation_max" : [-18, 0],
@@ -337,7 +347,7 @@ if __name__ == "__main__":
                  "230411_RDG2D": [-10, 10],
                  "230515_P002": [-12, 0],
                  "230515_P011": [-15, -2]}
-    experiment_dates = ['230407', '230403', '230331', '230327']
+    experiment_dates = ['230327', '230331', '230403', '230407', '230411']#, '230331', '230327']
     meat_pieces = ['FF', "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
     failed_laser_acqusitions = ['230403_FF1B',
                                 '230403_FF1D',
@@ -349,9 +359,11 @@ if __name__ == "__main__":
                                 '230331_RDG1_1E',
                                 '230411_FF2_ENTIER1',
                                 '230515_P002-1',
+                                '230331_FF2_1E',
+                                '230331_RDG1_ENTIER1'
                                 ]
     
-    for n_smooth in [2]:
+    for n_smooth in [10]:
         delta_d_stars_to_export, filenames_to_export = export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions)
         # # plot_all_combined_profiles(experiment_dates,  meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts)
         # plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, failed_laser_acqusitions, createfigure, savefigure, fonts)
