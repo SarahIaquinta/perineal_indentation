@@ -15,7 +15,6 @@ from scipy.signal import lfilter
 import pickle
 import statistics
 
-
 def remove_failed_A(filenames_from_pkl, dates_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions):
     ids_where_not_failed = [id for id in filenames_from_pkl if failed_A_acqusitions[id] ==0 and delta_d_dict[id]!='FAILED LASER ACQUISITION']
     date_dict_not_failed = {id: dates_dict[id] for id in ids_where_not_failed}
@@ -569,7 +568,6 @@ def plot_recovery_indicators_with_maturation():
     savefigure.save_as_png(fig_d_min, "d_min_vs_maturation_1+2")
     savefigure.save_as_png(fig_d_min_1, "d_min_vs_maturation_1")
     savefigure.save_as_png(fig_d_min_2, "d_min_vs_maturation_2")
-
 
 def plot_laser_indicators_vs_texturometer_forces():
     maturation = [6, 10, 13, 17, 21]
