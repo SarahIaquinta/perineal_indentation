@@ -51,11 +51,17 @@ def plot_forces_with_maturation(ids_list, date_dict, force20_dict, force80_dict)
     mean_force20_RDG2, std_force20_RDG2, mean_force80_RDG2, std_force80_RDG2 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
     mean_force20_FF, std_force20_FF, mean_force80_FF, std_force80_FF = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
     mean_force20_RDG, std_force20_RDG, mean_force80_RDG, std_force80_RDG = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
+
     color = sns.color_palette("Paired")
+    color_rocket = sns.color_palette("rocket")
     kwargs_FF1 = {'marker':'o', 'mfc':color[6], 'elinewidth':3, 'ecolor':color[6], 'alpha':0.8, 'ms':'10', 'mec':color[6]}
+    kwargs_FF = {'marker':'o', 'mfc':color_rocket[3], 'elinewidth':3, 'ecolor':color_rocket[3], 'alpha':0.8, 'ms':'10', 'mec':color_rocket[3]}
     kwargs_FF2 = {'marker':'o', 'mfc':color[7], 'elinewidth':3, 'ecolor':color[7], 'alpha':0.8, 'ms':'10', 'mec':color[7]}
     kwargs_RDG1 = {'marker':'^', 'mfc':color[0], 'elinewidth':3, 'ecolor':color[0], 'alpha':0.8, 'ms':10, 'mec':color[0]}
     kwargs_RDG2 = {'marker':'^', 'mfc':color[1], 'elinewidth':3, 'ecolor':color[1], 'alpha':0.8, 'ms':'10', 'mec':color[1]}
+    kwargs_RDG = {'marker':'^', 'mfc':color_rocket[1], 'elinewidth':3, 'ecolor':color_rocket[1], 'alpha':0.8, 'ms':'10', 'mec':color_rocket[1]}
+    maturation_FF = [m - 0.1 for m in maturation]
+    maturation_RDG = [m + 0.1 for m in maturation]
     
     for i in range(len(dates)):
         date = dates[i]
@@ -77,12 +83,12 @@ def plot_forces_with_maturation(ids_list, date_dict, force20_dict, force80_dict)
     ax_force20_2 = fig_force20_2.gca()
     fig_force20 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force20 = fig_force20.gca()
-    ax_force20.errorbar(maturation, mean_force20_FF1, yerr=std_force20_FF1, lw=0, label='FF', **kwargs_FF2)
-    ax_force20_1.errorbar(maturation, mean_force20_FF1, yerr=std_force20_FF1, lw=0, label='FF1', **kwargs_FF1)
-    ax_force20_2.errorbar(maturation, mean_force20_FF2, yerr=std_force20_FF2, lw=0, label='FF2', **kwargs_FF2)
-    ax_force20_1.errorbar(maturation, mean_force20_RDG1, yerr=std_force20_RDG1, lw=0,  label='RDG1', **kwargs_RDG1)
-    ax_force20.errorbar(maturation, mean_force20_RDG1, yerr=std_force20_RDG1, lw=0,  label='RDG', **kwargs_RDG1)
-    ax_force20_2.errorbar(maturation, mean_force20_RDG2, yerr=std_force20_RDG2, lw=0, label='RDG2', **kwargs_RDG2)
+    ax_force20.errorbar(maturation_FF, mean_force20_FF, yerr=std_force20_FF, lw=0, label='FF', **kwargs_FF)
+    ax_force20_1.errorbar(maturation_FF, mean_force20_FF1, yerr=std_force20_FF1, lw=0, label='FF1', **kwargs_FF1)
+    ax_force20_2.errorbar(maturation_FF, mean_force20_FF2, yerr=std_force20_FF2, lw=0, label='FF2', **kwargs_FF2)
+    ax_force20_1.errorbar(maturation_RDG, mean_force20_RDG1, yerr=std_force20_RDG1, lw=0,  label='RDG1', **kwargs_RDG1)
+    ax_force20.errorbar(maturation_RDG, mean_force20_RDG, yerr=std_force20_RDG, lw=0,  label='RDG', **kwargs_RDG)
+    ax_force20_2.errorbar(maturation_RDG, mean_force20_RDG2, yerr=std_force20_RDG2, lw=0, label='RDG2', **kwargs_RDG2)
     ax_force20.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
     ax_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
     ax_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
@@ -101,32 +107,31 @@ def plot_forces_with_maturation(ids_list, date_dict, force20_dict, force80_dict)
 
     fig_force80_1 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force80_1 = fig_force80_1.gca()
+    fig_force80 = createfigure.rectangle_rz_figure(pixels=180)
+    ax_force80 = fig_force80.gca()
     fig_force80_2 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force80_2 = fig_force80_2.gca()
-    ax_force80_1.errorbar(maturation, mean_force80_FF1, yerr=std_force80_FF1, lw=0, label='FF1', **kwargs_FF1)
-    ax_force80_2.errorbar(maturation, mean_force80_FF2, yerr=std_force80_FF2, lw=0, label='FF2', **kwargs_FF2)
-    ax_force80_1.errorbar(maturation, mean_force80_RDG1, yerr=std_force80_RDG1, lw=0,  label='RDG1', **kwargs_RDG1)
-    ax_force80_2.errorbar(maturation, mean_force80_RDG2, yerr=std_force80_RDG2, lw=0, label='RDG2', **kwargs_RDG2)
+    ax_force80_1.errorbar(maturation_FF, mean_force80_FF1, yerr=std_force80_FF1, lw=0, label='FF1', **kwargs_FF1)
+    ax_force80_2.errorbar(maturation_FF, mean_force80_FF2, yerr=std_force80_FF2, lw=0, label='FF2', **kwargs_FF2)
+    ax_force80.errorbar(maturation_FF, mean_force80_FF, yerr=std_force80_FF, lw=0, label='FF', **kwargs_FF)
+    ax_force80_1.errorbar(maturation_RDG, mean_force80_RDG1, yerr=std_force80_RDG1, lw=0,  label='RDG1', **kwargs_RDG1)
+    ax_force80_2.errorbar(maturation_RDG, mean_force80_RDG2, yerr=std_force80_RDG2, lw=0, label='RDG2', **kwargs_RDG2)
+    ax_force80.errorbar(maturation_RDG, mean_force80_RDG, yerr=std_force80_RDG, lw=0, label='RDG', **kwargs_RDG)
     ax_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
     ax_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    ax_force80_1.set_title('Force vs maturation 1', font=fonts.serif_rz_legend())
-    ax_force80_2.set_title('Force vs maturation 2', font=fonts.serif_rz_legend())
+    ax_force80.set_title('Force 80 % vs maturation 1+2', font=fonts.serif_rz_legend())
+    ax_force80_1.set_title('Force 80 % vs maturation 1', font=fonts.serif_rz_legend())
+    ax_force80_2.set_title('Force 80 % vs maturation 2', font=fonts.serif_rz_legend())
+    ax_force80.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
     ax_force80_1.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
     ax_force80_2.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
+    ax_force80.set_ylabel('Force at 80 % [N]', font=fonts.serif_rz_legend())
     ax_force80_1.set_ylabel('Force at 80 % [N]', font=fonts.serif_rz_legend())
     ax_force80_2.set_ylabel('Force at 80 % [N]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_force80, "force80_vs_maturation_1+2")
     savefigure.save_as_png(fig_force80_1, "force80_vs_maturation_1")
     savefigure.save_as_png(fig_force80_2, "force80_vs_maturation_2")
 
-    fig_force80 = createfigure.rectangle_rz_figure(pixels=180)
-    ax_force80 = fig_force80.gca()
-    ax_force80.errorbar(maturation, mean_force80_FF1, yerr=std_force80_FF1, lw=0, label='FF', **kwargs_FF2)
-    ax_force80.errorbar(maturation, mean_force80_RDG1, yerr=std_force80_RDG1, lw=0,  label='RDG', **kwargs_RDG2)
-    ax_force80.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    ax_force80.set_title('Force vs maturation 1+2', font=fonts.serif_rz_legend())
-    ax_force80.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
-    ax_force80.set_ylabel('Force at 80 % [N]', font=fonts.serif_rz_legend())
-    savefigure.save_as_png(fig_force80, "force80_vs_maturation_1+2")
 
 
 
@@ -139,7 +144,7 @@ if __name__ == "__main__":
 
     ids_list, date_dict, force20_dict, force80_dict, failed_dict = utils.extract_texturometer_data_from_pkl()
     ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed = remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict)
-    mean_force20, std_force20, mean_force80, std_force80 = compute_mean_and_std_at_given_date_and_meatpiece(230327, 'FF', ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed)
+    # mean_force20, std_force20, mean_force80, std_force80 = compute_mean_and_std_at_given_date_and_meatpiece(230327, 'FF', ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed)
     plot_forces_with_maturation(ids_list, date_dict, force20_dict, force80_dict)
     print('hello')
     
