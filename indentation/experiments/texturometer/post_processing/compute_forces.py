@@ -370,6 +370,9 @@ def plot_forces_with_maturation():
     ax_force80 = fig_force80.gca()
     fig_force80_2 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force80_2 = fig_force80_2.gca()
+    ax_force80_1.plot([maturation_FF[0], maturation[-1]], [40, 40], '--r', lw=1)
+    ax_force80_2.plot([maturation_FF[0], maturation[-1]], [40, 40], '--r', lw=1)
+    ax_force80.plot([maturation_FF[0], maturation[-1]], [40, 40], '--r', lw=1)
     ax_force80_1.errorbar(maturation_FF, mean_force80_FF1, yerr=std_force80_FF1, lw=0, label='FF1', **kwargs_FF1)
     ax_force80_2.errorbar(maturation_FF, mean_force80_FF2, yerr=std_force80_FF2, lw=0, label='FF2', **kwargs_FF2)
     ax_force80.errorbar(maturation_FF, mean_force80_FF, yerr=std_force80_FF, lw=0, label='FF', **kwargs_FF)
@@ -378,6 +381,7 @@ def plot_forces_with_maturation():
     ax_force80.errorbar(maturation_RDG, mean_force80_RDG, yerr=std_force80_RDG, lw=0, label='RDG', **kwargs_RDG)
     ax_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
     ax_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
+    ax_force80.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
     ax_force80.set_title('Force 80 % vs maturation 1+2', font=fonts.serif_rz_legend())
     ax_force80_1.set_title('Force 80 % vs maturation 1', font=fonts.serif_rz_legend())
     ax_force80_2.set_title('Force 80 % vs maturation 2', font=fonts.serif_rz_legend())
@@ -405,8 +409,8 @@ if __name__ == "__main__":
     # ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed = remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict)
     # mean_force20, std_force20, mean_force80, std_force80 = compute_mean_and_std_at_given_date_and_meatpiece(230327, 'FF', ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed)
     # compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict)
-    # plot_forces_with_maturation()
-    export_forces_as_txt()
+    plot_forces_with_maturation()
+    # export_forces_as_txt()
     print('hello')
     
     
