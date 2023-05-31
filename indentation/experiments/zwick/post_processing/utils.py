@@ -113,3 +113,8 @@ def get_path_to_figures():
 #     all_existing_filenames = {f for f in listdir(path_to_processed_data) if isfile(join(path_to_processed_data, f))}
 #     all_existing_pkl = [i[0:-4] for i in all_existing_filenames if i.endswith('.pkl')]
 #     return all_existing_pkl
+
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return array[idx]

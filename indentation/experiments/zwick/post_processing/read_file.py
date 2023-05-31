@@ -7,7 +7,7 @@ import os
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
 from tqdm import tqdm
 import pandas as pd
-
+import seaborn as sns
 
 class Files_Zwick:
     """
@@ -133,11 +133,18 @@ class Files_Zwick:
         date = datafile[0:6]
         path_to_datafile = utils.reach_data_path(date) / datafile
         data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
-        print(sheet)
-        time = data_in_sheet.s
-        force = data_in_sheet.N
-        disp = data_in_sheet.mm
+        time_with_offset = data_in_sheet.s
+        force_with_offset = data_in_sheet.N
+        disp_with_offset = data_in_sheet.mm
+        time_with_offset, force_with_offset, disp_with_offset = time_with_offset.to_numpy(), force_with_offset.to_numpy(), disp_with_offset.to_numpy() 
+        nb_points = len(time_with_offset)
+        time = np.array([time_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
+        force = np.array([force_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
+        disp = np.array([disp_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
         return time, force, disp
+    
+
+        
 
     def read_metadatas_zwick(self, metadatafile):
         date = metadatafile[0:6]
@@ -162,9 +169,6 @@ class Files_Zwick:
         _, sheets_list_with_data = self.get_sheets_from_datafile(datafile)
         list_of_correct_sheets = [sheet for sheet in sheets_list_with_data if not self.is_testing_failed(datafile, sheet)]
         return list_of_correct_sheets
-
-            
-            
             
         
     def plot_data_from_sheet(self, datafile, sheet, createfigure, savefigure, fonts):
@@ -197,8 +201,7 @@ class Files_Zwick:
         savefigure.save_as_png(fig_disp_vs_time, sheet + "_disp_vs_time")
         savefigure.save_as_png(fig_force_vs_disp, sheet + "_force_vs_disp")
         
-        
-    def plot_data_from_sheet_meat(self, datafile, sheet, createfigure, savefigure, fonts):
+    def build_fig_to_plot_data_from_sheet_meat(self, datafile, sheet, createfigure, savefigure, fonts):
         time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
         fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
         fig_disp_vs_time = createfigure.rectangle_rz_figure(pixels=180)
@@ -207,19 +210,27 @@ class Files_Zwick:
         ax_disp_vs_time = fig_disp_vs_time.gca()
         ax_force_vs_disp = fig_force_vs_disp.gca()
         date = datafile[0:6]
-        kwargs = {"color":'k', "linewidth": 2}
-        ax_force_vs_time.plot(time, force, **kwargs)
-        ax_disp_vs_time.plot(time, disp, **kwargs)
-        ax_force_vs_disp.plot(disp, force, **kwargs)
+        colors = sns.color_palette("tab10")
+        kwargs = {"color":colors[7], "linewidth": 2}
+        ax_force_vs_time.plot(time, force, alpha = 0.75, **kwargs)
+        ax_disp_vs_time.plot(time, disp, alpha = 0.75, **kwargs)
+        ax_force_vs_disp.plot(disp, force, alpha = 0.75, **kwargs)
         ax_force_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
         ax_disp_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
         ax_force_vs_disp.set_xlabel(r"U [mm]", font=fonts.serif(), fontsize=26)
         ax_force_vs_time.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
         ax_disp_vs_time.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
         ax_force_vs_disp.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
-        # ax_force_vs_time.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
-        # ax_disp_vs_time.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
-        # ax_force_vs_disp.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
+        ax_force_vs_disp.set_ylim([0,None])
+        ax_force_vs_time.set_ylim([0,None])
+        ax_disp_vs_time.set_ylim([0,None])
+        ax_force_vs_disp.set_xlim([0,None])
+        ax_force_vs_time.set_xlim([0,None])
+        ax_disp_vs_time.set_xlim([0,None])
+        return date, fig_disp_vs_time, fig_force_vs_disp, fig_force_vs_time, ax_disp_vs_time, ax_force_vs_disp, ax_force_vs_time
+        
+    def plot_data_from_sheet_meat(self, datafile, sheet, createfigure, savefigure, fonts):
+        date, fig_disp_vs_time, fig_force_vs_disp, fig_force_vs_time, ax_disp_vs_time, ax_force_vs_disp, ax_force_vs_time = self.build_fig_to_plot_data_from_sheet_meat(datafile, sheet, createfigure, savefigure, fonts)
         savefigure.save_as_png(fig_force_vs_time, date + '_' + sheet + "_force_vs_time")
         savefigure.save_as_png(fig_disp_vs_time, date + '_' + sheet + "_disp_vs_time")
         savefigure.save_as_png(fig_force_vs_disp, date + '_' + sheet + "_force_vs_disp")
