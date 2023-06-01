@@ -142,7 +142,7 @@ def transform_csv_input_into_pkl(csv_filename):
     force20s = datas.F20
     force80s = datas.F80
     faileds = datas.failed
-    date_dict = {ids_list[i]: dates.tolist()[i] for i in range(len(ids_list))}
+    date_dict = {ids_list[i]: str(dates.tolist()[i]) for i in range(len(ids_list))}
     force20_dict = {ids_list[i]: force20s.tolist()[i] for i in range(len(ids_list))}
     force80_dict = {ids_list[i]: force80s.tolist()[i] for i in range(len(ids_list))}
     failed_dict = {ids_list[i]: faileds.tolist()[i] for i in range(len(ids_list))}

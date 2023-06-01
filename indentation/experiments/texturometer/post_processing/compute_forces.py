@@ -43,16 +43,14 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
     return mean_force20, std_force20, mean_force80, std_force80
 
 
-
-
 def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict):
     dates = list(set(date_dict.values()))
-    mean_force20_FF1, std_force20_FF1, mean_force80_FF1, std_force80_FF1 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
-    mean_force20_FF2, std_force20_FF2, mean_force80_FF2, std_force80_FF2 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
-    mean_force20_RDG1, std_force20_RDG1, mean_force80_RDG1, std_force80_RDG1 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
-    mean_force20_RDG2, std_force20_RDG2, mean_force80_RDG2, std_force80_RDG2 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
-    mean_force20_FF, std_force20_FF, mean_force80_FF, std_force80_FF = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
-    mean_force20_RDG, std_force20_RDG, mean_force80_RDG, std_force80_RDG = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
+    mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict = {}, {}, {}, {}
+    mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict = {}, {}, {}, {}
+    mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict = {}, {}, {}, {}
+    mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict = {}, {}, {}, {}
+    mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict = {}, {}, {}, {}
+    mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict = {}, {}, {}, {}
     
     for i in range(len(dates)):
         date = dates[i]
@@ -62,23 +60,23 @@ def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force2
         mean_force20_RDG2_date, std_force20_RDG2_date, mean_force80_RDG2_date, std_force80_RDG2_date = compute_mean_and_std_at_given_date_and_meatpiece(date, 'RDG2', ids_list, date_dict, force20_dict, force80_dict)
         mean_force20_FF_date, std_force20_FF_date, mean_force80_FF_date, std_force80_FF_date = compute_mean_and_std_at_given_date_and_meatpiece(date, 'FF', ids_list, date_dict, force20_dict, force80_dict)
         mean_force20_RDG_date, std_force20_RDG_date, mean_force80_RDG_date, std_force80_RDG_date = compute_mean_and_std_at_given_date_and_meatpiece(date, 'RDG', ids_list, date_dict, force20_dict, force80_dict)
-        mean_force20_FF1[i], std_force20_FF1[i], mean_force80_FF1[i], std_force80_FF1[i] = mean_force20_FF1_date, std_force20_FF1_date, mean_force80_FF1_date, std_force80_FF1_date
-        mean_force20_FF2[i], std_force20_FF2[i], mean_force80_FF2[i], std_force80_FF2[i] = mean_force20_FF2_date, std_force20_FF2_date, mean_force80_FF2_date, std_force80_FF2_date
-        mean_force20_RDG1[i], std_force20_RDG1[i], mean_force80_RDG1[i], std_force80_RDG1[i] = mean_force20_RDG1_date, std_force20_RDG1_date, mean_force80_RDG1_date, std_force80_RDG1_date
-        mean_force20_RDG2[i], std_force20_RDG2[i], mean_force80_RDG2[i], std_force80_RDG2[i] = mean_force20_RDG2_date, std_force20_RDG2_date, mean_force80_RDG2_date, std_force80_RDG2_date
-        mean_force20_FF[i], std_force20_FF[i], mean_force80_FF[i], std_force80_FF[i] = mean_force20_FF_date, std_force20_FF_date, mean_force80_FF_date, std_force80_FF_date
-        mean_force20_RDG[i], std_force20_RDG[i], mean_force80_RDG[i], std_force80_RDG[i] = mean_force20_RDG_date, std_force20_RDG_date, mean_force80_RDG_date, std_force80_RDG_date
+        mean_force20_FF1_dict[date], std_force20_FF1_dict[date], mean_force80_FF1_dict[date], std_force80_FF1_dict[date] = mean_force20_FF1_date, std_force20_FF1_date, mean_force80_FF1_date, std_force80_FF1_date
+        mean_force20_FF2_dict[date], std_force20_FF2_dict[date], mean_force80_FF2_dict[date], std_force80_FF2_dict[date] = mean_force20_FF2_date, std_force20_FF2_date, mean_force80_FF2_date, std_force80_FF2_date
+        mean_force20_RDG1_dict[date], std_force20_RDG1_dict[date], mean_force80_RDG1_dict[date], std_force80_RDG1_dict[date] = mean_force20_RDG1_date, std_force20_RDG1_date, mean_force80_RDG1_date, std_force80_RDG1_date
+        mean_force20_RDG2_dict[date], std_force20_RDG2_dict[date], mean_force80_RDG2_dict[date], std_force80_RDG2_dict[date] = mean_force20_RDG2_date, std_force20_RDG2_date, mean_force80_RDG2_date, std_force80_RDG2_date
+        mean_force20_FF_dict[date], std_force20_FF_dict[date], mean_force80_FF_dict[date], std_force80_FF_dict[date] = mean_force20_FF_date, std_force20_FF_date, mean_force80_FF_date, std_force80_FF_date
+        mean_force20_RDG_dict[date], std_force20_RDG_dict[date], mean_force80_RDG_dict[date], std_force80_RDG_dict[date] = mean_force20_RDG_date, std_force20_RDG_date, mean_force80_RDG_date, std_force80_RDG_date
 
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
-            [dates, mean_force20_FF1, std_force20_FF1, mean_force80_FF1, std_force80_FF1,
-             mean_force20_FF2, std_force20_FF2, mean_force80_FF2, std_force80_FF2,
-             mean_force20_RDG1, std_force20_RDG1, mean_force80_RDG1, std_force80_RDG1,
-             mean_force20_RDG2, std_force20_RDG2, mean_force80_RDG2, std_force80_RDG2,
-             mean_force20_FF, std_force20_FF, mean_force80_FF, std_force80_FF,
-             mean_force20_RDG, std_force20_RDG, mean_force80_RDG, std_force80_RDG
+            [dates, mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict,
+             mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict,
+             mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict,
+             mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
+             mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
+             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
              ],
             f,
         )
@@ -87,29 +85,30 @@ def export_forces_as_txt():
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
-        [date, mean_force20_FF1, std_force20_FF1, mean_force80_FF1, std_force80_FF1,
-             mean_force20_FF2, std_force20_FF2, mean_force80_FF2, std_force80_FF2,
-             mean_force20_RDG1, std_force20_RDG1, mean_force80_RDG1, std_force80_RDG1,
-             mean_force20_RDG2, std_force20_RDG2, mean_force80_RDG2, std_force80_RDG2,
-             mean_force20_FF, std_force20_FF, mean_force80_FF, std_force80_FF,
-             mean_force20_RDG, std_force20_RDG, mean_force80_RDG, std_force80_RDG
+        [dates, mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict,
+             mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict,
+             mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict,
+             mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
+             mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
+             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
              ] = pickle.load(f)
     
     complete_txt_filename_FF1 = path_to_processed_data + "/forces_mean_std_FF1.txt"
     f = open(complete_txt_filename_FF1, "w")
     f.write("FORCES FOR FF1 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_FF1)):
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_FF1[i])
+            + str(mean_force20_FF1_dict[date])
             + "\t"
-            + str(std_force20_FF1[i])
+            + str(std_force20_FF1_dict[date])
             + "\t"
-            + str(mean_force80_FF1[i])
+            + str(mean_force80_FF1_dict[date])
             + "\t"
-            + str(std_force80_FF1[i])
+            + str(std_force80_FF1_dict[date])
             + "\n"
         )
     f.close()
@@ -118,17 +117,18 @@ def export_forces_as_txt():
     f = open(complete_txt_filename_FF2, "w")
     f.write("FORCES FOR FF2 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_FF2)):
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_FF2[i])
+            + str(mean_force20_FF2_dict[date])
             + "\t"
-            + str(std_force20_FF2[i])
+            + str(std_force20_FF2_dict[date])
             + "\t"
-            + str(mean_force80_FF2[i])
+            + str(mean_force80_FF2_dict[date])
             + "\t"
-            + str(std_force80_FF2[i])
+            + str(std_force80_FF2_dict[date])
             + "\n"
         )
     f.close()
@@ -137,17 +137,18 @@ def export_forces_as_txt():
     f = open(complete_txt_filename_FF, "w")
     f.write("FORCES FOR FF \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_FF)):
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_FF[i])
+            + str(mean_force20_FF_dict[date])
             + "\t"
-            + str(std_force20_FF[i])
+            + str(std_force20_FF_dict[date])
             + "\t"
-            + str(mean_force80_FF[i])
+            + str(mean_force80_FF_dict[date])
             + "\t"
-            + str(std_force80_FF[i])
+            + str(std_force80_FF_dict[date])
             + "\n"
         )
     f.close()
@@ -156,17 +157,18 @@ def export_forces_as_txt():
     f = open(complete_txt_filename_RDG1, "w")
     f.write("FORCES FOR RDG1 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_RDG1)):
+    for i in range(len(mean_force20_RDG1_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_RDG1[i])
+            + str(mean_force20_RDG1_dict[date])
             + "\t"
-            + str(std_force20_RDG1[i])
+            + str(std_force20_RDG1_dict[date])
             + "\t"
-            + str(mean_force80_RDG1[i])
+            + str(mean_force80_RDG1_dict[date])
             + "\t"
-            + str(std_force80_RDG1[i])
+            + str(std_force80_RDG1_dict[date])
             + "\n"
         )
     f.close()
@@ -175,17 +177,18 @@ def export_forces_as_txt():
     f = open(complete_txt_filename_RDG2, "w")
     f.write("FORCES FOR RDG2 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_RDG2)):
+    for i in range(len(mean_force20_RDG2_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_RDG2[i])
+            + str(mean_force20_RDG2_dict[date])
             + "\t"
-            + str(std_force20_RDG2[i])
+            + str(std_force20_RDG2_dict[date])
             + "\t"
-            + str(mean_force80_RDG2[i])
+            + str(mean_force80_RDG2_dict[date])
             + "\t"
-            + str(std_force80_RDG2[i])
+            + str(std_force80_RDG2_dict[date])
             + "\n"
         )
     f.close()
@@ -194,17 +197,18 @@ def export_forces_as_txt():
     f = open(complete_txt_filename_RDG, "w")
     f.write("FORCES FOR RDG \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_RDG)):
+    for i in range(len(mean_force20_RDG_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_RDG[i])
+            + str(mean_force20_RDG_dict[date])
             + "\t"
-            + str(std_force20_RDG[i])
+            + str(std_force20_RDG_dict[date])
             + "\t"
-            + str(mean_force80_RDG[i])
+            + str(mean_force80_RDG_dict[date])
             + "\t"
-            + str(std_force80_RDG[i])
+            + str(std_force80_RDG_dict[date])
             + "\n"
         )
     f.close()
@@ -216,97 +220,103 @@ def export_forces_as_txt():
     f.write("FORCES \n")
     f.write("FF1 \t  FF1 \t  FF1 \t  FF1 \t  FF1 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_FF1)):
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_FF1[i])
+            + str(mean_force20_FF1_dict[date])
             + "\t"
-            + str(std_force20_FF1[i])
+            + str(std_force20_FF1_dict[date])
             + "\t"
-            + str(mean_force80_FF1[i])
+            + str(mean_force80_FF1_dict[date])
             + "\t"
-            + str(std_force80_FF1[i])
+            + str(std_force80_FF1_dict[date])
             + "\n"
         )
 
     f.write("FF2 \t  FF2 \t  FF2 \t  FF2 \t  FF2 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_FF2)):
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_FF2[i])
+            + str(mean_force20_FF2_dict[date])
             + "\t"
-            + str(std_force20_FF2[i])
+            + str(std_force20_FF2_dict[date])
             + "\t"
-            + str(mean_force80_FF2[i])
+            + str(mean_force80_FF2_dict[date])
             + "\t"
-            + str(std_force80_FF2[i])
+            + str(std_force80_FF2_dict[date])
             + "\n"
         )
 
     f.write("FF \t  FF \t  FF \t  FF \t  FF \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_FF)):
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_FF[i])
+            + str(mean_force20_FF_dict[date])
             + "\t"
-            + str(std_force20_FF[i])
+            + str(std_force20_FF_dict[date])
             + "\t"
-            + str(mean_force80_FF[i])
+            + str(mean_force80_FF_dict[date])
             + "\t"
-            + str(std_force80_FF[i])
+            + str(std_force80_FF_dict[date])
             + "\n"
         )
 
     f.write("RDG1 \t  RDG1 \t  RDG1 \t  RDG1 \t  RDG1 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_RDG1)):
+    for i in range(len(mean_force20_RDG1_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_RDG1[i])
+            + str(mean_force20_RDG1_dict[date])
             + "\t"
-            + str(std_force20_RDG1[i])
+            + str(std_force20_RDG1_dict[date])
             + "\t"
-            + str(mean_force80_RDG1[i])
+            + str(mean_force80_RDG1_dict[date])
             + "\t"
-            + str(std_force80_RDG1[i])
+            + str(std_force80_RDG1_dict[date])
             + "\n"
         )
 
     f.write("RDG2 \t  RDG2 \t  RDG2 \t  RDG2 \t  RDG2 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_RDG2)):
+    for i in range(len(mean_force20_RDG2_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_RDG2[i])
+            + str(mean_force20_RDG2_dict[date])
             + "\t"
-            + str(std_force20_RDG2[i])
+            + str(std_force20_RDG2_dict[date])
             + "\t"
-            + str(mean_force80_RDG2[i])
+            + str(mean_force80_RDG2_dict[date])
             + "\t"
-            + str(std_force80_RDG2[i])
+            + str(std_force80_RDG2_dict[date])
             + "\n"
         )
 
     f.write("RDG \t  RDG \t  RDG \t  RDG \t  RDG \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
-    for i in range(len(mean_force20_RDG)):
+    for i in range(len(mean_force20_RDG_dict)):
+        date = dates[i]
         f.write(
-            str(date[i])
+            str(dates[i])
             + "\t"
-            + str(mean_force20_RDG[i])
+            + str(mean_force20_RDG_dict[date])
             + "\t"
-            + str(std_force20_RDG[i])
+            + str(std_force20_RDG_dict[date])
             + "\t"
-            + str(mean_force80_RDG[i])
+            + str(mean_force80_RDG_dict[date])
             + "\t"
-            + str(std_force80_RDG[i])
+            + str(std_force80_RDG_dict[date])
             + "\n"
         )
         
@@ -315,17 +325,21 @@ def export_forces_as_txt():
 
 
 def plot_forces_with_maturation():
-    maturation = [6, 10, 13, 17, 21]
+    maturation = [10, 13, 17, 21]
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
-        [_, mean_force20_FF1, std_force20_FF1, mean_force80_FF1, std_force80_FF1,
-             mean_force20_FF2, std_force20_FF2, mean_force80_FF2, std_force80_FF2,
-             mean_force20_RDG1, std_force20_RDG1, mean_force80_RDG1, std_force80_RDG1,
-             mean_force20_RDG2, std_force20_RDG2, mean_force80_RDG2, std_force80_RDG2,
-             mean_force20_FF, std_force20_FF, mean_force80_FF, std_force80_FF,
-             mean_force20_RDG, std_force20_RDG, mean_force80_RDG, std_force80_RDG
+        [dates, mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict,
+             mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict,
+             mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict,
+             mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
+             mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
+             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
              ] = pickle.load(f)
+        
+    
+    dates_to_use = ['230331', '230403', '230407', '230411']
+    maturation_dict = {'230331': 10, '230403': 13, '230407': 17, '230411': 21}
     color = sns.color_palette("Paired")
     color_rocket = sns.color_palette("rocket")
     kwargs_FF1 = {'marker':'o', 'mfc':color[6], 'elinewidth':3, 'ecolor':color[6], 'alpha':0.8, 'ms':'10', 'mec':color[6]}
@@ -334,23 +348,37 @@ def plot_forces_with_maturation():
     kwargs_RDG1 = {'marker':'^', 'mfc':color[0], 'elinewidth':3, 'ecolor':color[0], 'alpha':0.8, 'ms':10, 'mec':color[0]}
     kwargs_RDG2 = {'marker':'^', 'mfc':color[1], 'elinewidth':3, 'ecolor':color[1], 'alpha':0.8, 'ms':'10', 'mec':color[1]}
     kwargs_RDG = {'marker':'^', 'mfc':color_rocket[1], 'elinewidth':3, 'ecolor':color_rocket[1], 'alpha':0.8, 'ms':'10', 'mec':color_rocket[1]}
-    maturation_FF = [m - 0.1 for m in maturation]
-    maturation_RDG = [m + 0.1 for m in maturation]
+    maturation_FF_dict = {k: v - 0.1 for k, v in maturation_dict.items()}
+    maturation_RDG_dict = {k: v + 0.1 for k, v in maturation_dict.items()}
     fig_force20_1 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force20_1 = fig_force20_1.gca()
     fig_force20_2 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force20_2 = fig_force20_2.gca()
     fig_force20 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force20 = fig_force20.gca()
-    ax_force20.errorbar(maturation_FF, mean_force20_FF, yerr=std_force20_FF, lw=0, label='FF', **kwargs_FF)
-    ax_force20_1.errorbar(maturation_FF, mean_force20_FF1, yerr=std_force20_FF1, lw=0, label='FF1', **kwargs_FF1)
-    ax_force20_2.errorbar(maturation_FF, mean_force20_FF2, yerr=std_force20_FF2, lw=0, label='FF2', **kwargs_FF2)
-    ax_force20_1.errorbar(maturation_RDG, mean_force20_RDG1, yerr=std_force20_RDG1, lw=0,  label='RDG1', **kwargs_RDG1)
-    ax_force20.errorbar(maturation_RDG, mean_force20_RDG, yerr=std_force20_RDG, lw=0,  label='RDG', **kwargs_RDG)
-    ax_force20_2.errorbar(maturation_RDG, mean_force20_RDG2, yerr=std_force20_RDG2, lw=0, label='RDG2', **kwargs_RDG2)
-    ax_force20.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    ax_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    ax_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
+
+    [dates, mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict,
+             mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict,
+             mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict,
+             mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
+             mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
+             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
+             ] = [dates, {d:mean_force20_FF1_dict[d] for d in dates_to_use}, {d:std_force20_FF1_dict[d] for d in dates_to_use}, {d:mean_force80_FF1_dict[d] for d in dates_to_use}, {d:std_force80_FF1_dict[d] for d in dates_to_use},
+             {d:mean_force20_FF2_dict[d] for d in dates_to_use}, {d:std_force20_FF2_dict[d] for d in dates_to_use}, {d:mean_force80_FF2_dict[d] for d in dates_to_use}, {d:std_force80_FF2_dict[d] for d in dates_to_use},
+             {d:mean_force20_RDG1_dict[d] for d in dates_to_use}, {d:std_force20_RDG1_dict[d] for d in dates_to_use}, {d:mean_force80_RDG1_dict[d] for d in dates_to_use}, {d:std_force80_RDG1_dict[d] for d in dates_to_use},
+             {d:mean_force20_RDG2_dict[d] for d in dates_to_use}, {d:std_force20_RDG2_dict[d] for d in dates_to_use}, {d:mean_force80_RDG2_dict[d] for d in dates_to_use}, {d:std_force80_RDG2_dict[d] for d in dates_to_use},
+             {d:mean_force20_FF_dict[d] for d in dates_to_use}, {d:std_force20_FF_dict[d] for d in dates_to_use}, {d:mean_force80_FF_dict[d] for d in dates_to_use}, {d:std_force80_FF_dict[d] for d in dates_to_use},
+             {d:mean_force20_RDG_dict[d] for d in dates_to_use}, {d:std_force20_RDG_dict[d] for d in dates_to_use}, {d:mean_force80_RDG_dict[d] for d in dates_to_use}, {d:std_force80_RDG_dict[d] for d in dates_to_use}
+             ]
+    ax_force20.errorbar(list(maturation_FF_dict.values()), list(mean_force20_FF_dict.values()), yerr=list(std_force20_FF_dict.values()), lw=0, label='FF', **kwargs_FF)
+    ax_force20_1.errorbar(list(maturation_FF_dict.values()), list(mean_force20_FF1_dict.values()), yerr=list(std_force20_FF1_dict.values()), lw=0, label='FF1', **kwargs_FF1)
+    ax_force20_2.errorbar(list(maturation_FF_dict.values()), list(mean_force20_FF2_dict.values()), yerr=list(std_force20_FF2_dict.values()), lw=0, label='FF2', **kwargs_FF2)
+    ax_force20_1.errorbar(list(maturation_RDG_dict.values()), list(mean_force20_RDG1_dict.values()), yerr=list(std_force20_RDG1_dict.values()), lw=0,  label='RDG1', **kwargs_RDG1)
+    ax_force20.errorbar(list(maturation_RDG_dict.values()), list(mean_force20_RDG_dict.values()), yerr=list(std_force20_RDG_dict.values()), lw=0,  label='RDG', **kwargs_RDG)
+    ax_force20_2.errorbar(list(maturation_RDG_dict.values()), list(mean_force20_RDG2_dict.values()), yerr=list(std_force20_RDG2_dict.values()), lw=0, label='RDG2', **kwargs_RDG2)
+    ax_force20.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
     ax_force20.set_title('Force vs maturation 1+2', font=fonts.serif_rz_legend())
     ax_force20_1.set_title('Force vs maturation 1', font=fonts.serif_rz_legend())
     ax_force20_2.set_title('Force vs maturation 2', font=fonts.serif_rz_legend())
@@ -370,18 +398,18 @@ def plot_forces_with_maturation():
     ax_force80 = fig_force80.gca()
     fig_force80_2 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force80_2 = fig_force80_2.gca()
-    ax_force80_1.plot([maturation_FF[0], maturation[-1]], [40, 40], '--r', lw=1)
-    ax_force80_2.plot([maturation_FF[0], maturation[-1]], [40, 40], '--r', lw=1)
-    ax_force80.plot([maturation_FF[0], maturation[-1]], [40, 40], '--r', lw=1)
-    ax_force80_1.errorbar(maturation_FF, mean_force80_FF1, yerr=std_force80_FF1, lw=0, label='FF1', **kwargs_FF1)
-    ax_force80_2.errorbar(maturation_FF, mean_force80_FF2, yerr=std_force80_FF2, lw=0, label='FF2', **kwargs_FF2)
-    ax_force80.errorbar(maturation_FF, mean_force80_FF, yerr=std_force80_FF, lw=0, label='FF', **kwargs_FF)
-    ax_force80_1.errorbar(maturation_RDG, mean_force80_RDG1, yerr=std_force80_RDG1, lw=0,  label='RDG1', **kwargs_RDG1)
-    ax_force80_2.errorbar(maturation_RDG, mean_force80_RDG2, yerr=std_force80_RDG2, lw=0, label='RDG2', **kwargs_RDG2)
-    ax_force80.errorbar(maturation_RDG, mean_force80_RDG, yerr=std_force80_RDG, lw=0, label='RDG', **kwargs_RDG)
-    ax_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    ax_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    ax_force80.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
+    ax_force80_1.plot([maturation_FF_dict[dates_to_use[0]], maturation_FF_dict[dates_to_use[-1]]], [40, 40], '--r', lw=1)
+    ax_force80_2.plot([maturation_FF_dict[dates_to_use[0]], maturation_FF_dict[dates_to_use[-1]]], [40, 40], '--r', lw=1)
+    ax_force80.plot([maturation_FF_dict[dates_to_use[0]], maturation_FF_dict[dates_to_use[-1]]], [40, 40], '--r', lw=1)
+    ax_force80_1.errorbar(list(maturation_FF_dict.values()), list(mean_force80_FF1_dict.values()), yerr=list(std_force80_FF1_dict.values()), lw=0, label='FF1', **kwargs_FF1)
+    ax_force80_2.errorbar(list(maturation_FF_dict.values()), list(mean_force80_FF2_dict.values()), yerr=list(std_force80_FF2_dict.values()), lw=0, label='FF2', **kwargs_FF2)
+    ax_force80.errorbar(list(maturation_FF_dict.values()), list(mean_force80_FF_dict.values()), yerr=list(std_force80_FF_dict.values()), lw=0, label='FF', **kwargs_FF)
+    ax_force80_1.errorbar(list(maturation_RDG_dict.values()), list(mean_force80_RDG1_dict.values()), yerr=list(std_force80_RDG1_dict.values()), lw=0,  label='RDG1', **kwargs_RDG1)
+    ax_force80_2.errorbar(list(maturation_RDG_dict.values()), list(mean_force80_RDG2_dict.values()), yerr=list(std_force80_RDG2_dict.values()), lw=0, label='RDG2', **kwargs_RDG2)
+    ax_force80.errorbar(list(maturation_RDG_dict.values()), list(mean_force80_RDG_dict.values()), yerr=list(std_force80_RDG_dict.values()), lw=0, label='RDG', **kwargs_RDG)
+    ax_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force80.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
     ax_force80.set_title('Force 80 % vs maturation 1+2', font=fonts.serif_rz_legend())
     ax_force80_1.set_title('Force 80 % vs maturation 1', font=fonts.serif_rz_legend())
     ax_force80_2.set_title('Force 80 % vs maturation 2', font=fonts.serif_rz_legend())
@@ -403,8 +431,8 @@ if __name__ == "__main__":
     fonts = Fonts()
     savefigure = SaveFigure()
     
-    current_path = utils.get_current_path()
-
+    # current_path = utils.get_current_path()
+    # utils.transform_csv_input_into_pkl('texturometer_forces.csv')
     # ids_list, date_dict, force20_dict, force80_dict, failed_dict = utils.extract_texturometer_data_from_pkl()
     # ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed = remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict)
     # mean_force20, std_force20, mean_force80, std_force80 = compute_mean_and_std_at_given_date_and_meatpiece(230327, 'FF', ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed)
