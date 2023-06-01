@@ -8,6 +8,19 @@ from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, Sav
 from indentation.experiments.laser.post_processing.read_file import Files
 
 def plot_Z_profile(filename, createfigure, savefigure, fonts):
+    """
+    Plots the matrix containing time values, x and z positions
+
+    Parameters:
+        ----------
+        filename: string
+            identification name of the testing
+
+    Returns:
+        -------
+        None
+
+    """
     mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
     fig = createfigure.rectangle_vertical_rz_figure(pixels=180)
     ax = fig.gca()
@@ -31,6 +44,7 @@ def plot_Z_profile(filename, createfigure, savefigure, fonts):
     savefigure.save_as_svg(fig, "matZ_" + filename[0:-4] )
     
 def create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure, savefigure, fonts):
+
     time_index = int(time)
     experiment_time_in_microsecond = vec_time[time_index]
     experiment_time_in_second = experiment_time_in_microsecond / 1e6
