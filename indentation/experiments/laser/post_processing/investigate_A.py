@@ -16,6 +16,48 @@ import pickle
 import statistics
 
 def remove_failed_A(filenames_from_pkl, dates_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions):
+    """
+    Removes the values of A that have not been properly computed or for which the experimental
+    testing did not go well
+    
+    Parameters:
+        ----------
+        filenames_from_pkl: list
+            list of filenames, taken from the pkl file that contains the values of A for each testing
+        dates_dict: dict
+            dictionnary that associates the date corresponding to each filename 
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        delta_d_star_dict: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename 
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        d_min_dict: dict
+            dictionnary that associates the value of d_min corresponding to each filename 
+        A_dict: dict
+            dictionnary that associates the value of A corresponding to each filename 
+        failed_A_acqusitions: list
+            list of the filenames of testings for which A could not properly be computed
+
+    Returns:
+        -------
+        ids_where_not_failed: list
+            list of the filenames for which A could be computed properly
+        dates_dict_not_failed: dict
+            dictionnary that associates the date corresponding to each filename where A could properly be computed
+        delta_d_dict_not_failed: dict
+            dictionnary that associates the value of delta_d corresponding to each filename where A could properly be computed
+        delta_d_star_dict_not_failed: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename where A could properly be computed
+        delta_d_dict_not_failed: dict
+            dictionnary that associates the value of delta_d corresponding to each filename where A could properly be computed
+        d_min_dict_not_failed: dict
+            dictionnary that associates the value of d_min corresponding to each filename where A could properly be computed
+        A_dict_not_failed: dict
+            dictionnary that associates the value of A corresponding to each filename where A could properly be computed
+
+            
+    """ 
     ids_where_not_failed = [id for id in filenames_from_pkl if failed_A_acqusitions[id] ==0 and delta_d_dict[id]!='FAILED LASER ACQUISITION']
     date_dict_not_failed = {id: dates_dict[id] for id in ids_where_not_failed}
     delta_d_dict_not_failed = {id: delta_d_dict[id] for id in ids_where_not_failed}
@@ -25,6 +67,56 @@ def remove_failed_A(filenames_from_pkl, dates_dict, delta_d_dict, delta_d_star_d
     return ids_where_not_failed, date_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed
 
 def remove_failed_A_and_small_deltad(deltad_threshold, filenames_from_pkl, dates_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions):
+    """
+    Removes the values of A that have not been properly computed or for which the experimental
+    testing did not go well
+    
+    Parameters:
+        ----------
+        deltad_threshold: float
+            value of delta_d under which every acquisition is considered failed
+        filenames_from_pkl: list
+            list of filenames, taken from the pkl file that contains the values of A for each testing
+        dates_dict: dict
+            dictionnary that associates the date corresponding to each filename 
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        delta_d_star_dict: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename 
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        d_min_dict: dict
+            dictionnary that associates the value of d_min corresponding to each filename 
+        A_dict: dict
+            dictionnary that associates the value of A corresponding to each filename 
+        failed_A_acqusitions: list
+            list of the filenames of testings for which A could not properly be computed
+
+    Returns:
+        -------
+        ids_where_not_failed_and_not_small_deltad: list
+            list of the filenames for which A could be computed properly and delta_d is above the threshold
+        dates_dict_not_failed_and_not_small_deltad: dict
+            dictionnary that associates the date corresponding to each filename where A could properly be computed
+            and delta_d is above the threshold
+        delta_d_dict_not_failed_and_not_small_deltad: dict
+            dictionnary that associates the value of delta_d corresponding to each filename where A could properly be computed
+            and delta_d is above the threshold
+        delta_d_star_dict_not_failed_and_not_small_deltad: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename where A could properly be computed
+            and delta_d is above the threshold
+        delta_d_dict_not_failed_and_not_small_deltad: dict
+            dictionnary that associates the value of delta_d corresponding to each filename where A could properly be computed
+            and delta_d is above the threshold
+        d_min_dict_not_failed_and_not_small_deltad: dict
+            dictionnary that associates the value of d_min corresponding to each filename where A could properly be computed
+            and delta_d is above the threshold
+        A_dict_not_failed_and_not_small_deltad: dict
+            dictionnary that associates the value of A corresponding to each filename where A could properly be computed
+            and delta_d is above the threshold
+
+            
+    """     
     ids_where_not_failed, date_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed = remove_failed_A(filenames_from_pkl, dates_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
     ids_where_not_failed_and_not_small_deltad = [id for id in ids_where_not_failed if float(delta_d_dict[id]) > deltad_threshold]
     date_dict_not_failed_and_not_small_deltad = {id: float(date_dict_not_failed[id]) for id in ids_where_not_failed_and_not_small_deltad}
@@ -35,6 +127,40 @@ def remove_failed_A_and_small_deltad(deltad_threshold, filenames_from_pkl, dates
     return ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad
 
 def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict):
+    """
+    Extract the data that was measured at a given date and on a given meatpiece
+    
+    Parameters:
+        ----------
+        date: str
+            date at which the data needs to be extracted
+        meatpiece: str
+            meatpiece for which the data needs to be extracted
+        ids_list: list
+            list of all the filenames
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        delta_d_star_dict: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename 
+        d_min_dict: dict
+            dictionnary that associates the value of d_min corresponding to each filename 
+        A_dict: dict
+            dictionnary that associates the value of A corresponding to each filename 
+
+    Returns:
+        -------
+        ids_at_date_and_meatpiece: list
+            list of the filenames at the expected date and meatpiece
+        delta_d_dict_at_date_and_meatpiece: dict
+            dictionnary of the values of delta_d at the expected date and meatpiece
+        delta_d_star_dict_at_date_and_meatpiece: dict
+            dictionnary of the values of delta_d_star at the expected date and meatpiece
+        d_min_dict_at_date_and_meatpiece: dict
+            dictionnary of the values of d_min at the expected date and meatpiece
+        A_dict_at_date_and_meatpiece: dict
+            dictionnary of the values of A at the expected date and meatpiece
+            
+    """     
     ids_at_date = [id for id in ids_list if date_dict[id] == date]
     ids_at_date_and_meatpiece = [id for id in ids_at_date if id[0:len(str(date)) + 1 + len(meatpiece)] == str(date) + '_' + meatpiece] 
     delta_d_dict_at_date_and_meatpiece = {id: delta_d_dict[id] for id in ids_at_date_and_meatpiece}
@@ -44,6 +170,48 @@ def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, delta_d_
     return ids_at_date_and_meatpiece, delta_d_dict_at_date_and_meatpiece, delta_d_star_dict_at_date_and_meatpiece, d_min_dict_at_date_and_meatpiece, A_dict_at_date_and_meatpiece
 
 def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions):
+    """
+    Compute the mean and the standard deviation of the data measured at a given date and on a given meatpiece
+    
+    Parameters:
+        ----------
+        date: str
+            date at which the data needs to be extracted
+        meatpiece: str
+            meatpiece for which the data needs to be extracted
+        ids_list: list
+            list of all the filenames
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        delta_d_star_dict: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename 
+        d_min_dict: dict
+            dictionnary that associates the value of d_min corresponding to each filename 
+        A_dict: dict
+            dictionnary that associates the value of A corresponding to each filename 
+        failed_A_acqusitions: list
+            list of the filenames of testings for which A could not properly be computed
+    Returns:
+        -------
+        mean_delta_d: float
+            mean of delta_d at the given data and meatpiece
+        std_delta_d: float
+            standard deviation of delta_d at the given data and meatpiece
+        mean_delta_d_star: float
+            mean of delta_d_star at the given data and meatpiece
+        std_delta_d_star: float
+            standard deviation of delta_d_star at the given data and meatpiece
+        mean_d_min: float
+            mean of d_min at the given data and meatpiece
+        std_d_min: float
+            standard deviation of d_min at the given data and meatpiece
+        mean_A: float
+            mean of A at the given data and meatpiece
+        std_A: float
+            standard deviation of A at the given data and meatpiece
+
+            
+    """     
     ids_where_not_failed_and_not_small_deltad, _, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, ids_list, date_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
     ids_at_date_and_meatpiece, delta_d_dict_at_date_and_meatpiece, delta_d_star_dict_at_date_and_meatpiece, d_min_dict_at_date_and_meatpiece, A_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_where_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad)
     mean_delta_d, std_delta_d, mean_delta_d_star, std_delta_d_star, mean_d_min, std_d_min, mean_A, std_A = nan, nan, nan, nan, nan, nan, nan, nan
@@ -60,6 +228,32 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
     return mean_delta_d, std_delta_d, mean_delta_d_star, std_delta_d_star, mean_d_min, std_d_min, mean_A, std_A
 
 def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions):
+    """
+    Compute the mean and the standard deviation of the data measured during maturation 
+    (ie for various dates) for all meatpieces, Exports them as a .pkl file named "indicators_mean_std.pkl"
+    
+    Parameters:
+        ----------
+        ids_list: list
+            list of all the filenames
+        date_dict: dict
+            dictionnary that associates the date corresponding to each filename 
+        delta_d_dict: dict
+            dictionnary that associates the value of delta_d corresponding to each filename 
+        delta_d_star_dict: dict
+            dictionnary that associates the value of delta_d_star corresponding to each filename 
+        d_min_dict: dict
+            dictionnary that associates the value of d_min corresponding to each filename 
+        A_dict: dict
+            dictionnary that associates the value of A corresponding to each filename 
+        failed_A_acqusitions: list
+            list of the filenames of testings for which A could not properly be computed
+    Returns:
+        -------
+        None
+
+            
+    """     
     dates = list(set(date_dict.values()))
     mean_delta_d_FF1, std_delta_d_FF1, mean_delta_d_star_FF1, std_delta_d_star_FF1 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
     mean_delta_d_FF2, std_delta_d_FF2, mean_delta_d_star_FF2, std_delta_d_star_FF2 = np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates))), np.zeros((len(dates)))
@@ -112,6 +306,19 @@ def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, de
         )
         
 def export_indocators_as_txt():
+    """
+    Exports the indicators as a .txt file named "indicators_mean_std_FF1.txt" for meatpiece FF1. The value 'FF1'
+    is changed depending on the meatpiece
+    
+    Parameters:
+        ----------
+        None
+    Returns:
+        -------
+        None
+
+            
+    """     
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indicators_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -436,6 +643,18 @@ def export_indocators_as_txt():
     f.close()
 
 def plot_recovery_indicators_with_maturation():
+    """
+    Plots the evolution of the recovery indicators with maturation
+    
+    Parameters:
+        ----------
+        None
+    Returns:
+        -------
+        None
+
+            
+    """         
     maturation = [10, 13, 17, 21]
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indicators_mean_std.pkl"
@@ -584,6 +803,18 @@ def plot_recovery_indicators_with_maturation():
     savefigure.save_as_png(fig_d_min_2, "d_min_vs_maturation_2")
 
 def plot_laser_indicators_vs_texturometer_forces():
+    """
+    Plots the laser indicators (A, delta_d, delta_d_star, d_min) in terms of the texturometer forces F20 and F80.
+    
+    Parameters:
+        ----------
+        None
+    Returns:
+        -------
+        None
+
+            
+    """    
     path_to_processed_data_laser = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename_laser = path_to_processed_data_laser + "/indicators_mean_std.pkl"
     with open(complete_pkl_filename_laser, "rb") as f:
