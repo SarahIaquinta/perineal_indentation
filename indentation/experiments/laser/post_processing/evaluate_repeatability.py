@@ -16,12 +16,48 @@ from scipy.signal import argrelextrema
 from indentation.experiments.laser.post_processing.identify_movement import Recovery
 
 def find_ids_with_same_imposed_displacement_laser(files_zwick, datafile, imposed_displacement):
+    """
+    Finds the ids of the files from the testings that have been generated with the 
+    same imposed displacement 
+
+    Parameters:
+        ----------
+        files_zwick: class
+            class containing the usuful objects to import the files
+        datafile: string
+            identification name of the testing
+        imposed_displacement: float
+            index number of time at which the z profile of the top surface is to be plotted
+    Returns:
+        -------
+        ids_where_disp_is_imposed_disp_laser: list
+            list of the ids of the files from the testings that have been generated with the 
+            same imposed displacement 
+
+    """
     metadatafile = files_zwick.import_metadatafile(datafile[0:6])
     imposed_disp_dict = lrf.read_metadatas_laser(metadatafile)
     ids_where_disp_is_imposed_disp_laser = [id for id, disp in imposed_disp_dict.items() if disp == int(imposed_displacement)]
     return ids_where_disp_is_imposed_disp_laser
 
 def plot_recovery_data_for_imposed_displacement_laser(files_zwick, datafile, imposed_displacement, createfigure, savefigure, fonts, locations_laser, failed_laser_acqusitions):
+    """
+    Plots the recovery of the deepest point of the top surface for all the files that have 
+    been generated after a testing with the same imposed displacement 
+
+    Parameters:
+        ----------
+        files_zwick: class
+            class containing the usuful objects to import the files
+        datafile: string
+            identification name of the testing
+        imposed_displacement: float
+            index number of time at which the z profile of the top surface is to be plotted
+    Returns:
+        -------
+        None
+
+    """
     metadatafile = files_zwick.import_metadatafile(datafile[0:6])
     ids_where_disp_is_imposed_disp_laser = find_ids_with_same_imposed_displacement_laser(files_zwick, datafile, imposed_displacement)
     file_list = [i + '.csv' for i in ids_where_disp_is_imposed_disp_laser]
