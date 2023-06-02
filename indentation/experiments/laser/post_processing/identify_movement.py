@@ -91,6 +91,19 @@ class Recovery:
         return vec_pos_axis_indent, mat_Z_indent
 
     def smooth_Z_profile(self, n_smooth):
+        """
+        Applies a convolution to the z-profile of the top surface 
+
+        Parameters:
+            ----------
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            smoothed_Z: array
+                array containing the values of z after convolution
+
+        """
         smoothed_Z = np.zeros_like(self.mat_Z)
         for i in range(len(self.vec_time)):
             vec_Z_at_time = self.mat_Z[i, :]
@@ -99,18 +112,60 @@ class Recovery:
         return smoothed_Z
 
     def plot_profile_region(self, time, n_smooth, createfigure, savefigure, fonts):
+        """
+        Plots the profile restricted in a given window of x-values, at a given time
+
+        Parameters:
+            ----------
+            time: float
+                index number of time at which the z profile of the top surface is to be plotted
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            None
+
+        """
         vec_pos_axis_indent, mat_Z_indent = self.region_identification(n_smooth)
         fig, ax, experiment_time_in_millisecond = dp.create_fig_profile_at_time(mat_Z_indent, self.vec_time, vec_pos_axis_indent, time, createfigure, savefigure, fonts)
         savefigure.save_as_png(fig, "zx_smoothed_n" + str(n_smooth) + "profile_indent_" + self.filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
         savefigure.save_as_svg(fig, "zx_smoothed_n" + str(n_smooth) + "profile_indent_" + self.filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
 
     def find_x_index_where_z_indent_is_max(self, n_smooth):
+        """
+        Plots the profile restricted in a given window of x-values, at a given time
+
+        Parameters:
+            ----------
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            index_where_z_is_max: int
+                x-index where z at time zero is max. This criterion is used to roughly identify 
+                the deepest point of the top surface.
+
+        """
         _, mat_Z_indent = self.region_identification(n_smooth)
         vec_Z_at_time_indent = mat_Z_indent[0, :]
         index_where_z_is_max = np.nanargmax(vec_Z_at_time_indent)
         return index_where_z_is_max
                         
     def combine_profile_timelapse(self, nb_of_time_increments_to_plot, n_smooth, createfigure, savefigure, fonts):
+        """
+        Combines all the z-profiles during a given timelapse using nb_of_time_increments_to_plot
+
+        Parameters:
+            ----------
+            nb_of_time_increments_to_plot: int
+                number of time increments to be plotted in the figure
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            None
+
+        """
         vec_pos_axis_indent, mat_Z_indent = self.region_identification(n_smooth)
         nb_of_time_steps = len(self.vec_time)
         if abs(nb_of_time_increments_to_plot - nb_of_time_steps) < 1.1:
@@ -138,6 +193,19 @@ class Recovery:
         savefigure.save_as_svg(fig, "zx_smoothed_n" + str(n_smooth) + "_profile_indent_timelapse_" + self.filename[0:-4])
 
     def compute_recovery_with_time(self, n_smooth):
+        """
+        Computes the evolution of the z-position of the deepest position with time
+
+        Parameters:
+            ----------
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            recovery_positions: array
+                vector containing the evolution of the z position in terms of the elapsed time        
+
+        """ 
         _, mat_Z_indent = self.region_identification(n_smooth)
         index_where_z_is_max = self.find_x_index_where_z_indent_is_max(n_smooth)
         recovery_positions = np.zeros_like(self.vec_time)
@@ -147,6 +215,28 @@ class Recovery:
         return recovery_positions
 
     def compute_delta_d_star(self, n_smooth):
+        """
+        Computes the value of delta_d_star, which is defined as the variation in z of the deepest
+        point of the top surface, normalized by the depth of the deepest point
+
+        Parameters:
+            ----------
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            index_recovery_position_is_min: int
+                index at which the top surface is the deepest
+            min_recovery_position: float
+                depth of the deepest point of the top surface
+            last_recovery: float
+                position of the top surface at the end of acquisition
+            delta_d: float
+                difference between last_recovery and min_recovery_position
+            delta_d_star: float
+                delta_d normalized by min_recovery_position
+                
+        """ 
         recovery_positions = self.compute_recovery_with_time(n_smooth)
         last_recovery_index = (~np.isnan(np.array(recovery_positions))).cumsum().argmax()
         last_recovery = recovery_positions[last_recovery_index]
@@ -160,6 +250,25 @@ class Recovery:
         return index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star
     
     def compute_A(self, n_smooth):
+        """
+        Computes the value of A, which corresponds to the slope of the evolution of the z position of 
+        the deepest point of the top surface in terms of log(time) during recovery
+        A is obtained after performing a linear regression to fit the curve
+        
+        Parameters:
+            ----------
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            A: float
+                value fo the slope
+            fitted_response: array
+                fittes values from the linear regression
+            log_time: array
+                array containign the logarithmic values of the time vector
+                
+        """ 
         index_recovery_position_is_min, min_recovery_position, last_recovery, delta_d, delta_d_star = self.compute_delta_d_star(n_smooth)
         
         recovery_positions_with_NaN_and_inf = self.compute_recovery_with_time(n_smooth)[index_recovery_position_is_min:-2]
@@ -183,6 +292,18 @@ class Recovery:
         
             
     def plot_recovery(self, n_smooth, createfigure, savefigure, fonts):
+        """
+        Plots the recovery of the top surface (z position of the deepest point)
+        
+        Parameters:
+            ----------
+            n_smooth: int
+                coefficient for the convolution
+        Returns:
+            -------
+            None
+                
+        """ 
         recovery_positions_unsmoothed = self.compute_recovery_with_time(n_smooth)
         recovery_positions = lfilter([1/1]*1, 1, recovery_positions_unsmoothed)
         A, fitted_response, log_time = self.compute_A(n_smooth)
@@ -231,6 +352,39 @@ class Recovery:
         savefigure.save_as_svg(fig_log, "recovery_logx_smoothed_n" + str(n_smooth) +self.filename[0:-4])
 
 def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, n_smooth, nb_of_time_increments_to_plot, createfigure, savefigure, fonts):
+    """
+    Combines all the profiles obtained at given dates and for given pieces
+    
+    Parameters:
+        ----------
+        experiment_dates: list
+            list of the dates at which the testing have been performed. 
+            Possible values for the date:
+                - '230337'
+                - '230331'
+                - '230403'
+                - '230407'
+                - '230411'
+        meatpieces: list
+            list of the meatpieces to plot
+            Possible values for the meatpiece:
+                - 'RDG'
+                - 'FF'
+                - It is also possible to be more specific by detailing the number of the meatpiece
+                using 'RDG1', 'RDG2', 'FF1', 'FF2'
+        locations: dict
+            dictionnary containing the location of the x-axis windows to be used to focus on the
+            recovery, for all testings subcases
+        n_smooth: int
+            coefficient for the convolution
+        nb_of_time_increments_to_plot: int
+            number of time increments to be plotted in the figure
+
+    Returns:
+        -------
+        None
+            
+    """ 
     location_keys = [key for key in locations]
     for experiment_date in experiment_dates:
         for meat_piece in meat_pieces:
@@ -244,6 +398,39 @@ def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, n_smoot
                     recovery_at_date_meat_piece.combine_profile_timelapse(nb_of_time_increments_to_plot, n_smooth, createfigure, savefigure, fonts)
            
 def plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, failed_laser_acqusitions, createfigure, savefigure, fonts):
+    """
+    Combines all the profiles obtained at given dates and for given pieces
+    
+    Parameters:
+        ----------
+        experiment_dates: list
+            list of the dates at which the testing have been performed. 
+            Possible values for the date:
+                - '230337'
+                - '230331'
+                - '230403'
+                - '230407'
+                - '230411'
+        meatpieces: list
+            list of the meatpieces to plot
+            Possible values for the meatpiece:
+                - 'RDG'
+                - 'FF'
+                - It is also possible to be more specific by detailing the number of the meatpiece
+                using 'RDG1', 'RDG2', 'FF1', 'FF2'
+        locations: dict
+            dictionnary containing the location of the x-axis windows to be used to focus on the
+            recovery, for all testings subcases
+        n_smooth: int
+            coefficient for the convolution
+        failed_laser_acqusitions: list
+            list of the ids of acquisitions that have been failed
+
+    Returns:
+        -------
+        None
+            
+    """ 
     location_keys = [key for key in locations]
     for experiment_date in experiment_dates:
         for meat_piece in meat_pieces:
@@ -258,6 +445,42 @@ def plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, fail
                         recovery_at_date_meat_piece.plot_recovery(n_smooth, createfigure, savefigure, fonts)
             
 def export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions):
+    """
+    Exports the indicators into a txt file
+    
+    Parameters:
+        ----------
+        experiment_dates: list
+            list of the dates at which the testing have been performed. 
+            Possible values for the date:
+                - '230337'
+                - '230331'
+                - '230403'
+                - '230407'
+                - '230411'
+        meatpieces: list
+            list of the meatpieces to plot
+            Possible values for the meatpiece:
+                - 'RDG'
+                - 'FF'
+                - It is also possible to be more specific by detailing the number of the meatpiece
+                using 'RDG1', 'RDG2', 'FF1', 'FF2'
+        locations: dict
+            dictionnary containing the location of the x-axis windows to be used to focus on the
+            recovery, for all testings subcases
+        n_smooth: int
+            coefficient for the convolution
+        failed_laser_acqusitions: list
+            list of the ids of acquisitions that have been failed
+
+    Returns:
+        -------
+        delta_d_stars_to_export: list
+            list of the values of delta_d_stars to be exported
+        filenames_to_export: list
+            list of the ids of the filenames that have been exported
+            
+    """ 
     location_keys = [key for key in locations]
     delta_d_to_export = []
     delta_d_stars_to_export = []
