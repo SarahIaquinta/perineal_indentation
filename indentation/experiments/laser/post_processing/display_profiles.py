@@ -44,7 +44,29 @@ def plot_Z_profile(filename, createfigure, savefigure, fonts):
     savefigure.save_as_svg(fig, "matZ_" + filename[0:-4] )
     
 def create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure, savefigure, fonts):
+    """
+    Creates the figure object for further plots of the z profile of the top surface
 
+    Parameters:
+        ----------
+        mat_Z: array
+            matrix containing time values, x and z positions
+        vec_time: list
+            vector containing the values of time. Corresponds to the dimension 1 of mat_Z
+        vec_pos_axis: list
+            vetor containing the x position values. Corresponds to the dimension 0 of mat_Z
+        time: float
+            index number of time at which the z profile of the top surface is to be plotted
+    Returns:
+        -------
+        fig: figure object
+            figure object top be used in further plots
+        ax: ax object
+            ax containing the features for future plots
+        experiment_time_in_millisecond: float
+            time value corresponding to the time-th (input parameter) index
+
+    """
     time_index = int(time)
     experiment_time_in_microsecond = vec_time[time_index]
     experiment_time_in_second = experiment_time_in_microsecond / 1e6
@@ -64,6 +86,20 @@ def create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure
     return fig, ax, experiment_time_in_millisecond
 
 def plot_profile_at_time(filename, time, createfigure, savefigure, fonts):
+    """
+    Plots the z-profile of the top surface at a given time
+
+    Parameters:
+        ----------
+        filename: string
+            identification name of the testing
+        time: float
+            index number of time at which the z profile of the top surface is to be plotted
+    Returns:
+        -------
+        None
+
+    """
     mat_Z, vec_time, vec_pos_axis = utils.extract_data_from_pkl(filename)
     fig, ax, experiment_time_in_millisecond = create_fig_profile_at_time(mat_Z, vec_time, vec_pos_axis, time, createfigure, savefigure, fonts)
     savefigure.save_as_png(fig, "zx_profile_" + filename[0:-4] + '_t' + str(int(experiment_time_in_millisecond)) + 'ms')
