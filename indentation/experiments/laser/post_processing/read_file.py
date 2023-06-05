@@ -75,6 +75,19 @@ class Files:
         return datafile_list
 
     def read_datafile(self, filename):
+        """
+        Extracts data from the .csv file and extract it as a pkl
+
+        Parameters:
+            ----------
+            filename: string
+                identification name of the testing
+
+        Returns:
+            -------
+            None
+
+        """        
         date = filename[0:6]
         path_to_data = utils.reach_data_path(date)
         path_to_filename = path_to_data / filename
@@ -128,6 +141,21 @@ class Files:
         utils.export_data_output_as_pkl(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
 
 def read_all_files(experiment_dates, meat_pieces):
+    """
+    Reads all the files generated as a given date for a given meatpiece
+
+    Parameters:
+        ----------
+        experiment_dates: list of strings
+            list of the dates for which the files need to be read
+        meat_pieces: list of strings
+            list of the meatpieces
+
+    Returns:
+        -------
+        None
+
+    """
     existing_processed_filenames = utils.get_existing_processed_data()
     for experiment_date in tqdm(experiment_dates):
         for meat_piece in tqdm(meat_pieces) :
@@ -141,6 +169,22 @@ def read_all_files(experiment_dates, meat_pieces):
 
 
 def read_metadatas_laser(metadatafile):
+    """
+    Extracts the displacement imposed for the laser experiment from a metadatafile
+
+    Parameters:
+        ----------
+        metadatafile: string
+            name of the .xls file containing the metadata
+        imposed_disp_dict: float
+            displacement that has been imposed. This value corresponds to the distance between
+            the upper and lower Zwick tools, measured at the beginning of the experiment.
+
+    Returns:
+        -------
+        None
+
+    """
     date = metadatafile[0:6]
     path_to_metadatafile = utils.reach_data_path(date) / metadatafile
     metadatas = pd.read_excel(path_to_metadatafile, sheet_name='laser', header=1, names=["Id", "imposed_disp"], usecols="A:B", decimal=',') 
