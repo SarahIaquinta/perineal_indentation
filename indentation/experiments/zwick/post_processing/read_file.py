@@ -11,7 +11,7 @@ import seaborn as sns
 
 class Files_Zwick:
     """
-    A class define the .xls files to import.
+    A class that defines the .xls files to import.
 
     Attributes:
         ----------
