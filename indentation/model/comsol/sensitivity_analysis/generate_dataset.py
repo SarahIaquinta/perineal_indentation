@@ -29,8 +29,8 @@ def generate_dataset(expected_sample_size):
     var2 = np.array([sample[i][1] for i in range(len(sample))])
     lambda_max = 1
     lambda_min = 1.5
-    damage_max = 0
-    damage_min = 0.9
+    damage_max = 0.8
+    damage_min = 0
     lambda_list = [i * (lambda_max - lambda_min) + lambda_min for i in var1]
     damage_list = [i * (damage_max - damage_min) + damage_min for i in var2]
     return lambda_list, damage_list
@@ -54,7 +54,7 @@ def export_dataset_as_txt(lambda_list, damage_list):
     path_to_dataset = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\model\comsol\sensitivity_analysis'
     complete_txt_filename = path_to_dataset + "/comsol_input_dataset_size" + str(len(lambda_list)) +".txt"
     f = open(complete_txt_filename, "w")
-    f.write("INPUT PARAMETERS FOR COMSOL - SIZE " + str(len(lambda_list)) + " \n")
+    f.write("INPUT PARAMETERS FOR COMSOL - SIZE " + str(len(lambda_list)) + " \n lambda in [" + str(min(lambda_list)) + " ; " + str(max(lambda_list)) + " ] damage in [" + str(min(damage_list)) + " ; " + str(max(damage_list)) + " ] \n" )
     f.write("Id \t lambda \t damage \n")
     for i in range(len(lambda_list)):
         f.write(
