@@ -74,7 +74,7 @@ class Files:
                 datafile_list.append(outfile)
         return datafile_list
 
-    def read_datafile(self, filename):
+    def read_datafile_v0(self, filename):
         """
         Extracts data from the .csv file and extract it as a pkl
 
@@ -132,13 +132,107 @@ class Files:
                 else:
                     vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
                 
-                l_vec_Z.append(vec_Z) 
+                l_vec_Z.append(vec_Z)
+                
         mat_Z = np.vstack(l_vec_Z)
         vec_time = np.array(l_time)
         vec_time_rescaled = vec_time - min(vec_time)
         
         utils.export_data_output_as_txt(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
         utils.export_data_output_as_pkl(filename, mat_Z, vec_time_rescaled, vec_pos_axis)
+    
+    def read_datafile(self, filename):
+        """
+        Extracts data from the .csv file and extract it as a pkl
+
+        Parameters:
+            ----------
+            filename: string
+                identification name of the testing
+
+        Returns:
+            -------
+            None
+
+        """        
+        date = filename[0:6]
+        path_to_data = utils.reach_data_path(date)
+        path_to_filename = path_to_data / filename
+        cur_file = open(path_to_filename,'r')
+        all_line = cur_file.readlines()
+
+        flag_continue = False
+        l_vec_Z = []
+        l_time = []
+        for cur_line in all_line:
+            if cur_line[0:12] == 'Frame,Source':
+                II = cur_line.find('Axis')
+                cur_line0 = cur_line[II+5:]
+                II = [pos for pos, char in enumerate(cur_line0) if char == ',']
+                vec_pos_axis = np.zeros(len(II)+1)
+                vec_pos_axis[0] = float(cur_line0[0:II[0]])
+                for it_c in range(len(II)-1):
+                    vec_pos_axis[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
+                
+                vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
+                flag_continue = True
+            
+            elif flag_continue and (len(cur_line)>10):
+                II = [pos for pos, char in enumerate(cur_line) if char == ',']
+                l_time.append(float(cur_line[II[1]+1:II[2]]))
+                II = cur_line.find('Z')
+                cur_line0 = cur_line[II+1:]
+                II = [pos for pos, char in enumerate(cur_line0) if char == ',']
+                vec_Z = np.zeros(len(II)+1)
+                if II[0]==0:
+                    vec_Z[0] = nan
+                else:
+                    vec_Z[0] = float(cur_line0[0:II[0]])
+                
+                for it_c in range(len(II)-1):
+                    if (II[it_c]+1)==(II[it_c+1]):
+                        vec_Z[it_c+1] = nan
+                    else:    
+                        vec_Z[it_c+1] = float(cur_line0[II[it_c]+1:II[it_c+1]])
+                
+                if (II[-1]+2)==len(cur_line0):
+                    vec_Z[0] = nan
+                else:
+                    vec_pos_axis[-1] = float(cur_line0[II[-1]+1:])
+                
+                l_vec_Z.append(vec_Z) 
+
+        mat_Z = np.vstack(l_vec_Z)
+        vec_time = np.array(l_time)
+        
+        
+        ## Apply median filter
+        mat_Z_n = np.zeros(mat_Z.shape)
+        cnt = 0
+        for it_i in range(mat_Z.shape[0]):
+            if (it_i/mat_Z.shape[0]*100)>cnt:
+                print(str(cnt).zfill(2)+'%')
+                cnt += 1
+            
+            for it_j in range(mat_Z.shape[1]):
+                nn = 2
+                flag_continue = True
+                while flag_continue:
+                    vec_cur = mat_Z[max(0,it_i-nn):min(mat_Z.shape[0],it_i+nn),max(0,it_j-nn):min(mat_Z.shape[1],it_j+nn)].flatten()
+                    II = np.where(np.isnan(vec_cur)<1)[0]
+                    if len(II)>3:
+                        vec_cur = vec_cur[II]
+                        flag_continue = False
+                    else:
+                        nn += 1
+                mat_Z_n[it_i,it_j] = np.median(vec_cur)
+                
+        mat_Z = mat_Z_n
+        
+        vec_time_rescaled = vec_time - min(vec_time)
+        
+        utils.export_data_output_as_txt('0_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
+        utils.export_data_output_as_pkl('0_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
 
 def read_all_files(experiment_dates, meat_pieces):
     """
@@ -198,8 +292,8 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230515']#, '230411']#'230331', '230327', '230403']
-    meat_pieces = ['P002', 'P011']#, 'RDG']
+    experiment_dates = ['230331', '230403', '230407', '230411']
+    meat_pieces = ['FF1', 'RDG']
     read_all_files(experiment_dates, meat_pieces)
 
 
