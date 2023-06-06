@@ -571,7 +571,6 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     
     fig_data_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
     ax_data_vs_force80_1 = fig_data_vs_force80_1.gca()
-    # ax_data_vs_force80_1.plot([40, 40], [min(list(mean_data_FF1_dict.values())) - max(list(std_data_FF1_dict.values())[~np.isnan(list(std_data_FF1_dict.values()))]), max(list(mean_data_RDG1_dict.values())) + max(list(std_data_RDG1_dict.values())[~np.isnan(list(std_data_RDG1_dict.values()))]) ], '--r', lw=1, alpha=0.2)
     ax_data_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), list(mean_data_FF1_dict.values()), yerr=list(std_data_FF1_dict.values()), xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
     ax_data_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()), list(mean_data_RDG1_dict.values()), yerr=list(std_data_RDG1_dict.values()), xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
     ax_data_vs_force80_1.plot(force_80_1, fitted_response_data_1, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_data_1[0], 4)) + '\n R2 = ' + str(np.round(score_data_1, 2)) )
@@ -598,7 +597,6 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     
     fig_data_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
     ax_data_vs_force80_2 = fig_data_vs_force80_2.gca()
-    # ax_data_vs_force80_2.plot([40, 40], [min(list(mean_data_FF2_dict.values())) - max(list(std_data_FF2_dict.values())[~np.isnan(list(std_data_FF2_dict.values()))]), max(list(mean_data_RDG2_dict.values())) + max(list(std_data_RDG2_dict.values())[~np.isnan(list(std_data_RDG2_dict.values()))]) ], '--r', lw=1, alpha=0.2)
     ax_data_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), list(mean_data_FF2_dict.values()), yerr=list(std_data_FF2_dict.values()), xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
     ax_data_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()), list(mean_data_RDG2_dict.values()), yerr=list(std_data_RDG2_dict.values()), xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
     ax_data_vs_force80_2.plot(force_80_2, fitted_response_data_2, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_data_2[0], 4)) + '\n R2 = ' + str(np.round(score_data_2, 2)) )
@@ -626,7 +624,6 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     
     fig_data_vs_force80 = createfigure.rectangle_rz_figure(pixels)
     ax_data_vs_force80 = fig_data_vs_force80.gca()
-    # ax_data_vs_force80.plot([40, 40], [min(list(mean_data_FF_dict.values())) - max(list(std_data_FF_dict.values())[~np.isnan(list(std_data_FF_dict.values()))]), max(list(mean_data_RDG_dict.values())) + max(list(std_data_RDG_dict.values())[~np.isnan(list(std_data_RDG_dict.values()))]) ], '--r', lw=1, alpha=0.2)
     ax_data_vs_force80.errorbar(list(mean_force80_FF_dict.values()), list(mean_data_FF_dict.values()), yerr=list(std_data_FF_dict.values()), xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
     ax_data_vs_force80.errorbar(list(mean_force80_RDG_dict.values()), list(mean_data_RDG_dict.values()), yerr=list(std_data_RDG_dict.values()), xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
     ax_data_vs_force80.plot(force_80, fitted_response_data, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_data[0], 4)) + '\n R2 = ' + str(np.round(score_data, 2)) )
