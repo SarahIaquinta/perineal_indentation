@@ -323,37 +323,38 @@ def export_indocators_as_txt():
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indicators_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
-        [date, mean_delta_d_FF1, std_delta_d_FF1, mean_delta_d_star_FF1, std_delta_d_star_FF1, mean_d_min_FF1, std_d_min_FF1,  mean_A_FF1, std_A_FF1,
-             mean_delta_d_FF2, std_delta_d_FF2, mean_delta_d_star_FF2, std_delta_d_star_FF2, mean_d_min_FF2, std_d_min_FF2,  mean_A_FF2, std_A_FF2,
-             mean_delta_d_RDG1, std_delta_d_RDG1, mean_delta_d_star_RDG1, std_delta_d_star_RDG1, mean_d_min_RDG1, std_d_min_RDG1,  mean_A_RDG1, std_A_RDG1,
-             mean_delta_d_RDG2, std_delta_d_RDG2, mean_delta_d_star_RDG2, std_delta_d_star_RDG2, mean_d_min_RDG2, std_d_min_RDG2,  mean_A_RDG2, std_A_RDG2,
-             mean_delta_d_FF, std_delta_d_FF, mean_delta_d_star_FF, std_delta_d_star_FF, mean_d_min_FF, std_d_min_FF,  mean_A_FF, std_A_FF,
-             mean_delta_d_RDG, std_delta_d_RDG, mean_delta_d_star_RDG, std_delta_d_star_RDG, mean_d_min_RDG, std_d_min_RDG,  mean_A_RDG, std_A_RDG
+        [dates_laser, mean_delta_d_FF1_dict, std_delta_d_FF1_dict, mean_delta_d_star_FF1_dict, std_delta_d_star_FF1_dict, mean_d_min_FF1_dict, std_d_min_FF1_dict,  mean_A_FF1_dict, std_A_FF1_dict,
+             mean_delta_d_FF2_dict, std_delta_d_FF2_dict, mean_delta_d_star_FF2_dict, std_delta_d_star_FF2_dict, mean_d_min_FF2_dict, std_d_min_FF2_dict,  mean_A_FF2_dict, std_A_FF2_dict,
+             mean_delta_d_RDG1_dict, std_delta_d_RDG1_dict, mean_delta_d_star_RDG1_dict, std_delta_d_star_RDG1_dict, mean_d_min_RDG1_dict, std_d_min_RDG1_dict,  mean_A_RDG1_dict, std_A_RDG1_dict,
+             mean_delta_d_RDG2_dict, std_delta_d_RDG2_dict, mean_delta_d_star_RDG2_dict, std_delta_d_star_RDG2_dict, mean_d_min_RDG2_dict, std_d_min_RDG2_dict,  mean_A_RDG2_dict, std_A_RDG2_dict,
+             mean_delta_d_FF_dict, std_delta_d_FF_dict, mean_delta_d_star_FF_dict, std_delta_d_star_FF_dict, mean_d_min_FF_dict, std_d_min_FF_dict,  mean_A_FF_dict, std_A_FF_dict,
+             mean_delta_d_RDG_dict, std_delta_d_RDG_dict, mean_delta_d_star_RDG_dict, std_delta_d_star_RDG_dict, mean_d_min_RDG_dict, std_d_min_RDG_dict,  mean_A_RDG_dict, std_A_RDG_dict
              ] = pickle.load(f)
     
     complete_txt_filename_FF1 = path_to_processed_data + "/indicators_mean_std_FF1.txt"
     f = open(complete_txt_filename_FF1, "w")
     f.write("INDICATORS FOR FF1 \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_FF1)):
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_FF1[i])
+            + str(mean_delta_d_FF1_dict[date])
             + "\t"
-            + str(std_delta_d_FF1[i])
+            + str(std_delta_d_FF1_dict[date])
             + "\t"
-            + str(mean_delta_d_star_FF1[i])
+            + str(mean_delta_d_star_FF1_dict[date])
             + "\t"
-            + str(std_delta_d_star_FF1[i])
+            + str(std_delta_d_star_FF1_dict[date])
             + "\t"
-            + str(mean_d_min_FF1[i])
+            + str(mean_d_min_FF1_dict[date])
             + "\t"
-            + str(std_d_min_FF1[i])
+            + str(std_d_min_FF1_dict[date])
             + "\t"
-            + str(mean_A_FF1[i])
+            + str(mean_A_FF1_dict[date])
             + "\t"
-            + str(std_A_FF1[i])
+            + str(std_A_FF1_dict[date])
             + "\n"
         )
     f.close()
@@ -362,25 +363,26 @@ def export_indocators_as_txt():
     f = open(complete_txt_filename_FF2, "w")
     f.write("INDICATORS FOR FF2 \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_FF2)):
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_FF2[i])
+            + str(mean_delta_d_FF2_dict[date])
             + "\t"
-            + str(std_delta_d_FF2[i])
+            + str(std_delta_d_FF2_dict[date])
             + "\t"
-            + str(mean_delta_d_star_FF2[i])
+            + str(mean_delta_d_star_FF2_dict[date])
             + "\t"
-            + str(std_delta_d_star_FF2[i])
+            + str(std_delta_d_star_FF2_dict[date])
             + "\t"
-            + str(mean_d_min_FF2[i])
+            + str(mean_d_min_FF2_dict[date])
             + "\t"
-            + str(std_d_min_FF2[i])
+            + str(std_d_min_FF2_dict[date])
             + "\t"
-            + str(mean_A_FF2[i])
+            + str(mean_A_FF2_dict[date])
             + "\t"
-            + str(std_A_FF2[i])
+            + str(std_A_FF2_dict[date])
             + "\n"
         )
     f.close()
@@ -389,25 +391,26 @@ def export_indocators_as_txt():
     f = open(complete_txt_filename_FF, "w")
     f.write("INDICATORS FOR FF \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_FF)):
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_FF[i])
+            + str(mean_delta_d_FF_dict[date])
             + "\t"
-            + str(std_delta_d_FF[i])
+            + str(std_delta_d_FF_dict[date])
             + "\t"
-            + str(mean_delta_d_star_FF[i])
+            + str(mean_delta_d_star_FF_dict[date])
             + "\t"
-            + str(std_delta_d_star_FF[i])
+            + str(std_delta_d_star_FF_dict[date])
             + "\t"
-            + str(mean_d_min_FF[i])
+            + str(mean_d_min_FF_dict[date])
             + "\t"
-            + str(std_d_min_FF[i])
+            + str(std_d_min_FF_dict[date])
             + "\t"
-            + str(mean_A_FF[i])
+            + str(mean_A_FF_dict[date])
             + "\t"
-            + str(std_A_FF[i])
+            + str(std_A_FF_dict[date])
             + "\n"
         )
     f.close()
@@ -416,25 +419,26 @@ def export_indocators_as_txt():
     f = open(complete_txt_filename_RDG1, "w")
     f.write("INDICATORS FOR RDG1 \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_RDG1)):
+    for i in range(len(mean_delta_d_RDG1_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_RDG1[i])
+            + str(mean_delta_d_RDG1_dict[date])
             + "\t"
-            + str(std_delta_d_RDG1[i])
+            + str(std_delta_d_RDG1_dict[date])
             + "\t"
-            + str(mean_delta_d_star_RDG1[i])
+            + str(mean_delta_d_star_RDG1_dict[date])
             + "\t"
-            + str(std_delta_d_star_RDG1[i])
+            + str(std_delta_d_star_RDG1_dict[date])
             + "\t"
-            + str(mean_d_min_RDG1[i])
+            + str(mean_d_min_RDG1_dict[date])
             + "\t"
-            + str(std_d_min_RDG1[i])
+            + str(std_d_min_RDG1_dict[date])
             + "\t"
-            + str(mean_A_RDG1[i])
+            + str(mean_A_RDG1_dict[date])
             + "\t"
-            + str(std_A_RDG1[i])
+            + str(std_A_RDG1_dict[date])
             + "\n"
         )
     f.close()
@@ -443,25 +447,26 @@ def export_indocators_as_txt():
     f = open(complete_txt_filename_RDG2, "w")
     f.write("INDICATORS FOR RDG2 \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_RDG2)):
+    for i in range(len(mean_delta_d_RDG2_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_RDG2[i])
+            + str(mean_delta_d_RDG2_dict[date])
             + "\t"
-            + str(std_delta_d_RDG2[i])
+            + str(std_delta_d_RDG2_dict[date])
             + "\t"
-            + str(mean_delta_d_star_RDG2[i])
+            + str(mean_delta_d_star_RDG2_dict[date])
             + "\t"
-            + str(std_delta_d_star_RDG2[i])
+            + str(std_delta_d_star_RDG2_dict[date])
             + "\t"
-            + str(mean_d_min_RDG2[i])
+            + str(mean_d_min_RDG2_dict[date])
             + "\t"
-            + str(std_d_min_RDG2[i])
+            + str(std_d_min_RDG2_dict[date])
             + "\t"
-            + str(mean_A_RDG2[i])
+            + str(mean_A_RDG2_dict[date])
             + "\t"
-            + str(std_A_RDG2[i])
+            + str(std_A_RDG2_dict[date])
             + "\n"
         )
     f.close()
@@ -470,25 +475,26 @@ def export_indocators_as_txt():
     f = open(complete_txt_filename_RDG, "w")
     f.write("INDICATORS FOR RDG \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_RDG)):
+    for i in range(len(mean_delta_d_RDG_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_RDG[i])
+            + str(mean_delta_d_RDG_dict[date])
             + "\t"
-            + str(std_delta_d_RDG[i])
+            + str(std_delta_d_RDG_dict[date])
             + "\t"
-            + str(mean_delta_d_star_RDG[i])
+            + str(mean_delta_d_star_RDG_dict[date])
             + "\t"
-            + str(std_delta_d_star_RDG[i])
+            + str(std_delta_d_star_RDG_dict[date])
             + "\t"
-            + str(mean_d_min_RDG[i])
+            + str(mean_d_min_RDG_dict[date])
             + "\t"
-            + str(std_d_min_RDG[i])
+            + str(std_d_min_RDG_dict[date])
             + "\t"
-            + str(mean_A_RDG[i])
+            + str(mean_A_RDG_dict[date])
             + "\t"
-            + str(std_A_RDG[i])
+            + str(std_A_RDG_dict[date])
             + "\n"
         )
     f.close()
@@ -498,145 +504,151 @@ def export_indocators_as_txt():
     f.write("INDICATORS \n")
     f.write("FF1 \t  FF1 \t  FF1 \t  FF1 \t FF1 \t  FF1 \t  FF1 \t  FF1 \t  FF1 \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_FF1)):
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_FF1[i])
+            + str(mean_delta_d_FF1_dict[date])
             + "\t"
-            + str(std_delta_d_FF1[i])
+            + str(std_delta_d_FF1_dict[date])
             + "\t"
-            + str(mean_delta_d_star_FF1[i])
+            + str(mean_delta_d_star_FF1_dict[date])
             + "\t"
-            + str(std_delta_d_star_FF1[i])
+            + str(std_delta_d_star_FF1_dict[date])
             + "\t"
-            + str(mean_d_min_FF1[i])
+            + str(mean_d_min_FF1_dict[date])
             + "\t"
-            + str(std_d_min_FF1[i])
+            + str(std_d_min_FF1_dict[date])
             + "\t"
-            + str(mean_A_FF1[i])
+            + str(mean_A_FF1_dict[date])
             + "\t"
-            + str(std_A_FF1[i])
+            + str(std_A_FF1_dict[date])
             + "\n"
         )
         
     f.write("FF2 \t  FF2 \t FF2 \t  FF2 \t FF2 \t  FF2 \t  FF2 \t  FF2 \t  FF2 \n")        
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_FF2)):
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_FF2[i])
+            + str(mean_delta_d_FF2_dict[date])
             + "\t"
-            + str(std_delta_d_FF2[i])
+            + str(std_delta_d_FF2_dict[date])
             + "\t"
-            + str(mean_delta_d_star_FF2[i])
+            + str(mean_delta_d_star_FF2_dict[date])
             + "\t"
-            + str(std_delta_d_star_FF2[i])
+            + str(std_delta_d_star_FF2_dict[date])
             + "\t"
-            + str(mean_d_min_FF2[i])
+            + str(mean_d_min_FF2_dict[date])
             + "\t"
-            + str(std_d_min_FF2[i])
+            + str(std_d_min_FF2_dict[date])
             + "\t"
-            + str(mean_A_FF2[i])
+            + str(mean_A_FF2_dict[date])
             + "\t"
-            + str(std_A_FF2[i])
+            + str(std_A_FF2_dict[date])
             + "\n"
         )
         
     f.write("FF \t  FF \t FF \t  FF \t FF \t  FF \t  FF \t  FF \t  FF \n")        
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_FF)):
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_FF[i])
+            + str(mean_delta_d_FF_dict[date])
             + "\t"
-            + str(std_delta_d_FF[i])
+            + str(std_delta_d_FF_dict[date])
             + "\t"
-            + str(mean_delta_d_star_FF[i])
+            + str(mean_delta_d_star_FF_dict[date])
             + "\t"
-            + str(std_delta_d_star_FF[i])
+            + str(std_delta_d_star_FF_dict[date])
             + "\t"
-            + str(mean_d_min_FF[i])
+            + str(mean_d_min_FF_dict[date])
             + "\t"
-            + str(std_d_min_FF[i])
+            + str(std_d_min_FF_dict[date])
             + "\t"
-            + str(mean_A_FF[i])
+            + str(mean_A_FF_dict[date])
             + "\t"
-            + str(std_A_FF[i])
+            + str(std_A_FF_dict[date])
             + "\n"
         )
         
     f.write("RDG1 \t  RDG1 \t  RDG1 \t RDG1 \t RDG1 \t  RDG1 \t  RDG1 \t  RDG1 \t  RDG1 \n")
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_RDG1)):
+    for i in range(len(mean_delta_d_RDG1_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_RDG1[i])
+            + str(mean_delta_d_RDG1_dict[date])
             + "\t"
-            + str(std_delta_d_RDG1[i])
+            + str(std_delta_d_RDG1_dict[date])
             + "\t"
-            + str(mean_delta_d_star_RDG1[i])
+            + str(mean_delta_d_star_RDG1_dict[date])
             + "\t"
-            + str(std_delta_d_star_RDG1[i])
+            + str(std_delta_d_star_RDG1_dict[date])
             + "\t"
-            + str(mean_d_min_RDG1[i])
+            + str(mean_d_min_RDG1_dict[date])
             + "\t"
-            + str(std_d_min_RDG1[i])
+            + str(std_d_min_RDG1_dict[date])
             + "\t"
-            + str(mean_A_RDG1[i])
+            + str(mean_A_RDG1_dict[date])
             + "\t"
-            + str(std_A_RDG1[i])
+            + str(std_A_RDG1_dict[date])
             + "\n"
         )
         
     f.write("RDG2 \t  RDG2 \t RDG2 \t RDG2 \t RDG2 \t  RDG2 \t  RDG2 \t  RDG2 \t  RDG2 \n")        
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_RDG2)):
+    for i in range(len(mean_delta_d_RDG2_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_RDG2[i])
+            + str(mean_delta_d_RDG2_dict[date])
             + "\t"
-            + str(std_delta_d_RDG2[i])
+            + str(std_delta_d_RDG2_dict[date])
             + "\t"
-            + str(mean_delta_d_star_RDG2[i])
+            + str(mean_delta_d_star_RDG2_dict[date])
             + "\t"
-            + str(std_delta_d_star_RDG2[i])
+            + str(std_delta_d_star_RDG2_dict[date])
             + "\t"
-            + str(mean_d_min_RDG2[i])
+            + str(mean_d_min_RDG2_dict[date])
             + "\t"
-            + str(std_d_min_RDG2[i])
+            + str(std_d_min_RDG2_dict[date])
             + "\t"
-            + str(mean_A_RDG2[i])
+            + str(mean_A_RDG2_dict[date])
             + "\t"
-            + str(std_A_RDG2[i])
+            + str(std_A_RDG2_dict[date])
             + "\n"
         )
         
     f.write("RDG \t  RDG \t RDG \t  RDG \t RDG \t  RDG \t  RDG \t  RDG \t  RDG \n")        
     f.write("date \t mean delta d \t std delta d \t mean delta d star \t std delta d star \t mean d_min \t std d_min \t mean A \t std A \n")
-    for i in range(len(mean_delta_d_RDG)):
+    for i in range(len(mean_delta_d_RDG_dict)):
+        date = dates_laser[i]
         f.write(
-            str(date[i])
+            str(date)
             + "\t"
-            + str(mean_delta_d_RDG[i])
+            + str(mean_delta_d_RDG_dict[date])
             + "\t"
-            + str(std_delta_d_RDG[i])
+            + str(std_delta_d_RDG_dict[date])
             + "\t"
-            + str(mean_delta_d_star_RDG[i])
+            + str(mean_delta_d_star_RDG_dict[date])
             + "\t"
-            + str(std_delta_d_star_RDG[i])
+            + str(std_delta_d_star_RDG_dict[date])
             + "\t"
-            + str(mean_d_min_RDG[i])
+            + str(mean_d_min_RDG_dict[date])
             + "\t"
-            + str(std_d_min_RDG[i])
+            + str(std_d_min_RDG_dict[date])
             + "\t"
-            + str(mean_A_RDG[i])
+            + str(mean_A_RDG_dict[date])
             + "\t"
-            + str(std_A_RDG[i])
+            + str(std_A_RDG_dict[date])
             + "\n"
         )
         
@@ -822,31 +834,32 @@ def plot_laser_indicators_vs_texturometer_forces():
     maturation = [10, 13, 17, 21]
     dates_to_use = ['230331', '230403', '230407', '230411']
     maturation_dict = {'230331': 10, '230403': 13, '230407': 17, '230411': 21}
+    maturation_dict_plots = {'230331': 'J+10', '230403': 'J+13', '230407': 'J+17', '230411': 'J+21'}
     maturation_FF_dict = {k: v - 0.1 for k, v in maturation_dict.items()}
     maturation_RDG_dict = {k: v + 0.1 for k, v in maturation_dict.items()}
+    
     path_to_processed_data_laser = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename_laser = path_to_processed_data_laser + "/indicators_mean_std.pkl"
     with open(complete_pkl_filename_laser, "rb") as f:
-        [dates_laser, mean_delta_d_FF1, std_delta_d_FF1, mean_delta_d_star_FF1, std_delta_d_star_FF1, mean_d_min_FF1, std_d_min_FF1,  mean_A_FF1, std_A_FF1,
-             mean_delta_d_FF2, std_delta_d_FF2, mean_delta_d_star_FF2, std_delta_d_star_FF2, mean_d_min_FF2, std_d_min_FF2,  mean_A_FF2, std_A_FF2,
-             mean_delta_d_RDG1, std_delta_d_RDG1, mean_delta_d_star_RDG1, std_delta_d_star_RDG1, mean_d_min_RDG1, std_d_min_RDG1,  mean_A_RDG1, std_A_RDG1,
-             mean_delta_d_RDG2, std_delta_d_RDG2, mean_delta_d_star_RDG2, std_delta_d_star_RDG2, mean_d_min_RDG2, std_d_min_RDG2,  mean_A_RDG2, std_A_RDG2,
-             mean_delta_d_FF, std_delta_d_FF, mean_delta_d_star_FF, std_delta_d_star_FF, mean_d_min_FF, std_d_min_FF,  mean_A_FF, std_A_FF,
-             mean_delta_d_RDG, std_delta_d_RDG, mean_delta_d_star_RDG, std_delta_d_star_RDG, mean_d_min_RDG, std_d_min_RDG,  mean_A_RDG, std_A_RDG
+        [dates_laser, mean_delta_d_FF1_dict, std_delta_d_FF1_dict, mean_delta_d_star_FF1_dict, std_delta_d_star_FF1_dict, mean_d_min_FF1_dict, std_d_min_FF1_dict,  mean_A_FF1_dict, std_A_FF1_dict,
+             mean_delta_d_FF2_dict, std_delta_d_FF2_dict, mean_delta_d_star_FF2_dict, std_delta_d_star_FF2_dict, mean_d_min_FF2_dict, std_d_min_FF2_dict,  mean_A_FF2_dict, std_A_FF2_dict,
+             mean_delta_d_RDG1_dict, std_delta_d_RDG1_dict, mean_delta_d_star_RDG1_dict, std_delta_d_star_RDG1_dict, mean_d_min_RDG1_dict, std_d_min_RDG1_dict,  mean_A_RDG1_dict, std_A_RDG1_dict,
+             mean_delta_d_RDG2_dict, std_delta_d_RDG2_dict, mean_delta_d_star_RDG2_dict, std_delta_d_star_RDG2_dict, mean_d_min_RDG2_dict, std_d_min_RDG2_dict,  mean_A_RDG2_dict, std_A_RDG2_dict,
+             mean_delta_d_FF_dict, std_delta_d_FF_dict, mean_delta_d_star_FF_dict, std_delta_d_star_FF_dict, mean_d_min_FF_dict, std_d_min_FF_dict,  mean_A_FF_dict, std_A_FF_dict,
+             mean_delta_d_RDG_dict, std_delta_d_RDG_dict, mean_delta_d_star_RDG_dict, std_delta_d_star_RDG_dict, mean_d_min_RDG_dict, std_d_min_RDG_dict,  mean_A_RDG_dict, std_A_RDG_dict
              ] = pickle.load(f)
-
-    [dates_laser, mean_delta_d_FF1, std_delta_d_FF1, mean_delta_d_star_FF1, std_delta_d_star_FF1, mean_d_min_FF1, std_d_min_FF1,  mean_A_FF1, std_A_FF1,
-             mean_delta_d_FF2, std_delta_d_FF2, mean_delta_d_star_FF2, std_delta_d_star_FF2, mean_d_min_FF2, std_d_min_FF2,  mean_A_FF2, std_A_FF2,
-             mean_delta_d_RDG1, std_delta_d_RDG1, mean_delta_d_star_RDG1, std_delta_d_star_RDG1, mean_d_min_RDG1, std_d_min_RDG1,  mean_A_RDG1, std_A_RDG1,
-             mean_delta_d_RDG2, std_delta_d_RDG2, mean_delta_d_star_RDG2, std_delta_d_star_RDG2, mean_d_min_RDG2, std_d_min_RDG2,  mean_A_RDG2, std_A_RDG2,
-             mean_delta_d_FF, std_delta_d_FF, mean_delta_d_star_FF, std_delta_d_star_FF, mean_d_min_FF, std_d_min_FF,  mean_A_FF, std_A_FF,
-             mean_delta_d_RDG, std_delta_d_RDG, mean_delta_d_star_RDG, std_delta_d_star_RDG, mean_d_min_RDG, std_d_min_RDG,  mean_A_RDG, std_A_RDG
-             ] = [dates_laser, mean_delta_d_FF1[1:], std_delta_d_FF1[1:], mean_delta_d_star_FF1[1:], std_delta_d_star_FF1[1:], mean_d_min_FF1[1:], std_d_min_FF1[1:],  mean_A_FF1[1:], std_A_FF1[1:],
-             mean_delta_d_FF2[1:], std_delta_d_FF2[1:], mean_delta_d_star_FF2[1:], std_delta_d_star_FF2[1:], mean_d_min_FF2[1:], std_d_min_FF2[1:],  mean_A_FF2[1:], std_A_FF2[1:],
-             mean_delta_d_RDG1[1:], std_delta_d_RDG1[1:], mean_delta_d_star_RDG1[1:], std_delta_d_star_RDG1[1:], mean_d_min_RDG1[1:], std_d_min_RDG1[1:],  mean_A_RDG1[1:], std_A_RDG1[1:],
-             mean_delta_d_RDG2[1:], std_delta_d_RDG2[1:], mean_delta_d_star_RDG2[1:], std_delta_d_star_RDG2[1:], mean_d_min_RDG2[1:], std_d_min_RDG2[1:],  mean_A_RDG2[1:], std_A_RDG2[1:],
-             mean_delta_d_FF[1:], std_delta_d_FF[1:], mean_delta_d_star_FF[1:], std_delta_d_star_FF[1:], mean_d_min_FF[1:], std_d_min_FF[1:],  mean_A_FF[1:], std_A_FF[1:],
-             mean_delta_d_RDG[1:], std_delta_d_RDG[1:], mean_delta_d_star_RDG[1:], std_delta_d_star_RDG[1:], mean_d_min_RDG[1:], std_d_min_RDG[1:],  mean_A_RDG[1:], std_A_RDG[1:]
+    [dates_laser, mean_delta_d_FF1_dict, std_delta_d_FF1_dict, mean_delta_d_star_FF1_dict, std_delta_d_star_FF1_dict, mean_d_min_FF1_dict, std_d_min_FF1_dict,  mean_A_FF1_dict, std_A_FF1_dict,
+                mean_delta_d_FF2_dict, std_delta_d_FF2_dict, mean_delta_d_star_FF2_dict, std_delta_d_star_FF2_dict, mean_d_min_FF2_dict, std_d_min_FF2_dict,  mean_A_FF2_dict, std_A_FF2_dict,
+                mean_delta_d_RDG1_dict, std_delta_d_RDG1_dict, mean_delta_d_star_RDG1_dict, std_delta_d_star_RDG1_dict, mean_d_min_RDG1_dict, std_d_min_RDG1_dict,  mean_A_RDG1_dict, std_A_RDG1_dict,
+                mean_delta_d_RDG2_dict, std_delta_d_RDG2_dict, mean_delta_d_star_RDG2_dict, std_delta_d_star_RDG2_dict, mean_d_min_RDG2_dict, std_d_min_RDG2_dict,  mean_A_RDG2_dict, std_A_RDG2_dict,
+                mean_delta_d_FF_dict, std_delta_d_FF_dict, mean_delta_d_star_FF_dict, std_delta_d_star_FF_dict, mean_d_min_FF_dict, std_d_min_FF_dict,  mean_A_FF_dict, std_A_FF_dict,
+                mean_delta_d_RDG_dict, std_delta_d_RDG_dict, mean_delta_d_star_RDG_dict, std_delta_d_star_RDG_dict, mean_d_min_RDG_dict, std_d_min_RDG_dict,  mean_A_RDG_dict, std_A_RDG_dict
+                ] = [dates_laser, {d:mean_delta_d_FF1_dict[d] for d in dates_to_use}, {d:std_delta_d_FF1_dict[d] for d in dates_to_use}, {d:mean_delta_d_star_FF1_dict[d] for d in dates_to_use}, {d:std_delta_d_star_FF1_dict[d] for d in dates_to_use}, {d:mean_d_min_FF1_dict[d] for d in dates_to_use}, {d:std_d_min_FF1_dict[d] for d in dates_to_use},  {d:mean_A_FF1_dict[d] for d in dates_to_use}, {d:std_A_FF1_dict[d] for d in dates_to_use},
+             {d:mean_delta_d_FF2_dict[d] for d in dates_to_use}, {d:std_delta_d_FF2_dict[d] for d in dates_to_use}, {d:mean_delta_d_star_FF2_dict[d] for d in dates_to_use}, {d:std_delta_d_star_FF2_dict[d] for d in dates_to_use}, {d:mean_d_min_FF2_dict[d] for d in dates_to_use}, {d:std_d_min_FF2_dict[d] for d in dates_to_use},  {d:mean_A_FF2_dict[d] for d in dates_to_use}, {d:std_A_FF2_dict[d] for d in dates_to_use},
+             {d:mean_delta_d_RDG1_dict[d] for d in dates_to_use}, {d:std_delta_d_RDG1_dict[d] for d in dates_to_use}, {d:mean_delta_d_star_RDG1_dict[d] for d in dates_to_use}, {d:std_delta_d_star_RDG1_dict[d] for d in dates_to_use}, {d:mean_d_min_RDG1_dict[d] for d in dates_to_use}, {d:std_d_min_RDG1_dict[d] for d in dates_to_use},  {d:mean_A_RDG1_dict[d] for d in dates_to_use}, {d:std_A_RDG1_dict[d] for d in dates_to_use},
+             {d:mean_delta_d_RDG2_dict[d] for d in dates_to_use}, {d:std_delta_d_RDG2_dict[d] for d in dates_to_use}, {d:mean_delta_d_star_RDG2_dict[d] for d in dates_to_use}, {d:std_delta_d_star_RDG2_dict[d] for d in dates_to_use}, {d:mean_d_min_RDG2_dict[d] for d in dates_to_use}, {d:std_d_min_RDG2_dict[d] for d in dates_to_use},  {d:mean_A_RDG2_dict[d] for d in dates_to_use}, {d:std_A_RDG2_dict[d] for d in dates_to_use},
+             {d:mean_delta_d_FF_dict[d] for d in dates_to_use}, {d:std_delta_d_FF_dict[d] for d in dates_to_use}, {d:mean_delta_d_star_FF_dict[d] for d in dates_to_use}, {d:std_delta_d_star_FF_dict[d] for d in dates_to_use}, {d:mean_d_min_FF_dict[d] for d in dates_to_use}, {d:std_d_min_FF_dict[d] for d in dates_to_use},  {d:mean_A_FF_dict[d] for d in dates_to_use}, {d:std_A_FF_dict[d] for d in dates_to_use},
+             {d:mean_delta_d_RDG_dict[d] for d in dates_to_use}, {d:std_delta_d_RDG_dict[d] for d in dates_to_use}, {d:mean_delta_d_star_RDG_dict[d] for d in dates_to_use}, {d:std_delta_d_star_RDG_dict[d] for d in dates_to_use}, {d:mean_d_min_RDG_dict[d] for d in dates_to_use}, {d:std_d_min_RDG_dict[d] for d in dates_to_use},  {d:mean_A_RDG_dict[d] for d in dates_to_use}, {d:std_A_RDG_dict[d] for d in dates_to_use}
              ]
 
     path_to_processed_data_texturometer = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
@@ -895,7 +908,7 @@ def plot_laser_indicators_vs_texturometer_forces():
     
     force_80_1 = np.concatenate((list(mean_force80_FF1_dict.values()), list(mean_force80_RDG1_dict.values())))
     index_force_1_nan = np.isnan(force_80_1) 
-    A_1 = np.concatenate(( mean_A_FF1 , mean_A_RDG1 ))
+    A_1 = np.concatenate(( list(mean_A_FF1_dict.values()) , list(mean_A_RDG1_dict.values()) ))
     index_A_1_nan = np.isnan(A_1)
     indices_force_or_A_1_nan = [index_force_1_nan[i] or index_A_1_nan[i] for i in range(len(index_force_1_nan))]
     force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_A_1_nan[i]])
@@ -908,14 +921,16 @@ def plot_laser_indicators_vs_texturometer_forces():
     b_A_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
     score_A_1 = reg.score(force_80_1, A_1_without_nan_force)
     
-    
     fig_A_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
     ax_A_vs_force80_1 = fig_A_vs_force80_1.gca()
-    # ax_A_vs_force80_1.plot([40, 40], [min(mean_A_FF1) - max(std_A_FF1[~np.isnan(std_A_FF1)]), max(mean_A_RDG1) + max(std_A_RDG1[~np.isnan(std_A_RDG1)]) ], '--r', lw=1, alpha=0.2)
-    ax_A_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), mean_A_FF1, yerr=std_A_FF1, xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
-    ax_A_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()), mean_A_RDG1, yerr=std_A_RDG1, xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
-    ax_A_vs_force80_1.plot(force_80_1, fitted_response_A_1, ':k', label=' A = ' + str(np.round(a_A_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_A_1[0], 4)) + '\n R2 = ' + str(np.round(score_A_1, 2)) )
-    ax_A_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_A_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), list(mean_A_FF1_dict.values()), yerr=list(std_A_FF1_dict.values()), xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_A_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()),list(mean_A_RDG1_dict.values()), yerr=list(std_A_RDG1_dict.values()), xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_A_vs_force80_1.plot(force_80_1, fitted_response_A_1, ':k', alpha=0.8, label=' A = ' + str(np.round(a_A_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_A_1[0], 4)) + '\n R2 = ' + str(np.round(score_A_1, 2)) )
+    for i in range(len(mean_force80_FF1_dict)):
+        date = dates_to_use[i]
+        ax_A_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_FF1_dict[date] +0.04, mean_A_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_A_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_RDG1_dict[date]+0.04, mean_A_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_A_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
     ax_A_vs_force80_1.set_title(r'A vs Force 80% 1', font=fonts.serif_rz_legend())
     ax_A_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force80_1.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
@@ -923,11 +938,11 @@ def plot_laser_indicators_vs_texturometer_forces():
 
     force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_80_2) 
-    A_2 = np.concatenate(( mean_A_FF2 , mean_A_RDG2 ))
+    A_2 = np.concatenate(( list(mean_A_FF2_dict.values()) , list(mean_A_RDG2_dict.values()) ))
     index_A_2_nan = np.isnan(A_2)
     indices_force_or_A_2_nan = [index_force_2_nan[i] or index_A_2_nan[i] for i in range(len(index_force_2_nan))]
     force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_A_2_nan[i]])
-    A_2_without_nan_force = np.array([A_2[i] for i in range(len(A_2)) if not indices_force_or_A_2_nan[i]])
+    A_2_without_nan_force = np.array([A_2[i] for i in range(len(indices_force_or_A_2_nan)) if not indices_force_or_A_2_nan[i]])
     force_80_2 = force_80_2_without_nan.reshape((-1, 1))
     model = LinearRegression()
     reg = model.fit(force_80_2, A_2_without_nan_force)
@@ -935,14 +950,17 @@ def plot_laser_indicators_vs_texturometer_forces():
     a_A_2 = reg.coef_
     b_A_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
     score_A_2 = reg.score(force_80_2, A_2_without_nan_force)
-
+    
     fig_A_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
     ax_A_vs_force80_2 = fig_A_vs_force80_2.gca()
-    # ax_A_vs_force80_2.plot([40, 40], [min(mean_A_FF2[~np.isnan(mean_A_FF2)]) - max(std_A_FF2[~np.isnan(std_A_FF2)]), max(mean_A_RDG2[~np.isnan(mean_A_RDG2)]) + max(std_A_RDG2[~np.isnan(std_A_RDG2)]) ], '--r', lw=1, alpha=0.2)
-    ax_A_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), mean_A_FF2, yerr=std_A_FF2, xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
-    ax_A_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()), mean_A_RDG2, yerr=std_A_RDG2, xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
-    ax_A_vs_force80_1.plot(force_80_2, fitted_response_A_2, ':k', label=' A = ' + str(np.round(a_A_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_A_2[0], 4)) + '\n R2 = ' + str(np.round(score_A_2, 2)) )
-    ax_A_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_A_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), list(mean_A_FF2_dict.values()), yerr=list(std_A_FF2_dict.values()), xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_A_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()),list(mean_A_RDG2_dict.values()), yerr=list(std_A_RDG2_dict.values()), xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_A_vs_force80_2.plot(force_80_2, fitted_response_A_2, ':k', alpha=0.8, label=' A = ' + str(np.round(a_A_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_A_2[0], 4)) + '\n R2 = ' + str(np.round(score_A_2, 2)) )
+    for i in range(len(mean_force80_FF2_dict)):
+        date = dates_to_use[i]
+        ax_A_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_FF2_dict[date] +0.04, mean_A_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_A_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_RDG2_dict[date]+0.04, mean_A_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_A_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
     ax_A_vs_force80_2.set_title(r'A vs Force 80% 2', font=fonts.serif_rz_legend())
     ax_A_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force80_2.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
@@ -950,11 +968,11 @@ def plot_laser_indicators_vs_texturometer_forces():
 
     force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
     index_force_nan = np.isnan(force_80) 
-    A = np.concatenate(( mean_A_FF , mean_A_RDG))
+    A = np.concatenate(( list(mean_A_FF_dict.values()) , list(mean_A_RDG_dict.values()) ))
     index_A_nan = np.isnan(A)
     indices_force_or_A_nan = [index_force_nan[i] or index_A_nan[i] for i in range(len(index_force_nan))]
     force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_A_nan[i]])
-    A_without_nan_force = np.array([A[i] for i in range(len(A)) if not indices_force_or_A_nan[i]])
+    A_without_nan_force = np.array([A[i] for i in range(len(indices_force_or_A_nan)) if not indices_force_or_A_nan[i]])
     force_80 = force_80_without_nan.reshape((-1, 1))
     model = LinearRegression()
     reg = model.fit(force_80, A_without_nan_force)
@@ -962,391 +980,667 @@ def plot_laser_indicators_vs_texturometer_forces():
     a_A = reg.coef_
     b_A = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
     score_A = reg.score(force_80, A_without_nan_force)
-
+    
     fig_A_vs_force80 = createfigure.rectangle_rz_figure(pixels)
     ax_A_vs_force80 = fig_A_vs_force80.gca()
-    # ax_A_vs_force80.plot([40, 40], [min(mean_A_FF[~np.isnan(mean_A_FF)]) - max(std_A_FF[~np.isnan(std_A_FF)]), max(mean_A_RDG[~np.isnan(mean_A_RDG)]) + max(std_A_RDG[~np.isnan(std_A_RDG)]) ], '--r', lw=1, alpha=0.2)
-    ax_A_vs_force80.errorbar(list(mean_force80_FF_dict.values()), mean_A_FF, yerr=std_A_FF, xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
-    ax_A_vs_force80.errorbar(list(mean_force80_RDG_dict.values()), mean_A_RDG, yerr=std_A_RDG, xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
-    ax_A_vs_force80.plot(force_80, fitted_response_A, ':k', label=' A = ' + str(np.round(a_A[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_A[0], 4)) + '\n R2 = ' + str(np.round(score_A, 2)) )
-    ax_A_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_A_vs_force80.errorbar(list(mean_force80_FF_dict.values()), list(mean_A_FF_dict.values()), yerr=list(std_A_FF_dict.values()), xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_A_vs_force80.errorbar(list(mean_force80_RDG_dict.values()),list(mean_A_RDG_dict.values()), yerr=list(std_A_RDG_dict.values()), xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_A_vs_force80.plot(force_80, fitted_response_A, ':k', alpha=0.8, label=' A = ' + str(np.round(a_A[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_A[0], 4)) + '\n R2 = ' + str(np.round(score_A, 2)) )
+    for i in range(len(mean_force80_FF_dict)):
+        date = dates_to_use[i]
+        ax_A_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_FF_dict[date]+ 0.04, mean_A_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_A_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_RDG_dict[date]+0.04, mean_A_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_A_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
     ax_A_vs_force80.set_title(r'A vs Force 80% 1+2', font=fonts.serif_rz_legend())
     ax_A_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force80.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force80, "A_vs_force80_1+2")
 
-    # #A vs force 20    
-    # fig_A_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
-    # ax_A_vs_force20_1 = fig_A_vs_force20_1.gca()
-    # ax_A_vs_force20_1.errorbar(mean_force20_FF1, mean_A_FF1, yerr=std_A_FF1, xerr=std_force20_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # ax_A_vs_force20_1.errorbar(mean_force20_RDG1, mean_A_RDG1, yerr=std_A_RDG1, xerr=std_force20_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # ax_A_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_A_vs_force20_1.set_title(r'A vs Force 20% 1', font=fonts.serif_rz_legend())
-    # ax_A_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # ax_A_vs_force20_1.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_A_vs_force20_1, "A_vs_force20_1")
-
-    # fig_A_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
-    # ax_A_vs_force20_2 = fig_A_vs_force20_2.gca()
-    # ax_A_vs_force20_2.errorbar(mean_force20_FF2, mean_A_FF2, yerr=std_A_FF2, xerr=std_force20_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # ax_A_vs_force20_2.errorbar(mean_force20_RDG2, mean_A_RDG2, yerr=std_A_RDG2, xerr=std_force20_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # ax_A_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_A_vs_force20_2.set_title(r'A vs Force 20% 2', font=fonts.serif_rz_legend())
-    # ax_A_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # ax_A_vs_force20_2.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_A_vs_force20_2, "A_vs_force20_2")
-
-    # fig_A_vs_force20 = createfigure.rectangle_rz_figure(pixels)
-    # ax_A_vs_force20 = fig_A_vs_force20.gca()
-    # ax_A_vs_force20.errorbar(mean_force20_FF, mean_A_FF, yerr=std_A_FF, xerr=std_force20_FF ,lw=0, label='FF', **kwargs_FF)
-    # ax_A_vs_force20.errorbar(mean_force20_RDG, mean_A_RDG, yerr=std_A_RDG, xerr=std_force20_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # ax_A_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_A_vs_force20.set_title(r'A vs Force 20% 1+2', font=fonts.serif_rz_legend())
-    # ax_A_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # ax_A_vs_force20.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_A_vs_force20, "A_vs_force20_1+2")
-
-
-
-
-    # #delta_d_star vs force 80    
-    # force_80_1 = np.concatenate((mean_force80_FF1, mean_force80_RDG1))
-    # index_force_1_nan = np.isnan(force_80_1) 
-    # delta_d_star_1 = np.concatenate(( mean_delta_d_star_FF1 , mean_delta_d_star_RDG1 ))
-    # index_delta_d_star_1_nan = np.isnan(delta_d_star_1)
-    # indices_force_or_delta_d_star_1_nan = [index_force_1_nan[i] or index_delta_d_star_1_nan[i] for i in range(len(index_force_1_nan))]
-    # force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_delta_d_star_1_nan[i]])
-    # delta_d_star_1_without_nan_force = np.array([delta_d_star_1[i] for i in range(len(delta_d_star_1)) if not indices_force_or_delta_d_star_1_nan[i]])
-    # force_80_1 = force_80_1_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80_1, delta_d_star_1_without_nan_force)
-    # fitted_response_delta_d_star_1 = model.predict(force_80_1)
-    # a_delta_d_star_1 = reg.coef_
-    # b_delta_d_star_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_delta_d_star_1 = reg.score(force_80_1, delta_d_star_1_without_nan_force)
+    #A vs force 20    
     
-    # fig_delta_d_star_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
-    # ax_delta_d_star_vs_force80_1 = fig_delta_d_star_vs_force80_1.gca()
-    # ax_delta_d_star_vs_force80_1.plot([40, 40], [min(mean_delta_d_star_FF1) - max(std_delta_d_star_FF1[~np.isnan(std_delta_d_star_FF1)]), max(mean_delta_d_star_RDG1) + max(std_delta_d_star_RDG1[~np.isnan(std_delta_d_star_RDG1)]) ], '--r', lw=1, alpha=0.2)
-    # ax_delta_d_star_vs_force80_1.errorbar(mean_force80_FF1, mean_delta_d_star_FF1, yerr=std_delta_d_star_FF1, xerr=std_force80_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # ax_delta_d_star_vs_force80_1.errorbar(mean_force80_RDG1, mean_delta_d_star_RDG1, yerr=std_delta_d_star_RDG1, xerr=std_force80_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # ax_delta_d_star_vs_force80_1.plot(force_80_1, fitted_response_delta_d_star_1, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_delta_d_star_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_star_1[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star_1, 2)) )
-    # ax_delta_d_star_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_delta_d_star_vs_force80_1.set_title(r'$\Delta d^*$ vs Force 80% 1', font=fonts.serif_rz_legend())
-    # ax_delta_d_star_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_delta_d_star_vs_force80_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_delta_d_star_vs_force80_1, "delta_d_star_vs_force80_1")
-
-    # force_80_2 = np.concatenate((mean_force80_FF2, mean_force80_RDG2))
-    # index_force_2_nan = np.isnan(force_80_2) 
-    # delta_d_star_2 = np.concatenate(( mean_delta_d_star_FF2 , mean_delta_d_star_RDG2 ))
-    # index_delta_d_star_2_nan = np.isnan(delta_d_star_2)
-    # indices_force_or_delta_d_star_2_nan = [index_force_2_nan[i] or index_delta_d_star_2_nan[i] for i in range(len(index_force_2_nan))]
-    # force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_delta_d_star_2_nan[i]])
-    # delta_d_star_2_without_nan_force = np.array([delta_d_star_2[i] for i in range(len(delta_d_star_2)) if not indices_force_or_delta_d_star_2_nan[i]])
-    # force_80_2 = force_80_2_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80_2, delta_d_star_2_without_nan_force)
-    # fitted_response_delta_d_star_2 = model.predict(force_80_2)
-    # a_delta_d_star_2 = reg.coef_
-    # b_delta_d_star_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_delta_d_star_2 = reg.score(force_80_2, delta_d_star_2_without_nan_force)
+    force_20_1 = np.concatenate((list(mean_force20_FF1_dict.values()), list(mean_force20_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_20_1) 
+    A_1 = np.concatenate(( list(mean_A_FF1_dict.values()) , list(mean_A_RDG1_dict.values()) ))
+    index_A_1_nan = np.isnan(A_1)
+    indices_force_or_A_1_nan = [index_force_1_nan[i] or index_A_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_20_1_without_nan = np.array([force_20_1[i] for i in range(len(force_20_1)) if not indices_force_or_A_1_nan[i]])
+    A_1_without_nan_force = np.array([A_1[i] for i in range(len(indices_force_or_A_1_nan)) if not indices_force_or_A_1_nan[i]])
+    force_20_1 = force_20_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_1, A_1_without_nan_force)
+    fitted_response_A_1 = model.predict(force_20_1)
+    a_A_1 = reg.coef_
+    b_A_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_A_1 = reg.score(force_20_1, A_1_without_nan_force)
     
-    # fig_delta_d_star_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
-    # ax_delta_d_star_vs_force80_2 = fig_delta_d_star_vs_force80_2.gca()
-    # ax_delta_d_star_vs_force80_2.plot([40, 40], [min(mean_delta_d_star_FF2[~np.isnan(mean_delta_d_star_FF2)]) - max(std_delta_d_star_FF2[~np.isnan(std_delta_d_star_FF2)]), max(mean_delta_d_star_RDG2[~np.isnan(mean_delta_d_star_RDG2)]) + max(std_delta_d_star_RDG2[~np.isnan(std_delta_d_star_RDG2)]) ], '--r', lw=1, alpha=0.2)
-    # ax_delta_d_star_vs_force80_2.errorbar(mean_force80_FF2, mean_delta_d_star_FF2, yerr=std_delta_d_star_FF2, xerr=std_force80_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # ax_delta_d_star_vs_force80_2.errorbar(mean_force80_RDG2, mean_delta_d_star_RDG2, yerr=std_delta_d_star_RDG2, xerr=std_force80_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # ax_delta_d_star_vs_force80_2.plot(force_80_2, fitted_response_delta_d_star_2, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_delta_d_star_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_star_2[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star_2, 2)) )
-    # ax_delta_d_star_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_delta_d_star_vs_force80_2.set_title(r'$\Delta d^*$ vs Force 80% 2', font=fonts.serif_rz_legend())
-    # ax_delta_d_star_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_delta_d_star_vs_force80_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_delta_d_star_vs_force80_2, "delta_d_star_vs_force80_2")
+    fig_A_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_A_vs_force20_1 = fig_A_vs_force20_1.gca()
+    ax_A_vs_force20_1.errorbar(list(mean_force20_FF1_dict.values()), list(mean_A_FF1_dict.values()), yerr=list(std_A_FF1_dict.values()), xerr=list(std_force20_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_A_vs_force20_1.errorbar(list(mean_force20_RDG1_dict.values()),list(mean_A_RDG1_dict.values()), yerr=list(std_A_RDG1_dict.values()), xerr=list(std_force20_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_A_vs_force20_1.plot(force_20_1, fitted_response_A_1, ':k', alpha=0.8, label=' A = ' + str(np.round(a_A_1[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_A_1[0], 4)) + '\n R2 = ' + str(np.round(score_A_1, 2)) )
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates_to_use[i]
+        ax_A_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_FF1_dict[date] +0.04, mean_A_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_A_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_RDG1_dict[date]+0.04, mean_A_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_A_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_A_vs_force20_1.set_title(r'A vs Force 20% 1', font=fonts.serif_rz_legend())
+    ax_A_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_A_vs_force20_1.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_A_vs_force20_1, "A_vs_force20_1")
 
-    # force_80 = np.concatenate((mean_force80_FF, mean_force80_RDG))
-    # index_force_nan = np.isnan(force_80) 
-    # delta_d_star = np.concatenate(( mean_delta_d_star_FF , mean_delta_d_star_RDG ))
-    # index_delta_d_star_nan = np.isnan(delta_d_star)
-    # indices_force_or_delta_d_star_nan = [index_force_nan[i] or index_delta_d_star_nan[i] for i in range(len(index_force_nan))]
-    # force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_delta_d_star_nan[i]])
-    # delta_d_star_without_nan_force = np.array([delta_d_star[i] for i in range(len(delta_d_star)) if not indices_force_or_delta_d_star_nan[i]])
-    # force_80 = force_80_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80, delta_d_star_without_nan_force)
-    # fitted_response_delta_d_star = model.predict(force_80)
-    # a_delta_d_star = reg.coef_
-    # b_delta_d_star = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_delta_d_star = reg.score(force_80, delta_d_star_without_nan_force)
+    force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_20_2) 
+    A_2 = np.concatenate(( list(mean_A_FF2_dict.values()) , list(mean_A_RDG2_dict.values()) ))
+    index_A_2_nan = np.isnan(A_2)
+    indices_force_or_A_2_nan = [index_force_2_nan[i] or index_A_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_20_2_without_nan = np.array([force_20_2[i] for i in range(len(force_20_2)) if not indices_force_or_A_2_nan[i]])
+    A_2_without_nan_force = np.array([A_2[i] for i in range(len(indices_force_or_A_2_nan)) if not indices_force_or_A_2_nan[i]])
+    force_20_2 = force_20_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_2, A_2_without_nan_force)
+    fitted_response_A_2 = model.predict(force_20_2)
+    a_A_2 = reg.coef_
+    b_A_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_A_2 = reg.score(force_20_2, A_2_without_nan_force)
     
-    # fig_delta_d_star_vs_force80 = createfigure.rectangle_rz_figure(pixels)
-    # ax_delta_d_star_vs_force80 = fig_delta_d_star_vs_force80.gca()
-    # ax_delta_d_star_vs_force80.plot([40, 40], [min(mean_delta_d_star_FF[~np.isnan(mean_delta_d_star_FF)]) - max(std_delta_d_star_FF[~np.isnan(std_delta_d_star_FF)]), max(mean_delta_d_star_RDG[~np.isnan(mean_delta_d_star_RDG)]) + max(std_delta_d_star_RDG[~np.isnan(std_delta_d_star_RDG)]) ], '--r', lw=1, alpha=0.2)
-    # ax_delta_d_star_vs_force80.errorbar(mean_force80_FF, mean_delta_d_star_FF, yerr=std_delta_d_star_FF, xerr=std_force80_FF ,lw=0, label='FF', **kwargs_FF)
-    # ax_delta_d_star_vs_force80.errorbar(mean_force80_RDG, mean_delta_d_star_RDG, yerr=std_delta_d_star_RDG, xerr=std_force80_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # ax_delta_d_star_vs_force80.plot(force_80, fitted_response_delta_d_star, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_delta_d_star[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_star[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star, 2)) )
-    # ax_delta_d_star_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_delta_d_star_vs_force80.set_title(r'$\Delta d^*$ vs Force 80% 1+2', font=fonts.serif_rz_legend())
-    # ax_delta_d_star_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_delta_d_star_vs_force80.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_delta_d_star_vs_force80, "delta_d_star_vs_force80_1+2")
+    fig_A_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_A_vs_force20_2 = fig_A_vs_force20_2.gca()
+    ax_A_vs_force20_2.errorbar(list(mean_force20_FF2_dict.values()), list(mean_A_FF2_dict.values()), yerr=list(std_A_FF2_dict.values()), xerr=list(std_force20_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_A_vs_force20_2.errorbar(list(mean_force20_RDG2_dict.values()),list(mean_A_RDG2_dict.values()), yerr=list(std_A_RDG2_dict.values()), xerr=list(std_force20_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_A_vs_force20_2.plot(force_20_2, fitted_response_A_2, ':k', alpha=0.8, label=' A = ' + str(np.round(a_A_2[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_A_2[0], 4)) + '\n R2 = ' + str(np.round(score_A_2, 2)) )
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates_to_use[i]
+        ax_A_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_FF2_dict[date] +0.04, mean_A_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_A_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_RDG2_dict[date]+0.04, mean_A_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_A_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_A_vs_force20_2.set_title(r'A vs Force 20% 2', font=fonts.serif_rz_legend())
+    ax_A_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_A_vs_force20_2.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_A_vs_force20_2, "A_vs_force20_2")
 
-    # # #delta_d_star vs force 20    
-    # # fig_delta_d_star_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_delta_d_star_vs_force20_1 = fig_delta_d_star_vs_force20_1.gca()
-    # # ax_delta_d_star_vs_force20_1.errorbar(mean_force20_FF1, mean_delta_d_star_FF1, yerr=std_delta_d_star_FF1, xerr=std_force20_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # # ax_delta_d_star_vs_force20_1.errorbar(mean_force20_RDG1, mean_delta_d_star_RDG1, yerr=std_delta_d_star_RDG1, xerr=std_force20_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # # ax_delta_d_star_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_delta_d_star_vs_force20_1.set_title(r'$\Delta d^*$ vs Force 20% 1', font=fonts.serif_rz_legend())
-    # # ax_delta_d_star_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_delta_d_star_vs_force20_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_delta_d_star_vs_force20_1, "delta_d_star_vs_force20_1")
-
-    # # fig_delta_d_star_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_delta_d_star_vs_force20_2 = fig_delta_d_star_vs_force20_2.gca()
-    # # ax_delta_d_star_vs_force20_2.errorbar(mean_force20_FF2, mean_delta_d_star_FF2, yerr=std_delta_d_star_FF2, xerr=std_force20_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # # ax_delta_d_star_vs_force20_2.errorbar(mean_force20_RDG2, mean_delta_d_star_RDG2, yerr=std_delta_d_star_RDG2, xerr=std_force20_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # # ax_delta_d_star_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_delta_d_star_vs_force20_2.set_title(r'$\Delta d^*$ vs Force 20% 2', font=fonts.serif_rz_legend())
-    # # ax_delta_d_star_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_delta_d_star_vs_force20_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_delta_d_star_vs_force20_2, "delta_d_star_vs_force20_2")
-
-    # # fig_delta_d_star_vs_force20 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_delta_d_star_vs_force20 = fig_delta_d_star_vs_force20.gca()
-    # # ax_delta_d_star_vs_force20.errorbar(mean_force20_FF, mean_delta_d_star_FF, yerr=std_delta_d_star_FF, xerr=std_force20_FF ,lw=0, label='FF', **kwargs_FF)
-    # # ax_delta_d_star_vs_force20.errorbar(mean_force20_RDG, mean_delta_d_star_RDG, yerr=std_delta_d_star_RDG, xerr=std_force20_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # # ax_delta_d_star_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_delta_d_star_vs_force20.set_title(r'$\Delta d^*$ vs Force 20% 1+2', font=fonts.serif_rz_legend())
-    # # ax_delta_d_star_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_delta_d_star_vs_force20.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_delta_d_star_vs_force20, "delta_d_star_vs_force20_1+2")
-
-    # #d_min vs force 80    
-    # force_80_1 = np.concatenate((mean_force80_FF1, mean_force80_RDG1))
-    # index_force_1_nan = np.isnan(force_80_1) 
-    # d_min_1 = np.concatenate(( mean_d_min_FF1 , mean_d_min_RDG1 ))
-    # index_d_min_1_nan = np.isnan(d_min_1)
-    # indices_force_or_d_min_1_nan = [index_force_1_nan[i] or index_d_min_1_nan[i] for i in range(len(index_force_1_nan))]
-    # force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_d_min_1_nan[i]])
-    # d_min_1_without_nan_force = np.array([d_min_1[i] for i in range(len(d_min_1)) if not indices_force_or_d_min_1_nan[i]])
-    # force_80_1 = force_80_1_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80_1, d_min_1_without_nan_force)
-    # fitted_response_d_min_1 = model.predict(force_80_1)
-    # a_d_min_1 = reg.coef_
-    # b_d_min_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_d_min_1 = reg.score(force_80_1, d_min_1_without_nan_force)
+    force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
+    index_force_nan = np.isnan(force_20) 
+    A = np.concatenate(( list(mean_A_FF_dict.values()) , list(mean_A_RDG_dict.values()) ))
+    index_A_nan = np.isnan(A)
+    indices_force_or_A_nan = [index_force_nan[i] or index_A_nan[i] for i in range(len(index_force_nan))]
+    force_20_without_nan = np.array([force_20[i] for i in range(len(force_20)) if not indices_force_or_A_nan[i]])
+    A_without_nan_force = np.array([A[i] for i in range(len(indices_force_or_A_nan)) if not indices_force_or_A_nan[i]])
+    force_20 = force_20_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20, A_without_nan_force)
+    fitted_response_A = model.predict(force_20)
+    a_A = reg.coef_
+    b_A = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_A = reg.score(force_20, A_without_nan_force)
     
-    # fig_d_min_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
-    # ax_d_min_vs_force80_1 = fig_d_min_vs_force80_1.gca()
-    # ax_d_min_vs_force80_1.plot([40, 40], [min(mean_d_min_FF1) - max(std_d_min_FF1[~np.isnan(std_d_min_FF1)]), max(mean_d_min_RDG1) + max(std_d_min_RDG1[~np.isnan(std_d_min_RDG1)]) ], '--r', lw=1, alpha=0.2)
-    # ax_d_min_vs_force80_1.errorbar(mean_force80_FF1, mean_d_min_FF1, yerr=std_d_min_FF1, xerr=std_force80_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # ax_d_min_vs_force80_1.errorbar(mean_force80_RDG1, mean_d_min_RDG1, yerr=std_d_min_RDG1, xerr=std_force80_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # ax_d_min_vs_force80_1.plot(force_80_1, fitted_response_d_min_1, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_d_min_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_d_min_1[0], 4)) + '\n R2 = ' + str(np.round(score_d_min_1, 2)) )
-    # ax_d_min_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_d_min_vs_force80_1.set_title(r'$d_{min}$ vs Force 80% 1', font=fonts.serif_rz_legend())
-    # ax_d_min_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_d_min_vs_force80_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_d_min_vs_force80_1, "d_min_vs_force80_1")
+    fig_A_vs_force20 = createfigure.rectangle_rz_figure(pixels)
+    ax_A_vs_force20 = fig_A_vs_force20.gca()
+    ax_A_vs_force20.errorbar(list(mean_force20_FF_dict.values()), list(mean_A_FF_dict.values()), yerr=list(std_A_FF_dict.values()), xerr=list(std_force20_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_A_vs_force20.errorbar(list(mean_force20_RDG_dict.values()),list(mean_A_RDG_dict.values()), yerr=list(std_A_RDG_dict.values()), xerr=list(std_force20_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_A_vs_force20.plot(force_20, fitted_response_A, ':k', alpha=0.8, label=' A = ' + str(np.round(a_A[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_A[0], 4)) + '\n R2 = ' + str(np.round(score_A, 2)) )
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates_to_use[i]
+        ax_A_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_FF_dict[date]+ 0.04, mean_A_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_A_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_RDG_dict[date]+0.04, mean_A_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_A_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_A_vs_force20.set_title(r'A vs Force 20% 1+2', font=fonts.serif_rz_legend())
+    ax_A_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_A_vs_force20.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_A_vs_force20, "A_vs_force20_1+2")
 
-    # force_80_2 = np.concatenate((mean_force80_FF2, mean_force80_RDG2))
-    # index_force_2_nan = np.isnan(force_80_2) 
-    # d_min_2 = np.concatenate(( mean_d_min_FF2 , mean_d_min_RDG2 ))
-    # index_d_min_2_nan = np.isnan(d_min_2)
-    # indices_force_or_d_min_2_nan = [index_force_2_nan[i] or index_d_min_2_nan[i] for i in range(len(index_force_2_nan))]
-    # force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_d_min_2_nan[i]])
-    # d_min_2_without_nan_force = np.array([d_min_2[i] for i in range(len(d_min_2)) if not indices_force_or_d_min_2_nan[i]])
-    # force_80_2 = force_80_2_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80_2, d_min_2_without_nan_force)
-    # fitted_response_d_min_2 = model.predict(force_80_2)
-    # a_d_min_2 = reg.coef_
-    # b_d_min_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_d_min_2 = reg.score(force_80_2, d_min_2_without_nan_force)
+
+    #delta_d vs force 80    
     
-    # fig_d_min_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
-    # ax_d_min_vs_force80_2 = fig_d_min_vs_force80_2.gca()
-    # ax_d_min_vs_force80_2.plot([40, 40], [min(mean_d_min_FF2[~np.isnan(mean_d_min_FF2)]) - max(std_d_min_FF2[~np.isnan(std_d_min_FF2)]), max(mean_d_min_RDG2[~np.isnan(mean_d_min_RDG2)]) + max(std_d_min_RDG2[~np.isnan(std_d_min_RDG2)]) ], '--r', lw=1, alpha=0.2)
-    # ax_d_min_vs_force80_2.errorbar(mean_force80_FF2, mean_d_min_FF2, yerr=std_d_min_FF2, xerr=std_force80_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # ax_d_min_vs_force80_2.errorbar(mean_force80_RDG2, mean_d_min_RDG2, yerr=std_d_min_RDG2, xerr=std_force80_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # ax_d_min_vs_force80_2.plot(force_80_2, fitted_response_d_min_2, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_d_min_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_d_min_2[0], 4)) + '\n R2 = ' + str(np.round(score_d_min_2, 2)) )
-    # ax_d_min_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_d_min_vs_force80_2.set_title(r'$d_{min}$ vs Force 80% 2', font=fonts.serif_rz_legend())
-    # ax_d_min_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_d_min_vs_force80_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_d_min_vs_force80_2, "d_min_vs_force80_2")
-
-    # force_80 = np.concatenate((mean_force80_FF, mean_force80_RDG))
-    # index_force_nan = np.isnan(force_80) 
-    # d_min = np.concatenate(( mean_d_min_FF , mean_d_min_RDG ))
-    # index_d_min_nan = np.isnan(d_min)
-    # indices_force_or_d_min_nan = [index_force_nan[i] or index_d_min_nan[i] for i in range(len(index_force_nan))]
-    # force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_d_min_nan[i]])
-    # d_min_without_nan_force = np.array([d_min[i] for i in range(len(d_min)) if not indices_force_or_d_min_nan[i]])
-    # force_80 = force_80_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80, d_min_without_nan_force)
-    # fitted_response_d_min = model.predict(force_80)
-    # a_d_min = reg.coef_
-    # b_d_min = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_d_min = reg.score(force_80, d_min_without_nan_force)
+    force_80_1 = np.concatenate((list(mean_force80_FF1_dict.values()), list(mean_force80_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_80_1) 
+    delta_d_1 = np.concatenate(( list(mean_delta_d_FF1_dict.values()) , list(mean_delta_d_RDG1_dict.values()) ))
+    index_delta_d_1_nan = np.isnan(delta_d_1)
+    indices_force_or_delta_d_1_nan = [index_force_1_nan[i] or index_delta_d_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_delta_d_1_nan[i]])
+    delta_d_1_without_nan_force = np.array([delta_d_1[i] for i in range(len(indices_force_or_delta_d_1_nan)) if not indices_force_or_delta_d_1_nan[i]])
+    force_80_1 = force_80_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80_1, delta_d_1_without_nan_force)
+    fitted_response_delta_d_1 = model.predict(force_80_1)
+    a_delta_d_1 = reg.coef_
+    b_delta_d_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_1 = reg.score(force_80_1, delta_d_1_without_nan_force)
     
-    # fig_d_min_vs_force80 = createfigure.rectangle_rz_figure(pixels)
-    # ax_d_min_vs_force80 = fig_d_min_vs_force80.gca()
-    # ax_d_min_vs_force80.plot([40, 40], [min(mean_d_min_FF[~np.isnan(mean_d_min_FF)]) - max(std_d_min_FF[~np.isnan(std_d_min_FF)]), max(mean_d_min_RDG[~np.isnan(mean_d_min_RDG)]) + max(std_d_min_RDG[~np.isnan(std_d_min_RDG)]) ], '--r', lw=1, alpha=0.2)
-    # ax_d_min_vs_force80.errorbar(mean_force80_FF, mean_d_min_FF, yerr=std_d_min_FF, xerr=std_force80_FF ,lw=0, label='FF', **kwargs_FF)
-    # ax_d_min_vs_force80.errorbar(mean_force80_RDG, mean_d_min_RDG, yerr=std_d_min_RDG, xerr=std_force80_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # ax_d_min_vs_force80.plot(force_80, fitted_response_d_min, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_d_min[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_d_min[0], 4)) + '\n R2 = ' + str(np.round(score_d_min, 2)) )
-    # ax_d_min_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_d_min_vs_force80.set_title(r'$d_{min}$ vs Force 80% 1+2', font=fonts.serif_rz_legend())
-    # ax_d_min_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_d_min_vs_force80.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_d_min_vs_force80, "d_min_vs_force80_1+2")
+    fig_delta_d_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_vs_force80_1 = fig_delta_d_vs_force80_1.gca()
+    ax_delta_d_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), list(mean_delta_d_FF1_dict.values()), yerr=list(std_delta_d_FF1_dict.values()), xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_delta_d_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()),list(mean_delta_d_RDG1_dict.values()), yerr=list(std_delta_d_RDG1_dict.values()), xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_delta_d_vs_force80_1.plot(force_80_1, fitted_response_delta_d_1, ':k', alpha=0.8, label=r'$\Delta d$ = ' + str(np.round(a_delta_d_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_1[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_1, 2)) )
+    for i in range(len(mean_force80_FF1_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_FF1_dict[date] +0.04, mean_delta_d_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_RDG1_dict[date]+0.04, mean_delta_d_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_vs_force80_1.set_title(r'$\Delta d$ vs Force 80% 1', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force80_1.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_vs_force80_1, "delta_d_vs_force80_1")
 
-    # # #d_min vs force 20    
-    # # fig_d_min_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_d_min_vs_force20_1 = fig_d_min_vs_force20_1.gca()
-    # # ax_d_min_vs_force20_1.errorbar(mean_force20_FF1, mean_d_min_FF1, yerr=std_d_min_FF1, xerr=std_force20_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # # ax_d_min_vs_force20_1.errorbar(mean_force20_RDG1, mean_d_min_RDG1, yerr=std_d_min_RDG1, xerr=std_force20_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # # ax_d_min_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_d_min_vs_force20_1.set_title(r'$d_{min}$ vs Force 20% 1', font=fonts.serif_rz_legend())
-    # # ax_d_min_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_d_min_vs_force20_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_d_min_vs_force20_1, "d_min_vs_force20_1")
-
-    # # fig_d_min_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_d_min_vs_force20_2 = fig_d_min_vs_force20_2.gca()
-    # # ax_d_min_vs_force20_2.errorbar(mean_force20_FF2, mean_d_min_FF2, yerr=std_d_min_FF2, xerr=std_force20_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # # ax_d_min_vs_force20_2.errorbar(mean_force20_RDG2, mean_d_min_RDG2, yerr=std_d_min_RDG2, xerr=std_force20_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # # ax_d_min_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_d_min_vs_force20_2.set_title(r'$d_{min}$ vs Force 20% 2', font=fonts.serif_rz_legend())
-    # # ax_d_min_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_d_min_vs_force20_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_d_min_vs_force20_2, "d_min_vs_force20_2")
-
-    # # fig_d_min_vs_force20 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_d_min_vs_force20 = fig_d_min_vs_force20.gca()
-    # # ax_d_min_vs_force20.errorbar(mean_force20_FF, mean_d_min_FF, yerr=std_d_min_FF, xerr=std_force20_FF ,lw=0, label='FF', **kwargs_FF)
-    # # ax_d_min_vs_force20.errorbar(mean_force20_RDG, mean_d_min_RDG, yerr=std_d_min_RDG, xerr=std_force20_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # # ax_d_min_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_d_min_vs_force20.set_title(r'$d_{min}$ vs Force 20% 1+2', font=fonts.serif_rz_legend())
-    # # ax_d_min_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_d_min_vs_force20.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_d_min_vs_force20, "d_min_vs_force20_1+2")
-
-    # #delta_d vs force 80 
-    # force_80_1 = np.concatenate((mean_force80_FF1, mean_force80_RDG1))
-    # index_force_1_nan = np.isnan(force_80_1) 
-    # delta_d_1 = np.concatenate(( mean_delta_d_FF1 , mean_delta_d_RDG1 ))
-    # index_delta_d_1_nan = np.isnan(delta_d_1)
-    # indices_force_or_delta_d_1_nan = [index_force_1_nan[i] or index_delta_d_1_nan[i] for i in range(len(index_force_1_nan))]
-    # force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_delta_d_1_nan[i]])
-    # delta_d_1_without_nan_force = np.array([delta_d_1[i] for i in range(len(delta_d_1)) if not indices_force_or_delta_d_1_nan[i]])
-    # force_80_1 = force_80_1_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80_1, delta_d_1_without_nan_force)
-    # fitted_response_delta_d_1 = model.predict(force_80_1)
-    # a_delta_d_1 = reg.coef_
-    # b_delta_d_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_delta_d_1 = reg.score(force_80_1, delta_d_1_without_nan_force)
-       
-    # fig_delta_d_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
-    # ax_delta_d_vs_force80_1 = fig_delta_d_vs_force80_1.gca()
-    # ax_delta_d_vs_force80_1.plot([40, 40], [min(mean_delta_d_FF1) - max(std_delta_d_FF1[~np.isnan(std_delta_d_FF1)]), max(mean_delta_d_RDG1) + max(std_delta_d_RDG1[~np.isnan(std_delta_d_RDG1)]) ], '--r', lw=1, alpha=0.2)
-    # ax_delta_d_vs_force80_1.errorbar(mean_force80_FF1, mean_delta_d_FF1, yerr=std_delta_d_FF1, xerr=std_force80_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # ax_delta_d_vs_force80_1.errorbar(mean_force80_RDG1, mean_delta_d_RDG1, yerr=std_delta_d_RDG1, xerr=std_force80_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # ax_delta_d_vs_force80_1.plot(force_80_1, fitted_response_delta_d_1, ':k', label=r' $\Delta d$ = ' + str(np.round(a_delta_d_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_1[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_1, 2)) )
-    # ax_delta_d_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_delta_d_vs_force80_1.set_title(r'$\Delta d$ vs Force 80% 1', font=fonts.serif_rz_legend())
-    # ax_delta_d_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_delta_d_vs_force80_1.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_delta_d_vs_force80_1, "delta_d_vs_force80_1")
-
-    # force_80_2 = np.concatenate((mean_force80_FF2, mean_force80_RDG2))
-    # index_force_2_nan = np.isnan(force_80_2) 
-    # delta_d_2 = np.concatenate(( mean_delta_d_FF2 , mean_delta_d_RDG2 ))
-    # index_delta_d_2_nan = np.isnan(delta_d_2)
-    # indices_force_or_delta_d_2_nan = [index_force_2_nan[i] or index_delta_d_2_nan[i] for i in range(len(index_force_2_nan))]
-    # force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_delta_d_2_nan[i]])
-    # delta_d_2_without_nan_force = np.array([delta_d_2[i] for i in range(len(delta_d_2)) if not indices_force_or_delta_d_2_nan[i]])
-    # force_80_2 = force_80_2_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80_2, delta_d_2_without_nan_force)
-    # fitted_response_delta_d_2 = model.predict(force_80_2)
-    # a_delta_d_2 = reg.coef_
-    # b_delta_d_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_delta_d_2 = reg.score(force_80_2, delta_d_2_without_nan_force)
+    force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_80_2) 
+    delta_d_2 = np.concatenate(( list(mean_delta_d_FF2_dict.values()) , list(mean_delta_d_RDG2_dict.values()) ))
+    index_delta_d_2_nan = np.isnan(delta_d_2)
+    indices_force_or_delta_d_2_nan = [index_force_2_nan[i] or index_delta_d_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_delta_d_2_nan[i]])
+    delta_d_2_without_nan_force = np.array([delta_d_2[i] for i in range(len(indices_force_or_delta_d_2_nan)) if not indices_force_or_delta_d_2_nan[i]])
+    force_80_2 = force_80_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80_2, delta_d_2_without_nan_force)
+    fitted_response_delta_d_2 = model.predict(force_80_2)
+    a_delta_d_2 = reg.coef_
+    b_delta_d_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_2 = reg.score(force_80_2, delta_d_2_without_nan_force)
     
-    # fig_delta_d_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
-    # ax_delta_d_vs_force80_2 = fig_delta_d_vs_force80_2.gca()
-    # ax_delta_d_vs_force80_2.plot([40, 40], [min(mean_delta_d_FF2[~np.isnan(mean_delta_d_FF2)]) - max(std_delta_d_FF2[~np.isnan(std_delta_d_FF2)]), max(mean_delta_d_RDG2[~np.isnan(mean_delta_d_RDG2)]) + max(std_delta_d_RDG2[~np.isnan(std_delta_d_RDG2)]) ], '--r', lw=1, alpha=0.2)
-    # ax_delta_d_vs_force80_2.errorbar(mean_force80_FF2, mean_delta_d_FF2, yerr=std_delta_d_FF2, xerr=std_force80_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # ax_delta_d_vs_force80_2.errorbar(mean_force80_RDG2, mean_delta_d_RDG2, yerr=std_delta_d_RDG2, xerr=std_force80_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # ax_delta_d_vs_force80_2.plot(force_80_2, fitted_response_delta_d_2, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_delta_d_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_2[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_2, 2)) )
-    # ax_delta_d_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_delta_d_vs_force80_2.set_title(r'\Delta d vs Force 80% 2', font=fonts.serif_rz_legend())
-    # ax_delta_d_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_delta_d_vs_force80_2.set_ylabel(r'\Delta d [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_delta_d_vs_force80_2, "delta_d_vs_force80_2")
+    fig_delta_d_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_vs_force80_2 = fig_delta_d_vs_force80_2.gca()
+    ax_delta_d_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), list(mean_delta_d_FF2_dict.values()), yerr=list(std_delta_d_FF2_dict.values()), xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_delta_d_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()),list(mean_delta_d_RDG2_dict.values()), yerr=list(std_delta_d_RDG2_dict.values()), xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_delta_d_vs_force80_2.plot(force_80_2, fitted_response_delta_d_2, ':k', alpha=0.8, label=r'$\Delta d$ = ' + str(np.round(a_delta_d_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_2[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_2, 2)) )
+    for i in range(len(mean_force80_FF2_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_FF2_dict[date] +0.04, mean_delta_d_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_RDG2_dict[date]+0.04, mean_delta_d_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_delta_d_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_vs_force80_2.set_title(r'$\Delta d$ vs Force 80% 2', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force80_2.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_vs_force80_2, "delta_d_vs_force80_2")
 
-    # force_80 = np.concatenate((mean_force80_FF, mean_force80_RDG))
-    # index_force_nan = np.isnan(force_80) 
-    # delta_d = np.concatenate(( mean_delta_d_FF , mean_delta_d_RDG ))
-    # index_delta_d_nan = np.isnan(delta_d)
-    # indices_force_or_delta_d_nan = [index_force_nan[i] or index_delta_d_nan[i] for i in range(len(index_force_nan))]
-    # force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_delta_d_nan[i]])
-    # delta_d_without_nan_force = np.array([delta_d[i] for i in range(len(delta_d)) if not indices_force_or_delta_d_nan[i]])
-    # force_80 = force_80_without_nan.reshape((-1, 1))
-    # model = LinearRegression()
-    # reg = model.fit(force_80, delta_d_without_nan_force)
-    # fitted_response_delta_d = model.predict(force_80)
-    # a_delta_d = reg.coef_
-    # b_delta_d = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
-    # score_delta_d = reg.score(force_80, delta_d_without_nan_force)
+    force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
+    index_force_nan = np.isnan(force_80) 
+    delta_d = np.concatenate(( list(mean_delta_d_FF_dict.values()) , list(mean_delta_d_RDG_dict.values()) ))
+    index_delta_d_nan = np.isnan(delta_d)
+    indices_force_or_delta_d_nan = [index_force_nan[i] or index_delta_d_nan[i] for i in range(len(index_force_nan))]
+    force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_delta_d_nan[i]])
+    delta_d_without_nan_force = np.array([delta_d[i] for i in range(len(indices_force_or_delta_d_nan)) if not indices_force_or_delta_d_nan[i]])
+    force_80 = force_80_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80, delta_d_without_nan_force)
+    fitted_response_delta_d = model.predict(force_80)
+    a_delta_d = reg.coef_
+    b_delta_d = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d = reg.score(force_80, delta_d_without_nan_force)
     
-    # fig_delta_d_vs_force80 = createfigure.rectangle_rz_figure(pixels)
-    # ax_delta_d_vs_force80 = fig_delta_d_vs_force80.gca()
-    # ax_delta_d_vs_force80.plot([40, 40], [min(mean_delta_d_FF[~np.isnan(mean_delta_d_FF)]) - max(std_delta_d_FF[~np.isnan(std_delta_d_FF)]), max(mean_delta_d_RDG[~np.isnan(mean_delta_d_RDG)]) + max(std_delta_d_RDG[~np.isnan(std_delta_d_RDG)]) ], '--r', lw=1, alpha=0.2)
-    # ax_delta_d_vs_force80.errorbar(mean_force80_FF, mean_delta_d_FF, yerr=std_delta_d_FF, xerr=std_force80_FF ,lw=0, label='FF', **kwargs_FF)
-    # ax_delta_d_vs_force80.errorbar(mean_force80_RDG, mean_delta_d_RDG, yerr=std_delta_d_RDG, xerr=std_force80_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # ax_delta_d_vs_force80.plot(force_80, fitted_response_delta_d, ':k', label=r' $\Delta d^*$ = ' + str(np.round(a_delta_d[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d, 2)) )
-    # ax_delta_d_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # ax_delta_d_vs_force80.set_title(r'\Delta d vs Force 80% 1+2', font=fonts.serif_rz_legend())
-    # ax_delta_d_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
-    # ax_delta_d_vs_force80.set_ylabel(r'\Delta d [mm]', font=fonts.serif_rz_legend())
-    # savefigure.save_as_png(fig_delta_d_vs_force80, "delta_d_vs_force80_1+2")
+    fig_delta_d_vs_force80 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_vs_force80 = fig_delta_d_vs_force80.gca()
+    ax_delta_d_vs_force80.errorbar(list(mean_force80_FF_dict.values()), list(mean_delta_d_FF_dict.values()), yerr=list(std_delta_d_FF_dict.values()), xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_delta_d_vs_force80.errorbar(list(mean_force80_RDG_dict.values()),list(mean_delta_d_RDG_dict.values()), yerr=list(std_delta_d_RDG_dict.values()), xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_delta_d_vs_force80.plot(force_80, fitted_response_delta_d, ':k', alpha=0.8, label=r'$\Delta d$ = ' + str(np.round(a_delta_d[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d, 2)) )
+    for i in range(len(mean_force80_FF_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_FF_dict[date]+ 0.04, mean_delta_d_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_RDG_dict[date]+0.04, mean_delta_d_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_vs_force80.set_title(r'$\Delta d$ vs Force 80% 1+2', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force80.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_vs_force80, "delta_d_vs_force80_1+2")
 
-    # # #delta_d vs force 20    
-    # # fig_delta_d_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_delta_d_vs_force20_1 = fig_delta_d_vs_force20_1.gca()
-    # # ax_delta_d_vs_force20_1.errorbar(mean_force20_FF1, mean_delta_d_FF1, yerr=std_delta_d_FF1, xerr=std_force20_FF1 ,lw=0, label='FF1', **kwargs_FF1)
-    # # ax_delta_d_vs_force20_1.errorbar(mean_force20_RDG1, mean_delta_d_RDG1, yerr=std_delta_d_RDG1, xerr=std_force20_RDG1 ,lw=0, label='RDG1', **kwargs_RDG1)
-    # # ax_delta_d_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_delta_d_vs_force20_1.set_title(r'\Delta d vs Force 20% 1', font=fonts.serif_rz_legend())
-    # # ax_delta_d_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_delta_d_vs_force20_1.set_ylabel(r'\Delta d [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_delta_d_vs_force20_1, "delta_d_vs_force20_1")
+    #delta_d vs force 20    
+    
+    force_20_1 = np.concatenate((list(mean_force20_FF1_dict.values()), list(mean_force20_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_20_1) 
+    delta_d_1 = np.concatenate(( list(mean_delta_d_FF1_dict.values()) , list(mean_delta_d_RDG1_dict.values()) ))
+    index_delta_d_1_nan = np.isnan(delta_d_1)
+    indices_force_or_delta_d_1_nan = [index_force_1_nan[i] or index_delta_d_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_20_1_without_nan = np.array([force_20_1[i] for i in range(len(force_20_1)) if not indices_force_or_delta_d_1_nan[i]])
+    delta_d_1_without_nan_force = np.array([delta_d_1[i] for i in range(len(indices_force_or_delta_d_1_nan)) if not indices_force_or_delta_d_1_nan[i]])
+    force_20_1 = force_20_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_1, delta_d_1_without_nan_force)
+    fitted_response_delta_d_1 = model.predict(force_20_1)
+    a_delta_d_1 = reg.coef_
+    b_delta_d_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_1 = reg.score(force_20_1, delta_d_1_without_nan_force)
+    
+    fig_delta_d_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_vs_force20_1 = fig_delta_d_vs_force20_1.gca()
+    ax_delta_d_vs_force20_1.errorbar(list(mean_force20_FF1_dict.values()), list(mean_delta_d_FF1_dict.values()), yerr=list(std_delta_d_FF1_dict.values()), xerr=list(std_force20_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_delta_d_vs_force20_1.errorbar(list(mean_force20_RDG1_dict.values()),list(mean_delta_d_RDG1_dict.values()), yerr=list(std_delta_d_RDG1_dict.values()), xerr=list(std_force20_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_delta_d_vs_force20_1.plot(force_20_1, fitted_response_delta_d_1, ':k', alpha=0.8, label=r'$\Delta d$ = ' + str(np.round(a_delta_d_1[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_delta_d_1[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_1, 2)) )
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_FF1_dict[date] +0.04, mean_delta_d_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_RDG1_dict[date]+0.04, mean_delta_d_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_vs_force20_1.set_title(r'$\Delta d$ vs Force 20% 1', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force20_1.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_vs_force20_1, "delta_d_vs_force20_1")
 
-    # # fig_delta_d_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_delta_d_vs_force20_2 = fig_delta_d_vs_force20_2.gca()
-    # # ax_delta_d_vs_force20_2.errorbar(mean_force20_FF2, mean_delta_d_FF2, yerr=std_delta_d_FF2, xerr=std_force20_FF2 ,lw=0, label='FF2', **kwargs_FF2)
-    # # ax_delta_d_vs_force20_2.errorbar(mean_force20_RDG2, mean_delta_d_RDG2, yerr=std_delta_d_RDG2, xerr=std_force20_RDG2 ,lw=0, label='RDG2', **kwargs_RDG2)
-    # # ax_delta_d_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_delta_d_vs_force20_2.set_title(r'\Delta d vs Force 20% 2', font=fonts.serif_rz_legend())
-    # # ax_delta_d_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_delta_d_vs_force20_2.set_ylabel(r'\Delta d [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_delta_d_vs_force20_2, "delta_d_vs_force20_2")
+    force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_20_2) 
+    delta_d_2 = np.concatenate(( list(mean_delta_d_FF2_dict.values()) , list(mean_delta_d_RDG2_dict.values()) ))
+    index_delta_d_2_nan = np.isnan(delta_d_2)
+    indices_force_or_delta_d_2_nan = [index_force_2_nan[i] or index_delta_d_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_20_2_without_nan = np.array([force_20_2[i] for i in range(len(force_20_2)) if not indices_force_or_delta_d_2_nan[i]])
+    delta_d_2_without_nan_force = np.array([delta_d_2[i] for i in range(len(indices_force_or_delta_d_2_nan)) if not indices_force_or_delta_d_2_nan[i]])
+    force_20_2 = force_20_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_2, delta_d_2_without_nan_force)
+    fitted_response_delta_d_2 = model.predict(force_20_2)
+    a_delta_d_2 = reg.coef_
+    b_delta_d_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_2 = reg.score(force_20_2, delta_d_2_without_nan_force)
+    
+    fig_delta_d_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_vs_force20_2 = fig_delta_d_vs_force20_2.gca()
+    ax_delta_d_vs_force20_2.errorbar(list(mean_force20_FF2_dict.values()), list(mean_delta_d_FF2_dict.values()), yerr=list(std_delta_d_FF2_dict.values()), xerr=list(std_force20_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_delta_d_vs_force20_2.errorbar(list(mean_force20_RDG2_dict.values()),list(mean_delta_d_RDG2_dict.values()), yerr=list(std_delta_d_RDG2_dict.values()), xerr=list(std_force20_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_delta_d_vs_force20_2.plot(force_20_2, fitted_response_delta_d_2, ':k', alpha=0.8, label=r'$\Delta d$ = ' + str(np.round(a_delta_d_2[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_delta_d_2[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_2, 2)) )
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_FF2_dict[date] +0.04, mean_delta_d_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_RDG2_dict[date]+0.04, mean_delta_d_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_delta_d_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_vs_force20_2.set_title(r'$\Delta d$ vs Force 20% 2', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force20_2.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_vs_force20_2, "delta_d_vs_force20_2")
 
-    # # fig_delta_d_vs_force20 = createfigure.rectangle_rz_figure(pixels)
-    # # ax_delta_d_vs_force20 = fig_delta_d_vs_force20.gca()
-    # # ax_delta_d_vs_force20.errorbar(mean_force20_FF, mean_delta_d_FF, yerr=std_delta_d_FF, xerr=std_force20_FF ,lw=0, label='FF', **kwargs_FF)
-    # # ax_delta_d_vs_force20.errorbar(mean_force20_RDG, mean_delta_d_RDG, yerr=std_delta_d_RDG, xerr=std_force20_RDG ,lw=0, label='RDG', **kwargs_RDG)
-    # # ax_delta_d_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
-    # # ax_delta_d_vs_force20.set_title(r'\Delta d vs Force 20% 1+2', font=fonts.serif_rz_legend())
-    # # ax_delta_d_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
-    # # ax_delta_d_vs_force20.set_ylabel(r'\Delta d [mm]', font=fonts.serif_rz_legend())
-    # # savefigure.save_as_png(fig_delta_d_vs_force20, "delta_d_vs_force20_1+2")
+    force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
+    index_force_nan = np.isnan(force_20) 
+    delta_d = np.concatenate(( list(mean_delta_d_FF_dict.values()) , list(mean_delta_d_RDG_dict.values()) ))
+    index_delta_d_nan = np.isnan(delta_d)
+    indices_force_or_delta_d_nan = [index_force_nan[i] or index_delta_d_nan[i] for i in range(len(index_force_nan))]
+    force_20_without_nan = np.array([force_20[i] for i in range(len(force_20)) if not indices_force_or_delta_d_nan[i]])
+    delta_d_without_nan_force = np.array([delta_d[i] for i in range(len(indices_force_or_delta_d_nan)) if not indices_force_or_delta_d_nan[i]])
+    force_20 = force_20_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20, delta_d_without_nan_force)
+    fitted_response_delta_d = model.predict(force_20)
+    a_delta_d = reg.coef_
+    b_delta_d = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d = reg.score(force_20, delta_d_without_nan_force)
+    
+    fig_delta_d_vs_force20 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_vs_force20 = fig_delta_d_vs_force20.gca()
+    ax_delta_d_vs_force20.errorbar(list(mean_force20_FF_dict.values()), list(mean_delta_d_FF_dict.values()), yerr=list(std_delta_d_FF_dict.values()), xerr=list(std_force20_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_delta_d_vs_force20.errorbar(list(mean_force20_RDG_dict.values()),list(mean_delta_d_RDG_dict.values()), yerr=list(std_delta_d_RDG_dict.values()), xerr=list(std_force20_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_delta_d_vs_force20.plot(force_20, fitted_response_delta_d, ':k', alpha=0.8, label=r'$\Delta d$ = ' + str(np.round(a_delta_d[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_delta_d[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d, 2)) )
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_FF_dict[date]+ 0.04, mean_delta_d_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_RDG_dict[date]+0.04, mean_delta_d_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_vs_force20.set_title(r'$\Delta d$ vs Force 20% 1+2', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_vs_force20.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_vs_force20, "delta_d_vs_force20_1+2")
+
+    #delta_d_star vs force 80    
+    
+    force_80_1 = np.concatenate((list(mean_force80_FF1_dict.values()), list(mean_force80_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_80_1) 
+    delta_d_star_1 = np.concatenate(( list(mean_delta_d_star_FF1_dict.values()) , list(mean_delta_d_star_RDG1_dict.values()) ))
+    index_delta_d_star_1_nan = np.isnan(delta_d_star_1)
+    indices_force_or_delta_d_star_1_nan = [index_force_1_nan[i] or index_delta_d_star_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_delta_d_star_1_nan[i]])
+    delta_d_star_1_without_nan_force = np.array([delta_d_star_1[i] for i in range(len(indices_force_or_delta_d_star_1_nan)) if not indices_force_or_delta_d_star_1_nan[i]])
+    force_80_1 = force_80_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80_1, delta_d_star_1_without_nan_force)
+    fitted_response_delta_d_star_1 = model.predict(force_80_1)
+    a_delta_d_star_1 = reg.coef_
+    b_delta_d_star_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_star_1 = reg.score(force_80_1, delta_d_star_1_without_nan_force)
+    
+    fig_delta_d_star_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_star_vs_force80_1 = fig_delta_d_star_vs_force80_1.gca()
+    ax_delta_d_star_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), list(mean_delta_d_star_FF1_dict.values()), yerr=list(std_delta_d_star_FF1_dict.values()), xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_delta_d_star_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()),list(mean_delta_d_star_RDG1_dict.values()), yerr=list(std_delta_d_star_RDG1_dict.values()), xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_delta_d_star_vs_force80_1.plot(force_80_1, fitted_response_delta_d_star_1, ':k', alpha=0.8, label=r'$\Delta d^*$ = ' + str(np.round(a_delta_d_star_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_star_1[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star_1, 2)) )
+    for i in range(len(mean_force80_FF1_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_star_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_FF1_dict[date] +0.04, mean_delta_d_star_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_star_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_RDG1_dict[date]+0.04, mean_delta_d_star_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_star_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_star_vs_force80_1.set_title(r'$\Delta d^*$ vs Force 80% 1', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force80_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_star_vs_force80_1, "delta_d_star_vs_force80_1")
+
+    force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_80_2) 
+    delta_d_star_2 = np.concatenate(( list(mean_delta_d_star_FF2_dict.values()) , list(mean_delta_d_star_RDG2_dict.values()) ))
+    index_delta_d_star_2_nan = np.isnan(delta_d_star_2)
+    indices_force_or_delta_d_star_2_nan = [index_force_2_nan[i] or index_delta_d_star_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_delta_d_star_2_nan[i]])
+    delta_d_star_2_without_nan_force = np.array([delta_d_star_2[i] for i in range(len(indices_force_or_delta_d_star_2_nan)) if not indices_force_or_delta_d_star_2_nan[i]])
+    force_80_2 = force_80_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80_2, delta_d_star_2_without_nan_force)
+    fitted_response_delta_d_star_2 = model.predict(force_80_2)
+    a_delta_d_star_2 = reg.coef_
+    b_delta_d_star_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_star_2 = reg.score(force_80_2, delta_d_star_2_without_nan_force)
+    
+    fig_delta_d_star_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_star_vs_force80_2 = fig_delta_d_star_vs_force80_2.gca()
+    ax_delta_d_star_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), list(mean_delta_d_star_FF2_dict.values()), yerr=list(std_delta_d_star_FF2_dict.values()), xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_delta_d_star_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()),list(mean_delta_d_star_RDG2_dict.values()), yerr=list(std_delta_d_star_RDG2_dict.values()), xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_delta_d_star_vs_force80_2.plot(force_80_2, fitted_response_delta_d_star_2, ':k', alpha=0.8, label=r'$\Delta d^*$ = ' + str(np.round(a_delta_d_star_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_star_2[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star_2, 2)) )
+    for i in range(len(mean_force80_FF2_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_star_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_FF2_dict[date] +0.04, mean_delta_d_star_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_star_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_RDG2_dict[date]+0.04, mean_delta_d_star_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_delta_d_star_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_star_vs_force80_2.set_title(r'$\Delta d^*$ vs Force 80% 2', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force80_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_star_vs_force80_2, "delta_d_star_vs_force80_2")
+
+    force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
+    index_force_nan = np.isnan(force_80) 
+    delta_d_star = np.concatenate(( list(mean_delta_d_star_FF_dict.values()) , list(mean_delta_d_star_RDG_dict.values()) ))
+    index_delta_d_star_nan = np.isnan(delta_d_star)
+    indices_force_or_delta_d_star_nan = [index_force_nan[i] or index_delta_d_star_nan[i] for i in range(len(index_force_nan))]
+    force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_delta_d_star_nan[i]])
+    delta_d_star_without_nan_force = np.array([delta_d_star[i] for i in range(len(indices_force_or_delta_d_star_nan)) if not indices_force_or_delta_d_star_nan[i]])
+    force_80 = force_80_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80, delta_d_star_without_nan_force)
+    fitted_response_delta_d_star = model.predict(force_80)
+    a_delta_d_star = reg.coef_
+    b_delta_d_star = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_star = reg.score(force_80, delta_d_star_without_nan_force)
+    
+    fig_delta_d_star_vs_force80 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_star_vs_force80 = fig_delta_d_star_vs_force80.gca()
+    ax_delta_d_star_vs_force80.errorbar(list(mean_force80_FF_dict.values()), list(mean_delta_d_star_FF_dict.values()), yerr=list(std_delta_d_star_FF_dict.values()), xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_delta_d_star_vs_force80.errorbar(list(mean_force80_RDG_dict.values()),list(mean_delta_d_star_RDG_dict.values()), yerr=list(std_delta_d_star_RDG_dict.values()), xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_delta_d_star_vs_force80.plot(force_80, fitted_response_delta_d_star, ':k', alpha=0.8, label=r'$\Delta d^*$ = ' + str(np.round(a_delta_d_star[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_delta_d_star[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star, 2)) )
+    for i in range(len(mean_force80_FF_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_star_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_FF_dict[date]+ 0.04, mean_delta_d_star_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_star_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_RDG_dict[date]+0.04, mean_delta_d_star_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_star_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_star_vs_force80.set_title(r'$\Delta d^*$ vs Force 80% 1+2', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force80.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_star_vs_force80, "delta_d_star_vs_force80_1+2")
+
+    #delta_d_star vs force 20    
+    
+    force_20_1 = np.concatenate((list(mean_force20_FF1_dict.values()), list(mean_force20_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_20_1) 
+    delta_d_star_1 = np.concatenate(( list(mean_delta_d_star_FF1_dict.values()) , list(mean_delta_d_star_RDG1_dict.values()) ))
+    index_delta_d_star_1_nan = np.isnan(delta_d_star_1)
+    indices_force_or_delta_d_star_1_nan = [index_force_1_nan[i] or index_delta_d_star_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_20_1_without_nan = np.array([force_20_1[i] for i in range(len(force_20_1)) if not indices_force_or_delta_d_star_1_nan[i]])
+    delta_d_star_1_without_nan_force = np.array([delta_d_star_1[i] for i in range(len(indices_force_or_delta_d_star_1_nan)) if not indices_force_or_delta_d_star_1_nan[i]])
+    force_20_1 = force_20_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_1, delta_d_star_1_without_nan_force)
+    fitted_response_delta_d_star_1 = model.predict(force_20_1)
+    a_delta_d_star_1 = reg.coef_
+    b_delta_d_star_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_star_1 = reg.score(force_20_1, delta_d_star_1_without_nan_force)
+    
+    fig_delta_d_star_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_star_vs_force20_1 = fig_delta_d_star_vs_force20_1.gca()
+    ax_delta_d_star_vs_force20_1.errorbar(list(mean_force20_FF1_dict.values()), list(mean_delta_d_star_FF1_dict.values()), yerr=list(std_delta_d_star_FF1_dict.values()), xerr=list(std_force20_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_delta_d_star_vs_force20_1.errorbar(list(mean_force20_RDG1_dict.values()),list(mean_delta_d_star_RDG1_dict.values()), yerr=list(std_delta_d_star_RDG1_dict.values()), xerr=list(std_force20_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_delta_d_star_vs_force20_1.plot(force_20_1, fitted_response_delta_d_star_1, ':k', alpha=0.8, label=r'$\Delta d^*$ = ' + str(np.round(a_delta_d_star_1[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_delta_d_star_1[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star_1, 2)) )
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_star_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_FF1_dict[date] +0.04, mean_delta_d_star_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_star_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_RDG1_dict[date]+0.04, mean_delta_d_star_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_star_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_star_vs_force20_1.set_title(r'$\Delta d^*$ vs Force 20% 1', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force20_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_star_vs_force20_1, "delta_d_star_vs_force20_1")
+
+    force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_20_2) 
+    delta_d_star_2 = np.concatenate(( list(mean_delta_d_star_FF2_dict.values()) , list(mean_delta_d_star_RDG2_dict.values()) ))
+    index_delta_d_star_2_nan = np.isnan(delta_d_star_2)
+    indices_force_or_delta_d_star_2_nan = [index_force_2_nan[i] or index_delta_d_star_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_20_2_without_nan = np.array([force_20_2[i] for i in range(len(force_20_2)) if not indices_force_or_delta_d_star_2_nan[i]])
+    delta_d_star_2_without_nan_force = np.array([delta_d_star_2[i] for i in range(len(indices_force_or_delta_d_star_2_nan)) if not indices_force_or_delta_d_star_2_nan[i]])
+    force_20_2 = force_20_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_2, delta_d_star_2_without_nan_force)
+    fitted_response_delta_d_star_2 = model.predict(force_20_2)
+    a_delta_d_star_2 = reg.coef_
+    b_delta_d_star_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_star_2 = reg.score(force_20_2, delta_d_star_2_without_nan_force)
+    
+    fig_delta_d_star_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_star_vs_force20_2 = fig_delta_d_star_vs_force20_2.gca()
+    ax_delta_d_star_vs_force20_2.errorbar(list(mean_force20_FF2_dict.values()), list(mean_delta_d_star_FF2_dict.values()), yerr=list(std_delta_d_star_FF2_dict.values()), xerr=list(std_force20_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_delta_d_star_vs_force20_2.errorbar(list(mean_force20_RDG2_dict.values()),list(mean_delta_d_star_RDG2_dict.values()), yerr=list(std_delta_d_star_RDG2_dict.values()), xerr=list(std_force20_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_delta_d_star_vs_force20_2.plot(force_20_2, fitted_response_delta_d_star_2, ':k', alpha=0.8, label=r'$\Delta d^*$ = ' + str(np.round(a_delta_d_star_2[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_delta_d_star_2[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star_2, 2)) )
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_star_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_FF2_dict[date] +0.04, mean_delta_d_star_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_star_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_RDG2_dict[date]+0.04, mean_delta_d_star_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_delta_d_star_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_star_vs_force20_2.set_title(r'$\Delta d^*$ vs Force 20% 2', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force20_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_star_vs_force20_2, "delta_d_star_vs_force20_2")
+
+    force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
+    index_force_nan = np.isnan(force_20) 
+    delta_d_star = np.concatenate(( list(mean_delta_d_star_FF_dict.values()) , list(mean_delta_d_star_RDG_dict.values()) ))
+    index_delta_d_star_nan = np.isnan(delta_d_star)
+    indices_force_or_delta_d_star_nan = [index_force_nan[i] or index_delta_d_star_nan[i] for i in range(len(index_force_nan))]
+    force_20_without_nan = np.array([force_20[i] for i in range(len(force_20)) if not indices_force_or_delta_d_star_nan[i]])
+    delta_d_star_without_nan_force = np.array([delta_d_star[i] for i in range(len(indices_force_or_delta_d_star_nan)) if not indices_force_or_delta_d_star_nan[i]])
+    force_20 = force_20_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20, delta_d_star_without_nan_force)
+    fitted_response_delta_d_star = model.predict(force_20)
+    a_delta_d_star = reg.coef_
+    b_delta_d_star = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_delta_d_star = reg.score(force_20, delta_d_star_without_nan_force)
+    
+    fig_delta_d_star_vs_force20 = createfigure.rectangle_rz_figure(pixels)
+    ax_delta_d_star_vs_force20 = fig_delta_d_star_vs_force20.gca()
+    ax_delta_d_star_vs_force20.errorbar(list(mean_force20_FF_dict.values()), list(mean_delta_d_star_FF_dict.values()), yerr=list(std_delta_d_star_FF_dict.values()), xerr=list(std_force20_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_delta_d_star_vs_force20.errorbar(list(mean_force20_RDG_dict.values()),list(mean_delta_d_star_RDG_dict.values()), yerr=list(std_delta_d_star_RDG_dict.values()), xerr=list(std_force20_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_delta_d_star_vs_force20.plot(force_20, fitted_response_delta_d_star, ':k', alpha=0.8, label=r'$\Delta d^*$ = ' + str(np.round(a_delta_d_star[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_delta_d_star[0], 4)) + '\n R2 = ' + str(np.round(score_delta_d_star, 2)) )
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates_to_use[i]
+        ax_delta_d_star_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_FF_dict[date]+ 0.04, mean_delta_d_star_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_delta_d_star_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_RDG_dict[date]+0.04, mean_delta_d_star_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_delta_d_star_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_delta_d_star_vs_force20.set_title(r'$\Delta d^*$ vs Force 20% 1+2', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_delta_d_star_vs_force20.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_delta_d_star_vs_force20, "delta_d_star_vs_force20_1+2")
+    
+    #d_min vs force 80    
+    
+    force_80_1 = np.concatenate((list(mean_force80_FF1_dict.values()), list(mean_force80_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_80_1) 
+    d_min_1 = np.concatenate(( list(mean_d_min_FF1_dict.values()) , list(mean_d_min_RDG1_dict.values()) ))
+    index_d_min_1_nan = np.isnan(d_min_1)
+    indices_force_or_d_min_1_nan = [index_force_1_nan[i] or index_d_min_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_80_1_without_nan = np.array([force_80_1[i] for i in range(len(force_80_1)) if not indices_force_or_d_min_1_nan[i]])
+    d_min_1_without_nan_force = np.array([d_min_1[i] for i in range(len(indices_force_or_d_min_1_nan)) if not indices_force_or_d_min_1_nan[i]])
+    force_80_1 = force_80_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80_1, d_min_1_without_nan_force)
+    fitted_response_d_min_1 = model.predict(force_80_1)
+    a_d_min_1 = reg.coef_
+    b_d_min_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_d_min_1 = reg.score(force_80_1, d_min_1_without_nan_force)
+    
+    fig_d_min_vs_force80_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_d_min_vs_force80_1 = fig_d_min_vs_force80_1.gca()
+    ax_d_min_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), list(mean_d_min_FF1_dict.values()), yerr=list(std_d_min_FF1_dict.values()), xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_d_min_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()),list(mean_d_min_RDG1_dict.values()), yerr=list(std_d_min_RDG1_dict.values()), xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_d_min_vs_force80_1.plot(force_80_1, fitted_response_d_min_1, ':k', alpha=0.8, label=r'$d_{min}$ = ' + str(np.round(a_d_min_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_d_min_1[0], 4)) + '\n R2 = ' + str(np.round(score_d_min_1, 2)) )
+    for i in range(len(mean_force80_FF1_dict)):
+        date = dates_to_use[i]
+        ax_d_min_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_FF1_dict[date] +0.04, mean_d_min_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_d_min_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_RDG1_dict[date]+0.04, mean_d_min_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_d_min_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_d_min_vs_force80_1.set_title(r'$d_{min}$ vs Force 80% 1', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force80_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_d_min_vs_force80_1, "d_min_vs_force80_1")
+
+    force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_80_2) 
+    d_min_2 = np.concatenate(( list(mean_d_min_FF2_dict.values()) , list(mean_d_min_RDG2_dict.values()) ))
+    index_d_min_2_nan = np.isnan(d_min_2)
+    indices_force_or_d_min_2_nan = [index_force_2_nan[i] or index_d_min_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_80_2_without_nan = np.array([force_80_2[i] for i in range(len(force_80_2)) if not indices_force_or_d_min_2_nan[i]])
+    d_min_2_without_nan_force = np.array([d_min_2[i] for i in range(len(indices_force_or_d_min_2_nan)) if not indices_force_or_d_min_2_nan[i]])
+    force_80_2 = force_80_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80_2, d_min_2_without_nan_force)
+    fitted_response_d_min_2 = model.predict(force_80_2)
+    a_d_min_2 = reg.coef_
+    b_d_min_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_d_min_2 = reg.score(force_80_2, d_min_2_without_nan_force)
+    
+    fig_d_min_vs_force80_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_d_min_vs_force80_2 = fig_d_min_vs_force80_2.gca()
+    ax_d_min_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), list(mean_d_min_FF2_dict.values()), yerr=list(std_d_min_FF2_dict.values()), xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_d_min_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()),list(mean_d_min_RDG2_dict.values()), yerr=list(std_d_min_RDG2_dict.values()), xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_d_min_vs_force80_2.plot(force_80_2, fitted_response_d_min_2, ':k', alpha=0.8, label=r'$d_{min}$ = ' + str(np.round(a_d_min_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_d_min_2[0], 4)) + '\n R2 = ' + str(np.round(score_d_min_2, 2)) )
+    for i in range(len(mean_force80_FF2_dict)):
+        date = dates_to_use[i]
+        ax_d_min_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_FF2_dict[date] +0.04, mean_d_min_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_d_min_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_RDG2_dict[date]+0.04, mean_d_min_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_d_min_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_d_min_vs_force80_2.set_title(r'$d_{min}$ vs Force 80% 2', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force80_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_d_min_vs_force80_2, "d_min_vs_force80_2")
+
+    force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
+    index_force_nan = np.isnan(force_80) 
+    d_min = np.concatenate(( list(mean_d_min_FF_dict.values()) , list(mean_d_min_RDG_dict.values()) ))
+    index_d_min_nan = np.isnan(d_min)
+    indices_force_or_d_min_nan = [index_force_nan[i] or index_d_min_nan[i] for i in range(len(index_force_nan))]
+    force_80_without_nan = np.array([force_80[i] for i in range(len(force_80)) if not indices_force_or_d_min_nan[i]])
+    d_min_without_nan_force = np.array([d_min[i] for i in range(len(indices_force_or_d_min_nan)) if not indices_force_or_d_min_nan[i]])
+    force_80 = force_80_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_80, d_min_without_nan_force)
+    fitted_response_d_min = model.predict(force_80)
+    a_d_min = reg.coef_
+    b_d_min = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_d_min = reg.score(force_80, d_min_without_nan_force)
+    
+    fig_d_min_vs_force80 = createfigure.rectangle_rz_figure(pixels)
+    ax_d_min_vs_force80 = fig_d_min_vs_force80.gca()
+    ax_d_min_vs_force80.errorbar(list(mean_force80_FF_dict.values()), list(mean_d_min_FF_dict.values()), yerr=list(std_d_min_FF_dict.values()), xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_d_min_vs_force80.errorbar(list(mean_force80_RDG_dict.values()),list(mean_d_min_RDG_dict.values()), yerr=list(std_d_min_RDG_dict.values()), xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_d_min_vs_force80.plot(force_80, fitted_response_d_min, ':k', alpha=0.8, label=r'$d_{min}$ = ' + str(np.round(a_d_min[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_d_min[0], 4)) + '\n R2 = ' + str(np.round(score_d_min, 2)) )
+    for i in range(len(mean_force80_FF_dict)):
+        date = dates_to_use[i]
+        ax_d_min_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_FF_dict[date]+ 0.04, mean_d_min_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_d_min_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_RDG_dict[date]+0.04, mean_d_min_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_d_min_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_d_min_vs_force80.set_title(r'$d_{min}$ vs Force 80% 1+2', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force80.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_d_min_vs_force80, "d_min_vs_force80_1+2")
+
+    #d_min vs force 20    
+    
+    force_20_1 = np.concatenate((list(mean_force20_FF1_dict.values()), list(mean_force20_RDG1_dict.values())))
+    index_force_1_nan = np.isnan(force_20_1) 
+    d_min_1 = np.concatenate(( list(mean_d_min_FF1_dict.values()) , list(mean_d_min_RDG1_dict.values()) ))
+    index_d_min_1_nan = np.isnan(d_min_1)
+    indices_force_or_d_min_1_nan = [index_force_1_nan[i] or index_d_min_1_nan[i] for i in range(len(index_force_1_nan))]
+    force_20_1_without_nan = np.array([force_20_1[i] for i in range(len(force_20_1)) if not indices_force_or_d_min_1_nan[i]])
+    d_min_1_without_nan_force = np.array([d_min_1[i] for i in range(len(indices_force_or_d_min_1_nan)) if not indices_force_or_d_min_1_nan[i]])
+    force_20_1 = force_20_1_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_1, d_min_1_without_nan_force)
+    fitted_response_d_min_1 = model.predict(force_20_1)
+    a_d_min_1 = reg.coef_
+    b_d_min_1 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_d_min_1 = reg.score(force_20_1, d_min_1_without_nan_force)
+    
+    fig_d_min_vs_force20_1 = createfigure.rectangle_rz_figure(pixels)
+    ax_d_min_vs_force20_1 = fig_d_min_vs_force20_1.gca()
+    ax_d_min_vs_force20_1.errorbar(list(mean_force20_FF1_dict.values()), list(mean_d_min_FF1_dict.values()), yerr=list(std_d_min_FF1_dict.values()), xerr=list(std_force20_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
+    ax_d_min_vs_force20_1.errorbar(list(mean_force20_RDG1_dict.values()),list(mean_d_min_RDG1_dict.values()), yerr=list(std_d_min_RDG1_dict.values()), xerr=list(std_force20_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
+    ax_d_min_vs_force20_1.plot(force_20_1, fitted_response_d_min_1, ':k', alpha=0.8, label=r'$d_{min}$ = ' + str(np.round(a_d_min_1[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_d_min_1[0], 4)) + '\n R2 = ' + str(np.round(score_d_min_1, 2)) )
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates_to_use[i]
+        ax_d_min_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_FF1_dict[date] +0.04, mean_d_min_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_d_min_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_RDG1_dict[date]+0.04, mean_d_min_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_d_min_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_d_min_vs_force20_1.set_title(r'$d_{min}$ vs Force 20% 1', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force20_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_d_min_vs_force20_1, "d_min_vs_force20_1")
+
+    force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
+    index_force_2_nan = np.isnan(force_20_2) 
+    d_min_2 = np.concatenate(( list(mean_d_min_FF2_dict.values()) , list(mean_d_min_RDG2_dict.values()) ))
+    index_d_min_2_nan = np.isnan(d_min_2)
+    indices_force_or_d_min_2_nan = [index_force_2_nan[i] or index_d_min_2_nan[i] for i in range(len(index_force_2_nan))]
+    force_20_2_without_nan = np.array([force_20_2[i] for i in range(len(force_20_2)) if not indices_force_or_d_min_2_nan[i]])
+    d_min_2_without_nan_force = np.array([d_min_2[i] for i in range(len(indices_force_or_d_min_2_nan)) if not indices_force_or_d_min_2_nan[i]])
+    force_20_2 = force_20_2_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20_2, d_min_2_without_nan_force)
+    fitted_response_d_min_2 = model.predict(force_20_2)
+    a_d_min_2 = reg.coef_
+    b_d_min_2 = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_d_min_2 = reg.score(force_20_2, d_min_2_without_nan_force)
+    
+    fig_d_min_vs_force20_2 = createfigure.rectangle_rz_figure(pixels)
+    ax_d_min_vs_force20_2 = fig_d_min_vs_force20_2.gca()
+    ax_d_min_vs_force20_2.errorbar(list(mean_force20_FF2_dict.values()), list(mean_d_min_FF2_dict.values()), yerr=list(std_d_min_FF2_dict.values()), xerr=list(std_force20_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
+    ax_d_min_vs_force20_2.errorbar(list(mean_force20_RDG2_dict.values()),list(mean_d_min_RDG2_dict.values()), yerr=list(std_d_min_RDG2_dict.values()), xerr=list(std_force20_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
+    ax_d_min_vs_force20_2.plot(force_20_2, fitted_response_d_min_2, ':k', alpha=0.8, label=r'$d_{min}$ = ' + str(np.round(a_d_min_2[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_d_min_2[0], 4)) + '\n R2 = ' + str(np.round(score_d_min_2, 2)) )
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates_to_use[i]
+        ax_d_min_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_FF2_dict[date] +0.04, mean_d_min_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_d_min_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_RDG2_dict[date]+0.04, mean_d_min_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))    
+    ax_d_min_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_d_min_vs_force20_2.set_title(r'$d_{min}$ vs Force 20% 2', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force20_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_d_min_vs_force20_2, "d_min_vs_force20_2")
+
+    force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
+    index_force_nan = np.isnan(force_20) 
+    d_min = np.concatenate(( list(mean_d_min_FF_dict.values()) , list(mean_d_min_RDG_dict.values()) ))
+    index_d_min_nan = np.isnan(d_min)
+    indices_force_or_d_min_nan = [index_force_nan[i] or index_d_min_nan[i] for i in range(len(index_force_nan))]
+    force_20_without_nan = np.array([force_20[i] for i in range(len(force_20)) if not indices_force_or_d_min_nan[i]])
+    d_min_without_nan_force = np.array([d_min[i] for i in range(len(indices_force_or_d_min_nan)) if not indices_force_or_d_min_nan[i]])
+    force_20 = force_20_without_nan.reshape((-1, 1))
+    model = LinearRegression()
+    reg = model.fit(force_20, d_min_without_nan_force)
+    fitted_response_d_min = model.predict(force_20)
+    a_d_min = reg.coef_
+    b_d_min = model.predict(np.array([0, 0, 0, 0]).reshape(-1, 1))
+    score_d_min = reg.score(force_20, d_min_without_nan_force)
+    
+    fig_d_min_vs_force20 = createfigure.rectangle_rz_figure(pixels)
+    ax_d_min_vs_force20 = fig_d_min_vs_force20.gca()
+    ax_d_min_vs_force20.errorbar(list(mean_force20_FF_dict.values()), list(mean_d_min_FF_dict.values()), yerr=list(std_d_min_FF_dict.values()), xerr=list(std_force20_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
+    ax_d_min_vs_force20.errorbar(list(mean_force20_RDG_dict.values()),list(mean_d_min_RDG_dict.values()), yerr=list(std_d_min_RDG_dict.values()), xerr=list(std_force20_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
+    ax_d_min_vs_force20.plot(force_20, fitted_response_d_min, ':k', alpha=0.8, label=r'$d_{min}$ = ' + str(np.round(a_d_min[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_d_min[0], 4)) + '\n R2 = ' + str(np.round(score_d_min, 2)) )
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates_to_use[i]
+        ax_d_min_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_FF_dict[date]+ 0.04, mean_d_min_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_d_min_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_RDG_dict[date]+0.04, mean_d_min_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+    ax_d_min_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='upper left', framealpha=0.7)
+    ax_d_min_vs_force20.set_title(r'$d_{min}$ vs Force 20% 1+2', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
+    ax_d_min_vs_force20.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_d_min_vs_force20, "d_min_vs_force20_1+2")
+
 
 
 
@@ -1365,13 +1659,13 @@ if __name__ == "__main__":
     # ids_where_not_failed, date_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed    = remove_failed_A(ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
     # ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
     # compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
-    plot_recovery_indicators_with_maturation() #TODO check plot functions
-    # export_indocators_as_txt()
+    # plot_recovery_indicators_with_maturation() 
+    export_indocators_as_txt()
     # pente à l'origine
     # pente relaxation
     # deltaF*
     
-    # plot_laser_indicators_vs_texturometer_forces()
+    plot_laser_indicators_vs_texturometer_forces()
     # irr_indicator_list = ['relaxation_slope',
     #             'delta_f',
     #             'delta_f_star',
