@@ -422,6 +422,52 @@ def plot_forces_with_maturation():
     savefigure.save_as_png(fig_force80, "force80_vs_maturation_1+2")
     savefigure.save_as_png(fig_force80_1, "force80_vs_maturation_1")
     savefigure.save_as_png(fig_force80_2, "force80_vs_maturation_2")
+    
+    
+    mean_force8020_FF1_dict = {d:mean_force80_FF1_dict[d] - mean_force20_FF1_dict[d] for d in dates_to_use}
+    mean_force8020_FF2_dict = {d:mean_force80_FF2_dict[d] - mean_force20_FF2_dict[d] for d in dates_to_use}
+    mean_force8020_FF_dict = {d:mean_force80_FF_dict[d] - mean_force20_FF_dict[d] for d in dates_to_use}
+    mean_force8020_RDG1_dict = {d:mean_force80_RDG1_dict[d] - mean_force20_RDG1_dict[d] for d in dates_to_use}
+    mean_force8020_RDG2_dict = {d:mean_force80_RDG2_dict[d] - mean_force20_RDG2_dict[d] for d in dates_to_use}
+    mean_force8020_RDG_dict = {d:mean_force80_RDG_dict[d] - mean_force20_RDG_dict[d] for d in dates_to_use}
+
+    std_force8020_FF1_dict = {d: max([std_force80_FF1_dict[d], std_force20_FF1_dict[d]]) for d in dates_to_use}
+    std_force8020_FF2_dict = {d: max([std_force80_FF2_dict[d], std_force20_FF2_dict[d]]) for d in dates_to_use}
+    std_force8020_FF_dict = {d: max([std_force80_FF_dict[d], std_force20_FF_dict[d]]) for d in dates_to_use}
+    std_force8020_RDG1_dict = {d: max([std_force80_RDG1_dict[d], std_force20_RDG1_dict[d]]) for d in dates_to_use}
+    std_force8020_RDG2_dict = {d: max([std_force80_RDG2_dict[d], std_force20_RDG2_dict[d]]) for d in dates_to_use}
+    std_force8020_RDG_dict = {d: max([std_force80_RDG_dict[d], std_force20_RDG_dict[d]]) for d in dates_to_use}
+    
+    fig_force8020_1 = createfigure.rectangle_rz_figure(pixels=180)
+    ax_force8020_1 = fig_force8020_1.gca()
+    fig_force8020 = createfigure.rectangle_rz_figure(pixels=180)
+    ax_force8020 = fig_force8020.gca()
+    fig_force8020_2 = createfigure.rectangle_rz_figure(pixels=180)
+    ax_force8020_2 = fig_force8020_2.gca()
+    ax_force8020_1.plot([maturation_FF_dict[dates_to_use[0]], maturation_FF_dict[dates_to_use[-1]]], [40, 40], '--r', lw=1)
+    ax_force8020_2.plot([maturation_FF_dict[dates_to_use[0]], maturation_FF_dict[dates_to_use[-1]]], [40, 40], '--r', lw=1)
+    ax_force8020.plot([maturation_FF_dict[dates_to_use[0]], maturation_FF_dict[dates_to_use[-1]]], [40, 40], '--r', lw=1)
+    ax_force8020_1.errorbar(list(maturation_FF_dict.values()), list(mean_force8020_FF1_dict.values()), yerr=list(std_force8020_FF1_dict.values()), lw=0, label='FF1', **kwargs_FF1)
+    ax_force8020_2.errorbar(list(maturation_FF_dict.values()), list(mean_force8020_FF2_dict.values()), yerr=list(std_force8020_FF2_dict.values()), lw=0, label='FF2', **kwargs_FF2)
+    ax_force8020.errorbar(list(maturation_FF_dict.values()), list(mean_force8020_FF_dict.values()), yerr=list(std_force8020_FF_dict.values()), lw=0, label='FF', **kwargs_FF)
+    ax_force8020_1.errorbar(list(maturation_RDG_dict.values()), list(mean_force8020_RDG1_dict.values()), yerr=list(std_force8020_RDG1_dict.values()), lw=0,  label='RDG1', **kwargs_RDG1)
+    ax_force8020_2.errorbar(list(maturation_RDG_dict.values()), list(mean_force8020_RDG2_dict.values()), yerr=list(std_force8020_RDG2_dict.values()), lw=0, label='RDG2', **kwargs_RDG2)
+    ax_force8020.errorbar(list(maturation_RDG_dict.values()), list(mean_force8020_RDG_dict.values()), yerr=list(std_force8020_RDG_dict.values()), lw=0, label='RDG', **kwargs_RDG)
+    ax_force8020_1.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force8020_2.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force8020.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
+    ax_force8020.set_title(r"$F_{80\%} - F_{20\%}$ [N]  vs maturation 1+2", font=fonts.serif_rz_legend())
+    ax_force8020_1.set_title(r"$F_{80\%} - F_{20\%}$ [N] vs maturation 1", font=fonts.serif_rz_legend())
+    ax_force8020_2.set_title(r"$F_{80\%} - F_{20\%}$ [N] vs maturation 2", font=fonts.serif_rz_legend())
+    ax_force8020.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
+    ax_force8020_1.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
+    ax_force8020_2.set_xlabel('Maturation [days]', font=fonts.serif_rz_legend())
+    ax_force8020.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
+    ax_force8020_1.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
+    ax_force8020_2.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
+    savefigure.save_as_png(fig_force8020, "force8020_vs_maturation_1+2")
+    savefigure.save_as_png(fig_force8020_1, "force8020_vs_maturation_1")
+    savefigure.save_as_png(fig_force8020_2, "force8020_vs_maturation_2")
 
 
 
