@@ -7,6 +7,11 @@ import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
 from tqdm import tqdm
 import pandas as pd
+import scipy
+import skimage
+import multiprocessing as mp
+from indentation.experiments.zwick.post_processing.utils import find_nearest
+from functools import partial
 
 class Files:
     """
@@ -46,6 +51,11 @@ class Files:
         """
 
         self.beginning = beginning
+        self.locations = {"230331": [0, 20],
+                        "230327": [-10, 10],
+                        "230403": [8, 40],
+                        "230407": [-30, -10],
+                        "230411": [-10, 10]}
 
     def import_files(self, date):
         """
@@ -155,6 +165,7 @@ class Files:
             None
 
         """        
+        print('starting ', filename)
         date = filename[0:6]
         path_to_data = utils.reach_data_path(date)
         path_to_filename = path_to_data / filename
@@ -202,11 +213,19 @@ class Files:
                 
                 l_vec_Z.append(vec_Z) 
 
+        # x_lim = locations[filename]
         mat_Z = np.vstack(l_vec_Z)
         vec_time = np.array(l_time)
         
+        [x_lim_inf, x_lim_sup] = self.locations[date]
+        index_where_pos_is_x_lim_inf = np.where(vec_pos_axis==find_nearest(vec_pos_axis, x_lim_inf))[0][0]
+        index_where_pos_is_x_lim_sup = np.where(vec_pos_axis==find_nearest(vec_pos_axis, x_lim_sup))[0][0]
         
-        ## Apply median filter
+        mat_Z = mat_Z[:,index_where_pos_is_x_lim_inf:index_where_pos_is_x_lim_sup]
+        # vec_time = vec_time[int(A[0][1]):int(A[1][1])]
+        vec_pos_axis = vec_pos_axis[index_where_pos_is_x_lim_inf:index_where_pos_is_x_lim_sup]
+
+        # Apply median filter
         mat_Z_n = np.zeros(mat_Z.shape)
         cnt = 0
         for it_i in range(mat_Z.shape[0]):
@@ -231,8 +250,10 @@ class Files:
         
         vec_time_rescaled = vec_time - min(vec_time)
         
-        utils.export_data_output_as_txt('0_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
-        utils.export_data_output_as_pkl('0_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
+        utils.export_data_output_as_txt('0_locations_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
+        utils.export_data_output_as_pkl('0_locations_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
+        print(filename, 'done')
+
 
 def read_all_files(experiment_dates, meat_pieces):
     """
@@ -255,11 +276,14 @@ def read_all_files(experiment_dates, meat_pieces):
         for meat_piece in tqdm(meat_pieces) :
             files_meat_piece = Files(meat_piece)
             list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
-            for filename in tqdm(list_of_meat_piece_files) :
+            # func = partial(files_meat_piece.read_datafile)
+            with mp.Pool(3) as executor:  # the argument of the mp.Pool() function is the amount of CPU to parallelize
+                executor.map(files_meat_piece.read_datafile, list_of_meat_piece_files)
+            # for filename in tqdm(list_of_meat_piece_files) :
                 # print (filename , ' : currently evaluating')
-                if filename[0:-4] not in existing_processed_filenames:
-                    # print (filename , ' not processed yet : processing has been launched')
-                    files_meat_piece.read_datafile(filename)       
+                # if filename[0:-4] not in existing_processed_filenames:
+                #     # print (filename , ' not processed yet : processing has been launched')
+                #     files_meat_piece.read_datafile(filename, locations)       
 
 
 def read_metadatas_laser(metadatafile):
@@ -288,13 +312,27 @@ def read_metadatas_laser(metadatafile):
     return imposed_disp_dict
 
 
+def test_meadian_filter():
+    mat_Z_1, vec_time_1, vec_pos_axis_1 = utils.extract_data_from_pkl('0_230331_FF1_1A_(2).pkl')
+    mat_Z_skimage, vec_time_skimage, vec_pos_axis_skimage = utils.extract_data_from_pkl('0_skimage_230331_FF1_1A_(2).pkl')
+    diff_mat_Z = mat_Z_skimage - mat_Z_1
+    diff_vec_time = vec_time_skimage - vec_time_1
+    diff_vec_pos_axis = vec_pos_axis_skimage - vec_pos_axis_1
+    return diff_mat_Z, diff_vec_time, diff_vec_pos_axis
+
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
     experiment_dates = ['230331', '230403', '230407', '230411']
-    meat_pieces = ['FF1', 'RDG']
+    meat_pieces = ['FF', 'RDG']
+
+    
     read_all_files(experiment_dates, meat_pieces)
+        
+    # diff_mat_Z, diff_vec_time, diff_vec_pos_axis = test_meadian_filter()
+    print('hello')
+
 
 
 
