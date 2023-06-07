@@ -314,11 +314,19 @@ def read_metadatas_laser(metadatafile):
 
 def test_meadian_filter():
     mat_Z_1, vec_time_1, vec_pos_axis_1 = utils.extract_data_from_pkl('0_230331_FF1_1A_(2).pkl')
-    mat_Z_skimage, vec_time_skimage, vec_pos_axis_skimage = utils.extract_data_from_pkl('0_skimage_230331_FF1_1A_(2).pkl')
-    diff_mat_Z = mat_Z_skimage - mat_Z_1
-    diff_vec_time = vec_time_skimage - vec_time_1
-    diff_vec_pos_axis = vec_pos_axis_skimage - vec_pos_axis_1
-    return diff_mat_Z, diff_vec_time, diff_vec_pos_axis
+    mat_Z_locations, vec_time_locations, vec_pos_axis_locations = utils.extract_data_from_pkl('0_locations_230331_FF1_1A_(2).pkl')
+    plt.figure()
+    # for t in range(0, len(vec_time_1), 100):
+    time_index_test = 5000
+    z0_1 = mat_Z_1[time_index_test, 1:]
+    z0_locations = mat_Z_locations[time_index_test, :]
+    plt.plot(vec_pos_axis_1, z0_1, '--k')
+    plt.plot(vec_pos_axis_locations, z0_locations, ':r')
+    plt.xlim((0, 20))
+    plt.title('test')
+    plt.legend()
+    plt.xlabel('x [mm]')
+    plt.ylabel('z [mm]')
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
@@ -328,9 +336,9 @@ if __name__ == "__main__":
     meat_pieces = ['FF', 'RDG']
 
     
-    read_all_files(experiment_dates, meat_pieces)
+    # read_all_files(experiment_dates, meat_pieces)
         
-    # diff_mat_Z, diff_vec_time, diff_vec_pos_axis = test_meadian_filter()
+    diff_mat_Z, diff_vec_time, diff_vec_pos_axis = test_meadian_filter()
     print('hello')
 
 
