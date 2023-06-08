@@ -74,7 +74,7 @@ def plot_indicators_indentation_relaxation(files_zwick, datafile, sheet):
     time_when_force_is_max = time[index_where_force_is_max]
     relaxation_duration = 20
     end_of_relaxation = time_when_force_is_max + relaxation_duration
-    index_where_time_is_end_relaxation = np.where(time == find_nearest(time, end_of_relaxation))[0]
+    index_where_time_is_end_relaxation = np.where(time == find_nearest(time, end_of_relaxation[0]))[0]
     delta_f = max_force - force[index_where_time_is_end_relaxation]
     delta_f_star = delta_f[0] / max_force
     ax_force_vs_time.plot([time[index_where_force_is_max + 1], time[index_where_force_is_max + 3]], [force[index_where_force_is_max + 1], force[index_where_force_is_max + 3]], '--', color = colors[5], label = r"$\alpha_R$ = " + str(np.round(relaxation_slope[0], 2)) + r" $N.s^{-1}$")
@@ -721,12 +721,13 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230331']#, '230407', '230411', '230403']
+    experiment_dates = ['230411']#, '230407', '230411', '230403']
     types_of_essay = ['C_Indentation_relaxation_500N_force.xlsx']#,'C_Indentation_relaxation_maintienFnulle_500N_trav.xls',  'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
     datafile_list = []
     for i in range(len(experiment_dates)):
         datafile_list += files_zwick.import_files(experiment_dates[i])
+
 
     # export_indicators(datafile_list)
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
@@ -750,9 +751,16 @@ if __name__ == "__main__":
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_strain_rate_dict, 'i_time_strain_rate')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_1_dict, 'i_disp_1')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_1_dict, 'i_time_1')
-    for indicator in indicator_list:
-        # export_data_as_txt(indicator)
-        # plot_data_with_maturation(indicator)
-        plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
+    # for indicator in indicator_list:
+    #     # export_data_as_txt(indicator)
+    #     # plot_data_with_maturation(indicator)
+    #     plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
+        
+    for datafile in datafile_list:
+        sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
+        for sheet in sheet_list:
+            plot_indicators_indentation_relaxation(files_zwick, datafile, sheet)
 
     print('hello')
+    
+    
