@@ -131,7 +131,7 @@ def export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, deltad_dict
         )
         
 def extract_A_data_from_pkl():
-    pkl_filename = 'recoveries_meat_A.pkl'
+    pkl_filename = '0_locations_recoveries_A.pkl'
     complete_pkl_filename = get_path_to_processed_data() / pkl_filename
     with open(complete_pkl_filename, "rb") as f:
         [ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict] = pickle.load(f)

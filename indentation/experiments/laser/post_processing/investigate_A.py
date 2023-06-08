@@ -214,7 +214,7 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, deltad_thr
     """     
     ids_where_not_failed_and_not_small_deltad, _, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, ids_list, date_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
     ids_at_date_and_meatpiece, delta_d_dict_at_date_and_meatpiece, delta_d_star_dict_at_date_and_meatpiece, d_min_dict_at_date_and_meatpiece, A_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_where_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad)
-    mean_delta_d, std_delta_d, mean_delta_d_star, std_delta_d_star, mean_d_min, std_d_min, mean_A, std_A = 0, nan, 0, nan, 0, nan, 0, nan
+    mean_delta_d, std_delta_d, mean_delta_d_star, std_delta_d_star, mean_d_min, std_d_min, mean_A, std_A = nan, nan, nan, nan, nan, nan, nan, nan
     if len(ids_at_date_and_meatpiece) >0:
         mean_delta_d = statistics.mean(list(delta_d_dict_at_date_and_meatpiece.values()))
         mean_delta_d_star = statistics.mean(list(delta_d_star_dict_at_date_and_meatpiece.values()))
@@ -947,6 +947,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_A_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force80_1.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force80_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_A_vs_force80_1")
+    plt.close(fig_A_vs_force80_1)
 
     force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_80_2) 
@@ -977,6 +978,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_A_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force80_2.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force80_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_A_vs_force80_2")
+    plt.close(fig_A_vs_force80_2)
 
     force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
     index_force_nan = np.isnan(force_80) 
@@ -1007,6 +1009,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_A_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force80.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force80, "0_locations_deltad_threshold" + str(deltad_threshold) + "_A_vs_force80_1+2")
+    plt.close(fig_A_vs_force80)
 
     #A vs force 20    
     
@@ -1039,6 +1042,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_A_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force20_1.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force20_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_A_vs_force20_1")
+    plt.close(fig_A_vs_force20_1)
 
     force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_20_2) 
@@ -1069,6 +1073,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_A_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force20_2.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force20_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_A_vs_force20_2")
+    plt.close(fig_A_vs_force20_2)
 
     force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
     index_force_nan = np.isnan(force_20) 
@@ -1099,6 +1104,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_A_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_A_vs_force20.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_A_vs_force20, "0_locations_deltad_threshold" + str(deltad_threshold) + "_A_vs_force20_1+2")
+    plt.close(fig_A_vs_force20)
 
 
     #delta_d vs force 80    
@@ -1132,6 +1138,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_vs_force80_1.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_vs_force80_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_vs_force80_1")
+    plt.close(fig_delta_d_vs_force80_1)
 
     force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_80_2) 
@@ -1162,6 +1169,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_vs_force80_2.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_vs_force80_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_vs_force80_2")
+    plt.close(fig_delta_d_vs_force80_2)
 
     force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
     index_force_nan = np.isnan(force_80) 
@@ -1192,6 +1200,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_vs_force80.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_vs_force80, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_vs_force80_1+2")
+    plt.close(fig_delta_d_vs_force80)
 
     #delta_d vs force 20    
     
@@ -1224,6 +1233,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_vs_force20_1.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_vs_force20_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_vs_force20_1")
+    plt.close(fig_delta_d_vs_force20_1)
 
     force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_20_2) 
@@ -1254,6 +1264,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_vs_force20_2.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_vs_force20_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_vs_force20_2")
+    plt.close(fig_delta_d_vs_force20_2)
 
     force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
     index_force_nan = np.isnan(force_20) 
@@ -1284,6 +1295,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_vs_force20.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_vs_force20, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_vs_force20_1+2")
+    plt.close(fig_delta_d_vs_force20)
 
     #delta_d_star vs force 80    
     
@@ -1316,6 +1328,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_star_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_star_vs_force80_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_star_vs_force80_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_star_vs_force80_1")
+    plt.close(fig_delta_d_star_vs_force80_1)
 
     force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_80_2) 
@@ -1346,6 +1359,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_star_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_star_vs_force80_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_star_vs_force80_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_star_vs_force80_2")
+    plt.close(fig_delta_d_star_vs_force80_2)
 
     force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
     index_force_nan = np.isnan(force_80) 
@@ -1376,6 +1390,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_star_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_star_vs_force80.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_star_vs_force80, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_star_vs_force80_1+2")
+    plt.close(fig_delta_d_star_vs_force80)
 
     #delta_d_star vs force 20    
     
@@ -1408,6 +1423,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_star_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_star_vs_force20_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_star_vs_force20_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_star_vs_force20_1")
+    plt.close(fig_delta_d_star_vs_force20_1)
 
     force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_20_2) 
@@ -1438,6 +1454,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_star_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_star_vs_force20_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_star_vs_force20_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_star_vs_force20_2")
+    plt.close(fig_delta_d_star_vs_force20_2)
 
     force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
     index_force_nan = np.isnan(force_20) 
@@ -1468,6 +1485,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_delta_d_star_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_delta_d_star_vs_force20.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_delta_d_star_vs_force20, "0_locations_deltad_threshold" + str(deltad_threshold) + "_delta_d_star_vs_force20_1+2")
+    plt.close(fig_delta_d_star_vs_force20)
     
     #d_min vs force 80    
     
@@ -1500,6 +1518,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_d_min_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_d_min_vs_force80_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_d_min_vs_force80_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_d_min_vs_force80_1")
+    plt.close(fig_d_min_vs_force80_1)
 
     force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_80_2) 
@@ -1530,6 +1549,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_d_min_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_d_min_vs_force80_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_d_min_vs_force80_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_d_min_vs_force80_2")
+    plt.close(fig_d_min_vs_force80_2)
 
     force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
     index_force_nan = np.isnan(force_80) 
@@ -1560,6 +1580,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_d_min_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     ax_d_min_vs_force80.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_d_min_vs_force80, "0_locations_deltad_threshold" + str(deltad_threshold) + "_d_min_vs_force80_1+2")
+    plt.close(fig_d_min_vs_force80)
 
     #d_min vs force 20    
     
@@ -1592,6 +1613,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_d_min_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_d_min_vs_force20_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_d_min_vs_force20_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "_d_min_vs_force20_1")
+    plt.close(fig_d_min_vs_force20_1)
 
     force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_20_2) 
@@ -1622,6 +1644,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_d_min_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_d_min_vs_force20_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_d_min_vs_force20_2, "0_locations_deltad_threshold" + str(deltad_threshold) + "_d_min_vs_force20_2")
+    plt.close(fig_d_min_vs_force20_2)
 
     force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
     index_force_nan = np.isnan(force_20) 
@@ -1652,6 +1675,7 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
     ax_d_min_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     ax_d_min_vs_force20.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_d_min_vs_force20, "0_locations_deltad_threshold" + str(deltad_threshold) + "_d_min_vs_force20_1+2")
+    plt.close(fig_d_min_vs_force20)
 
 
 
@@ -1665,7 +1689,7 @@ if __name__ == "__main__":
     current_path = utils.get_current_path()
     # nb_of_time_increments_to_plot = 10
     # recovery_pkl_file = '0_locations_recovery_meat.pkl'
-    deltad_threshold = 1.5
+    deltad_threshold = 0.2
     utils.transform_csv_input_A_into_pkl('0_locations_recoveries_A.csv')
     ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict = utils.extract_A_data_from_pkl()
     # ids_where_not_failed, date_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed    = remove_failed_A(ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
