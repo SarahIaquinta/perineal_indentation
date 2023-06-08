@@ -76,6 +76,7 @@ class Files:
         path_to_data_folder = utils.reach_data_path(date)
         entries = os.listdir(path_to_data_folder)
         beginning_to_test = date + '_' + self.beginning
+        # '0_locations_' + experiment_date + '_' + meat_piece
         len_beginning = len(beginning_to_test)
         datafile_list = []
         for i in range(len(entries)):
