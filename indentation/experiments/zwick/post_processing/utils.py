@@ -117,4 +117,6 @@ def get_path_to_figures():
 def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
+    while np.isnan(array[idx]):
+        idx -=1
     return array[idx]
