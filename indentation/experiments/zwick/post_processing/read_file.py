@@ -238,8 +238,60 @@ class Files_Zwick:
 
 
  
+    def plot_all_data(self, date, createfigure, savefigure, fonts):
+        fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
+        fig_disp_vs_time = createfigure.rectangle_rz_figure(pixels=180)
+        fig_force_vs_disp = createfigure.rectangle_rz_figure(pixels=180)
+        ax_force_vs_time = fig_force_vs_time.gca()
+        ax_disp_vs_time = fig_disp_vs_time.gca()
+        ax_force_vs_disp = fig_force_vs_disp.gca()
+        colors = sns.color_palette("tab10")
+        kwargs = {"color":colors[7], "linewidth": 2}
+        ax_force_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
+        ax_disp_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_disp.set_xlabel(r"U [mm]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_time.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
+        ax_disp_vs_time.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_disp.set_ylabel(r"Force [N]", font=fonts.serif(), fontsize=26)
+        ax_force_vs_disp.set_ylim([0,1.2])
+        ax_force_vs_time.set_ylim([0,1.2])
+        # ax_disp_vs_time.set_ylim([0,None])
+        ax_force_vs_disp.set_xlim([0,10])
+        # ax_force_vs_time.set_xlim([0,None])
+        # ax_disp_vs_time.set_xlim([0,None])        
+        
+        color_rocket = sns.color_palette("rocket")
+        color_FF = color_rocket[3]
+        color_RDG = color_rocket[1]
 
-
+        datafile_list = self.import_files(date)
+        for datafile in datafile_list:
+            datafile_as_pds, sheets_list_with_data = self.get_sheets_from_datafile(datafile)
+            correct_sheets_in_data = self.find_only_correct_sheets_in_datafile(datafile)
+            sheets_FF = [s for s in correct_sheets_in_data if 'FF' in s]
+            sheets_RDG = [s for s in correct_sheets_in_data if 'RDG' in s]
+            for sheet in sheets_FF:
+                time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
+                ax_force_vs_time.plot(time, force, '-', color=color_FF)
+                ax_disp_vs_time.plot(time, disp, '-', color=color_FF)
+                ax_force_vs_disp.plot(disp, force, '-', color=color_FF)
+            for sheet in sheets_RDG:
+                time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
+                ax_force_vs_time.plot(time, force, '-', color=color_RDG)
+                ax_disp_vs_time.plot(time, disp, '-', color=color_RDG)
+                ax_force_vs_disp.plot(disp, force, '-', color=color_RDG)
+        ax_force_vs_time.plot(time[0], force[0], color=color_FF, label='FF')
+        ax_disp_vs_time.plot(time[0], disp[0], color=color_FF, label='FF')
+        ax_force_vs_disp.plot(disp[0], force[0], color=color_FF, label='FF')
+        ax_force_vs_time.plot(time[0], force[0], color=color_RDG, label='RDG')
+        ax_disp_vs_time.plot(time[0], disp[0], color=color_RDG, label='RDG')
+        ax_force_vs_disp.plot(disp[0], force[0], color=color_RDG, label='RDG')
+        ax_force_vs_time.legend()
+        ax_disp_vs_time.legend()
+        ax_force_vs_disp.legend()
+        savefigure.save_as_png(fig_force_vs_time, date + "all_force_vs_time")
+        savefigure.save_as_png(fig_disp_vs_time, date + "all_disp_vs_time")
+        savefigure.save_as_png(fig_force_vs_disp, date + "all_force_vs_disp")
 
 
 if __name__ == "__main__":
@@ -249,14 +301,16 @@ if __name__ == "__main__":
     experiment_dates = ['230407', '230331', '230411', '230327', '230403']
     types_of_essay = ['C_Indentation_relaxation_500N_force.xlsx']#,'C_Indentation_relaxation_maintienFnulle_500N_trav.xls',  'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
-    datafile_list = files_zwick.import_files(experiment_dates[0])
-    datafile = datafile_list[0]
-    datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
-    correct_sheets_in_data = files_zwick.find_only_correct_sheets_in_datafile(datafile)
-    sheet1 = correct_sheets_in_data[0]
-    time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
-    for sheet in correct_sheets_in_data:
-        files_zwick.plot_data_from_sheet_meat( datafile, sheet, createfigure, savefigure, fonts)
+    # datafile_list = files_zwick.import_files(experiment_dates[0])
+    # datafile = datafile_list[0]
+    # datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
+    # correct_sheets_in_data = files_zwick.find_only_correct_sheets_in_datafile(datafile)
+    # sheet1 = correct_sheets_in_data[0]
+    # time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
+    # for sheet in correct_sheets_in_data:
+    #     files_zwick.plot_data_from_sheet_meat( datafile, sheet, createfigure, savefigure, fonts)
     # metadatafile = files_zwick.import_metadatafile(experiment_dates[0])
     # imposed_disp_dict, speed_dict = files_zwick.read_metadatas_zwick(metadatafile)
+    for date in experiment_dates:
+        files_zwick.plot_all_data(date, createfigure, savefigure, fonts)
     print('hello')
