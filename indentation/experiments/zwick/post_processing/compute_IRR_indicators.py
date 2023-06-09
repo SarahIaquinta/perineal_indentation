@@ -17,7 +17,7 @@ from sklearn.linear_model import LinearRegression
 
 def get_data_at_given_strain_rate(files_zwick, datafile, sheet, strain_rate):
     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
-    max_disp = np.max(disp)
+    max_disp = np.nanmax(disp)
     disp_at_strain_rate = find_nearest(disp, max_disp * strain_rate)
     index_where_disp_is_disp_at_strain_rate = np.where(disp == find_nearest(disp, disp_at_strain_rate))[0]
     force_at_strain_rate = force[index_where_disp_is_disp_at_strain_rate]
@@ -46,7 +46,7 @@ def compute_indicators_relaxation(files_zwick, datafile, sheet):
 
 def compute_indicators_indentation_relaxation(files_zwick, datafile, sheet):
     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
-    max_force = np.max(force)
+    max_force = np.nanmax(force)
     index_where_force_is_max = np.where(force == max_force)[0]
     relaxation_slope = (force[index_where_force_is_max + 3] - force[index_where_force_is_max + 1]) / (time[index_where_force_is_max + 3] - time[index_where_force_is_max + 1])
     time_when_force_is_max = time[index_where_force_is_max]
@@ -751,7 +751,7 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230411']#, '230407', '230411', '230403']
+    experiment_dates = ['230331', '230407', '230411', '230403']
     types_of_essay = ['C_Indentation_relaxation_500N_force.xlsx']#,'C_Indentation_relaxation_maintienFnulle_500N_trav.xls',  'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
     datafile_list = []
@@ -759,7 +759,7 @@ if __name__ == "__main__":
         datafile_list += files_zwick.import_files(experiment_dates[i])
 
 
-    # export_indicators(datafile_list)
+    export_indicators(datafile_list)
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indicators_indentation_relaxation.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -782,9 +782,9 @@ if __name__ == "__main__":
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_1_dict, 'i_disp_1')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_1_dict, 'i_time_1')
     for indicator in indicator_list:
-        # export_data_as_txt(indicator)
+        export_data_as_txt(indicator)
         # plot_data_with_maturation(indicator)
-        plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
+        # plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
         
     # for datafile in datafile_list:
     #     sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
