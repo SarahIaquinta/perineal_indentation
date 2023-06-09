@@ -338,8 +338,8 @@ def plot_forces_with_maturation():
              ] = pickle.load(f)
         
     
-    dates_to_use = ['230331', '230403', '230407', '230411']
-    maturation_dict = {'230331': 10, '230403': 13, '230407': 17, '230411': 21}
+    dates_to_use = ['230331', '230403', '230407']
+    maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
     color = sns.color_palette("Paired")
     color_rocket = sns.color_palette("rocket")
     kwargs_FF1 = {'marker':'o', 'mfc':color[6], 'elinewidth':3, 'ecolor':color[6], 'alpha':0.8, 'ms':'10', 'mec':color[6]}
@@ -389,8 +389,11 @@ def plot_forces_with_maturation():
     ax_force20_1.set_ylabel('Force at 20 % [N]', font=fonts.serif_rz_legend())
     ax_force20_2.set_ylabel('Force at 20 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_force20, "force20_vs_maturation_1+2")
+    plt.close(fig_force20)
     savefigure.save_as_png(fig_force20_1, "force20_vs_maturation_1")
+    plt.close(fig_force20_1)
     savefigure.save_as_png(fig_force20_2, "force20_vs_maturation_2")
+    plt.close(fig_force20_2)
 
     fig_force80_1 = createfigure.rectangle_rz_figure(pixels=180)
     ax_force80_1 = fig_force80_1.gca()
@@ -420,9 +423,12 @@ def plot_forces_with_maturation():
     ax_force80_1.set_ylabel('Force at 80 % [N]', font=fonts.serif_rz_legend())
     ax_force80_2.set_ylabel('Force at 80 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_force80, "force80_vs_maturation_1+2")
+    plt.close(fig_force80)
     savefigure.save_as_png(fig_force80_1, "force80_vs_maturation_1")
+    plt.close(fig_force80_1)
     savefigure.save_as_png(fig_force80_2, "force80_vs_maturation_2")
-    
+    plt.close(fig_force80_2)
+
     
     mean_force8020_FF1_dict = {d:mean_force80_FF1_dict[d] - mean_force20_FF1_dict[d] for d in dates_to_use}
     mean_force8020_FF2_dict = {d:mean_force80_FF2_dict[d] - mean_force20_FF2_dict[d] for d in dates_to_use}
@@ -466,8 +472,11 @@ def plot_forces_with_maturation():
     ax_force8020_1.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
     ax_force8020_2.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_force8020, "force8020_vs_maturation_1+2")
+    plt.close(fig_force8020)
     savefigure.save_as_png(fig_force8020_1, "force8020_vs_maturation_1")
+    plt.close(fig_force8020_1)
     savefigure.save_as_png(fig_force8020_2, "force8020_vs_maturation_2")
+    plt.close(fig_force8020_2)
 
 
 
