@@ -50,7 +50,7 @@ def compute_indicators_indentation_relaxation(files_zwick, datafile, sheet):
     index_where_force_is_max = np.where(force == max_force)[0]
     relaxation_slope = (force[index_where_force_is_max + 3] - force[index_where_force_is_max + 1]) / (time[index_where_force_is_max + 3] - time[index_where_force_is_max + 1])
     time_when_force_is_max = time[index_where_force_is_max]
-    relaxation_duration = 20
+    relaxation_duration = 10
     end_of_relaxation = time_when_force_is_max + relaxation_duration
     index_where_time_is_end_relaxation = np.where(time == find_nearest(time, end_of_relaxation))[0]
     delta_f = max_force - force[index_where_time_is_end_relaxation]
@@ -402,8 +402,8 @@ def export_data_as_txt(indicator):
 
 def plot_data_with_maturation(indicator):
     maturation = [10, 13, 17, 21]
-    dates_to_use = ['230331', '230403', '230407', '230411']
-    maturation_dict = {'230331': 10, '230403': 13, '230407': 17, '230411': 21}
+    dates_to_use = ['230331', '230403', '230407']
+    maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_" + indicator + ".pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -475,16 +475,17 @@ def plot_data_with_maturation(indicator):
     savefigure.save_as_png(fig_data, indicator + "_vs_maturation_1+2")
     savefigure.save_as_png(fig_data_1, indicator + "_vs_maturation_1")
     savefigure.save_as_png(fig_data_2, indicator + "_vs_maturation_2")
-
-
-
+    plt.close(fig_data)
+    plt.close(fig_data_1)
+    plt.close(fig_data_2)
 
 def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     maturation = [10, 13, 17, 21]
-    dates_to_use = ['230331', '230403', '230407', '230411']
-    maturation_dict = {'230331': 10, '230403': 13, '230407': 17, '230411': 21}
+    dates_to_use = ['230331', '230403', '230407']
+    maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
     maturation_FF_dict = {k: v - 0.1 for k, v in maturation_dict.items()}
     maturation_RDG_dict = {k: v + 0.1 for k, v in maturation_dict.items()}
+    maturation_dict_plots = {'230331': 'J+10', '230403': 'J+13', '230407': 'J+17'}
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_" + irr_indicator + ".pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -574,12 +575,16 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force80_1.errorbar(list(mean_force80_FF1_dict.values()), list(mean_data_FF1_dict.values()), yerr=list(std_data_FF1_dict.values()), xerr=list(std_force80_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
     ax_data_vs_force80_1.errorbar(list(mean_force80_RDG1_dict.values()), list(mean_data_RDG1_dict.values()), yerr=list(std_data_RDG1_dict.values()), xerr=list(std_force80_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
     ax_data_vs_force80_1.plot(force_80_1, fitted_response_data_1, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data_1[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_data_1[0], 4)) + '\n R2 = ' + str(np.round(score_data_1, 2)) )
+    for i in range(len(mean_force80_FF1_dict)):
+        date = dates_to_use[i]
+        ax_data_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_FF1_dict[date] +0.04, mean_data_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_data_vs_force80_1.annotate(maturation_dict_plots[date], (mean_force80_RDG1_dict[date]+0.04, mean_data_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
     ax_data_vs_force80_1.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
     ax_data_vs_force80_1.set_title(labels[irr_indicator] + ' vs Force 80% 1', font=fonts.serif_rz_legend())
     ax_data_vs_force80_1.set_ylabel(labels[irr_indicator], font=fonts.serif_rz_legend())
     ax_data_vs_force80_1.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force80_1, irr_indicator + "_vs_force80_1")
-
+    plt.close(fig_data_vs_force80_1)
     force_80_2 = np.concatenate((list(mean_force80_FF2_dict.values()), list(mean_force80_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_80_2) 
     data_2 = np.concatenate(( list(mean_data_FF2_dict.values()) , list(mean_data_RDG2_dict.values()) ))
@@ -600,12 +605,17 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force80_2.errorbar(list(mean_force80_FF2_dict.values()), list(mean_data_FF2_dict.values()), yerr=list(std_data_FF2_dict.values()), xerr=list(std_force80_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
     ax_data_vs_force80_2.errorbar(list(mean_force80_RDG2_dict.values()), list(mean_data_RDG2_dict.values()), yerr=list(std_data_RDG2_dict.values()), xerr=list(std_force80_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
     ax_data_vs_force80_2.plot(force_80_2, fitted_response_data_2, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data_2[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_data_2[0], 4)) + '\n R2 = ' + str(np.round(score_data_2, 2)) )
+    for i in range(len(mean_force80_FF2_dict)):
+        date = dates_to_use[i]
+        ax_data_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_FF2_dict[date] +0.04, mean_data_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_data_vs_force80_2.annotate(maturation_dict_plots[date], (mean_force80_RDG2_dict[date]+0.04, mean_data_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+
     ax_data_vs_force80_2.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
     ax_data_vs_force80_2.set_title(labels[irr_indicator] + ' vs Force 80% 2', font=fonts.serif_rz_legend())
     ax_data_vs_force80_2.set_ylabel(labels[irr_indicator], font=fonts.serif_rz_legend())
     ax_data_vs_force80_2.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force80_2, irr_indicator + "_vs_force80_2")
-
+    plt.close(fig_data_vs_force80_2)
 
     force_80 = np.concatenate((list(mean_force80_FF_dict.values()), list(mean_force80_RDG_dict.values())))
     index_force_nan = np.isnan(force_80) 
@@ -627,12 +637,17 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force80.errorbar(list(mean_force80_FF_dict.values()), list(mean_data_FF_dict.values()), yerr=list(std_data_FF_dict.values()), xerr=list(std_force80_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
     ax_data_vs_force80.errorbar(list(mean_force80_RDG_dict.values()), list(mean_data_RDG_dict.values()), yerr=list(std_data_RDG_dict.values()), xerr=list(std_force80_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
     ax_data_vs_force80.plot(force_80, fitted_response_data, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data[0], 4)) + r'$F_{80 \%}$ + '+  str(np.round(b_data[0], 4)) + '\n R2 = ' + str(np.round(score_data, 2)) )
+    for i in range(len(mean_force80_FF_dict)):
+        date = dates_to_use[i]
+        ax_data_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_FF_dict[date] +0.04, mean_data_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_data_vs_force80.annotate(maturation_dict_plots[date], (mean_force80_RDG_dict[date]+0.04, mean_data_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+
     ax_data_vs_force80.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
     ax_data_vs_force80.set_title(labels[irr_indicator] + ' vs Force 80% 1+2', font=fonts.serif_rz_legend())
     ax_data_vs_force80.set_ylabel(labels[irr_indicator], font=fonts.serif_rz_legend())
     ax_data_vs_force80.set_xlabel('Force 80 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force80, irr_indicator + "_vs_force80_1+2")
-
+    plt.close(fig_data_vs_force80)
 
 
     #data vs force 20    
@@ -656,12 +671,17 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force20_1.errorbar(list(mean_force20_FF1_dict.values()), list(mean_data_FF1_dict.values()), yerr=list(std_data_FF1_dict.values()), xerr=list(std_force20_FF1_dict.values()) ,lw=0, label='FF1', **kwargs_FF1)
     ax_data_vs_force20_1.errorbar(list(mean_force20_RDG1_dict.values()), list(mean_data_RDG1_dict.values()), yerr=list(std_data_RDG1_dict.values()), xerr=list(std_force20_RDG1_dict.values()) ,lw=0, label='RDG1', **kwargs_RDG1)
     ax_data_vs_force20_1.plot(force_20_1, fitted_response_data_1, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data_1[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_data_1[0], 4)) + '\n R2 = ' + str(np.round(score_data_1, 2)) )
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates_to_use[i]
+        ax_data_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_FF1_dict[date] +0.04, mean_data_FF1_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_data_vs_force20_1.annotate(maturation_dict_plots[date], (mean_force20_RDG1_dict[date]+0.04, mean_data_RDG1_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+
     ax_data_vs_force20_1.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
     ax_data_vs_force20_1.set_title(labels[irr_indicator] + ' vs Force 20% 1', font=fonts.serif_rz_legend())
     ax_data_vs_force20_1.set_ylabel(labels[irr_indicator], font=fonts.serif_rz_legend())
     ax_data_vs_force20_1.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force20_1, irr_indicator + "_vs_force20_1")
-
+    plt.close(fig_data_vs_force20_1)
     force_20_2 = np.concatenate((list(mean_force20_FF2_dict.values()), list(mean_force20_RDG2_dict.values())))
     index_force_2_nan = np.isnan(force_20_2) 
     data_2 = np.concatenate(( list(mean_data_FF2_dict.values()) , list(mean_data_RDG2_dict.values()) ))
@@ -682,12 +702,17 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force20_2.errorbar(list(mean_force20_FF2_dict.values()), list(mean_data_FF2_dict.values()), yerr=list(std_data_FF2_dict.values()), xerr=list(std_force20_FF2_dict.values()) ,lw=0, label='FF2', **kwargs_FF2)
     ax_data_vs_force20_2.errorbar(list(mean_force20_RDG2_dict.values()), list(mean_data_RDG2_dict.values()), yerr=list(std_data_RDG2_dict.values()), xerr=list(std_force20_RDG2_dict.values()) ,lw=0, label='RDG2', **kwargs_RDG2)
     ax_data_vs_force20_2.plot(force_20_2, fitted_response_data_2, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data_2[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_data_2[0], 4)) + '\n R2 = ' + str(np.round(score_data_2, 2)) )
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates_to_use[i]
+        ax_data_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_FF2_dict[date] +0.04, mean_data_FF2_dict[date]+0.02), color = color[7], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_data_vs_force20_2.annotate(maturation_dict_plots[date], (mean_force20_RDG2_dict[date]+0.04, mean_data_RDG2_dict[date]+0.02), color = color[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+
     ax_data_vs_force20_2.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
     ax_data_vs_force20_2.set_title(labels[irr_indicator] + ' vs Force 20% 2', font=fonts.serif_rz_legend())
     ax_data_vs_force20_2.set_ylabel(labels[irr_indicator], font=fonts.serif_rz_legend())
     ax_data_vs_force20_2.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force20_2, irr_indicator + "_vs_force20_2")
-
+    plt.close(fig_data_vs_force20_2)
 
     force_20 = np.concatenate((list(mean_force20_FF_dict.values()), list(mean_force20_RDG_dict.values())))
     index_force_nan = np.isnan(force_20) 
@@ -709,12 +734,17 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force20.errorbar(list(mean_force20_FF_dict.values()), list(mean_data_FF_dict.values()), yerr=list(std_data_FF_dict.values()), xerr=list(std_force20_FF_dict.values()) ,lw=0, label='FF', **kwargs_FF)
     ax_data_vs_force20.errorbar(list(mean_force20_RDG_dict.values()), list(mean_data_RDG_dict.values()), yerr=list(std_data_RDG_dict.values()), xerr=list(std_force20_RDG_dict.values()) ,lw=0, label='RDG', **kwargs_RDG)
     ax_data_vs_force20.plot(force_20, fitted_response_data, ':k', label=labels[irr_indicator] + ' = ' + str(np.round(a_data[0], 4)) + r'$F_{20 \%}$ + '+  str(np.round(b_data[0], 4)) + '\n R2 = ' + str(np.round(score_data, 2)) )
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates_to_use[i]
+        ax_data_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_FF_dict[date] +0.04, mean_data_FF_dict[date]+0.02), color = color_rocket[3], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+        ax_data_vs_force20.annotate(maturation_dict_plots[date], (mean_force20_RDG_dict[date]+0.04, mean_data_RDG_dict[date]+0.02), color = color_rocket[1], bbox=dict(boxstyle="round", fc="0.8", alpha=0.4))
+
     ax_data_vs_force20.legend(prop=fonts.serif_rz_legend(), loc='upper right', framealpha=0.7)
     ax_data_vs_force20.set_title(labels[irr_indicator] + ' vs Force 20% 1+2', font=fonts.serif_rz_legend())
     ax_data_vs_force20.set_ylabel(labels[irr_indicator], font=fonts.serif_rz_legend())
     ax_data_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force20, irr_indicator + "_vs_force20_1+2")
-
+    plt.close(fig_data_vs_force20)
         
         
 if __name__ == "__main__":
@@ -751,15 +781,15 @@ if __name__ == "__main__":
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_strain_rate_dict, 'i_time_strain_rate')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_1_dict, 'i_disp_1')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_1_dict, 'i_time_1')
-    # for indicator in indicator_list:
-    #     # export_data_as_txt(indicator)
-    #     # plot_data_with_maturation(indicator)
-    #     plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
+    for indicator in indicator_list:
+        # export_data_as_txt(indicator)
+        # plot_data_with_maturation(indicator)
+        plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
         
-    for datafile in datafile_list:
-        sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
-        for sheet in sheet_list:
-            plot_indicators_indentation_relaxation(files_zwick, datafile, sheet)
+    # for datafile in datafile_list:
+    #     sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
+    #     for sheet in sheet_list:
+    #         plot_indicators_indentation_relaxation(files_zwick, datafile, sheet)
 
     print('hello')
     
