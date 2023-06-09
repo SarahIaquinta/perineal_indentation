@@ -48,7 +48,7 @@ def compute_indicators_indentation_relaxation(files_zwick, datafile, sheet):
     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
     max_force = np.nanmax(force)
     index_where_force_is_max = np.where(force == max_force)[0]
-    relaxation_slope = (force[index_where_force_is_max + 3] - force[index_where_force_is_max + 1]) / (time[index_where_force_is_max + 3] - time[index_where_force_is_max + 1])
+    relaxation_slope = (force[index_where_force_is_max + 2] - force[index_where_force_is_max ]) / (time[index_where_force_is_max + 3] - time[index_where_force_is_max + 1])
     time_when_force_is_max = time[index_where_force_is_max]
     relaxation_duration = 10
     end_of_relaxation = time_when_force_is_max + relaxation_duration
@@ -77,7 +77,7 @@ def plot_indicators_indentation_relaxation(files_zwick, datafile, sheet):
     index_where_time_is_end_relaxation = np.where(time == find_nearest(time, end_of_relaxation[0]))[0]
     delta_f = max_force - force[index_where_time_is_end_relaxation]
     delta_f_star = delta_f[0] / max_force
-    ax_force_vs_time.plot([time[index_where_force_is_max + 1], time[index_where_force_is_max + 3]], [force[index_where_force_is_max + 1], force[index_where_force_is_max + 3]], '--', color = colors[5], label = r"$\alpha_R$ = " + str(np.round(relaxation_slope[0], 2)) + r" $N.s^{-1}$")
+    ax_force_vs_time.plot([time[index_where_force_is_max ], time[index_where_force_is_max + 2]], [force[index_where_force_is_max ], force[index_where_force_is_max + 2]], '--', color = colors[5], label = r"$\alpha_R$ = " + str(np.round(relaxation_slope[0], 2)) + r" $N.s^{-1}$")
     ax_force_vs_time.plot([time[index_where_time_is_end_relaxation[0]], time[index_where_time_is_end_relaxation[0]]], [force[index_where_time_is_end_relaxation][0], max_force], ':', color = colors[-1], label = r"$\Delta F$  = " + str(np.round(delta_f[0], 2)) + " N \n" + r"$\Delta F^*$ = " + str(np.round(delta_f_star, 2)))
 
     time_at_strain_rate_0, force_at_strain_rate_0, disp_at_strain_rate_0 = get_data_at_given_strain_rate(files_zwick, datafile, sheet, 0.01)
@@ -95,8 +95,10 @@ def plot_indicators_indentation_relaxation(files_zwick, datafile, sheet):
 
     ax_force_vs_time.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
     savefigure.save_as_png(fig_force_vs_time, sheet + "_force_vs_time_with_indicators")
+    plt.close(fig_force_vs_time)
     ax_force_vs_disp.legend(prop=fonts.serif_rz_legend(), loc='lower center', framealpha=0.7)
     savefigure.save_as_png(fig_force_vs_disp, sheet + "_force_vs_disp_with_indicators")
+    plt.close(fig_force_vs_disp)
     return relaxation_slope, delta_f, delta_f_star, i_disp_strain_rate, i_time_strain_rate, i_disp_1, i_time_1
 
 def export_indicators(datafile_list):
@@ -765,14 +767,14 @@ if __name__ == "__main__":
     with open(complete_pkl_filename, "rb") as f:
         [ids_list, date_dict, meat_piece_dict, relaxation_slope_dict, delta_f_dict, delta_f_star_dict, i_disp_strain_rate_dict, i_time_strain_rate_dict, i_disp_1_dict, i_time_1_dict] = pickle.load(f)
 
-    indicator_list = ['relaxation_slope',
-                    'delta_f',
-                    'delta_f_star',
-                    'i_disp_strain_rate',
-                    'i_time_strain_rate',
-                    'i_disp_1',
-                    'i_time_1'       
-                        ]
+    indicator_list = ['relaxation_slope']#,
+                    # 'delta_f',
+                    # 'delta_f_star',
+                    # 'i_disp_strain_rate',
+                    # 'i_time_strain_rate',
+                    # 'i_disp_1',
+                    # 'i_time_1'       
+                    #     ]
     # ids_at_date_and_meatpiece, data_dict_at_date_and_meatpiece  = extract_data_at_given_date_and_meatpiece('230331', 'RDG1', ids_list, meat_piece_dict, date_dict, relaxation_slope_dict)
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, relaxation_slope_dict, 'relaxation_slope')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_dict, 'delta_f')
@@ -781,15 +783,15 @@ if __name__ == "__main__":
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_strain_rate_dict, 'i_time_strain_rate')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_1_dict, 'i_disp_1')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_1_dict, 'i_time_1')
-    for indicator in indicator_list:
-        export_data_as_txt(indicator)
-        # plot_data_with_maturation(indicator)
-        # plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
+    # for indicator in indicator_list:
+    #     export_data_as_txt(indicator)
+    #     plot_data_with_maturation(indicator)
+    #     plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
         
-    # for datafile in datafile_list:
-    #     sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
-    #     for sheet in sheet_list:
-    #         plot_indicators_indentation_relaxation(files_zwick, datafile, sheet)
+    for datafile in datafile_list:
+        sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
+        for sheet in sheet_list:
+            plot_indicators_indentation_relaxation(files_zwick, datafile, sheet)
 
     print('hello')
     

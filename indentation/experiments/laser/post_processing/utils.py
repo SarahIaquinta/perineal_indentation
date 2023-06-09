@@ -123,10 +123,10 @@ def extract_recovery_data_from_pkl(filename):
     return filenames_to_export, delta_d_to_export, delta_d_stars_to_export, d_min_to_export, A_to_export
 
 
-def export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict ):
+def export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict ):
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
-            [ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict],
+            [ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict],
             f,
         )
         
@@ -134,8 +134,8 @@ def extract_A_data_from_pkl():
     pkl_filename = '0_locations_recoveries_A.pkl'
     complete_pkl_filename = get_path_to_processed_data() / pkl_filename
     with open(complete_pkl_filename, "rb") as f:
-        [ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict] = pickle.load(f)
-    return ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict
+        [ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict] = pickle.load(f)
+    return ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict
 
 
 
@@ -144,21 +144,34 @@ def transform_csv_input_A_into_pkl(csv_filename):
     complete_csv_filename = path_to_processed_data + "/" + csv_filename
     ids_list = []
     date_dict = {}
+    Umax_dict = {}
+    def_dict = {}
+    thickness_dict = {}
     deltad_dict = {}
     deltadstar_dict = {}
     dmin_dict = {}
     A_dict = {}
     failed_dict = {}
     datas = pd.read_csv(complete_csv_filename, delimiter=';', header=0)
+    datas.fillna(method='bfill', inplace=True)
     ids = datas.Id
     ids_list = ids.tolist()
     dates = datas.date
+    umaxs = datas.Umax
+    defs = datas.strain    
     deltads = datas.deltad
     deltadstars = datas.deltadstar
     dmin = datas.dmin
     A = datas.A
     faileds = datas.failed
     date_dict = {ids_list[i]: dates.tolist()[i] for i in range(len(ids_list))}
+    Umax_dict = {ids[i]: umaxs.tolist()[i] for i in range(len(ids_list))}
+    def_dict = {ids[i]: defs.tolist()[i] for i in range(len(ids_list))}
+    thickness_list = [u/d for u,d in zip(Umax_dict.values(), def_dict.values())]
+    thickness_dict = {ids[i]:thickness_list[i] for i in range(len(ids_list))}
+
+
+    #TODO contine def dict
     deltad_dict = {ids_list[i]: deltads.tolist()[i] for i in range(len(ids_list))}
     deltadstar_dict = {ids_list[i]: deltadstars.tolist()[i] for i in range(len(ids_list))}
     dmin_dict = {ids_list[i]: dmin.tolist()[i] for i in range(len(ids_list))}
@@ -166,4 +179,4 @@ def transform_csv_input_A_into_pkl(csv_filename):
     failed_dict = {ids_list[i]: faileds.tolist()[i] for i in range(len(ids_list))}
     pkl_filename = csv_filename[:-4] + '.pkl'
     complete_pkl_filename = get_path_to_processed_data() / pkl_filename
-    export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict )
+    export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict )
