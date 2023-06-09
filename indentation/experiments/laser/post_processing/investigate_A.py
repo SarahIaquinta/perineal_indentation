@@ -668,8 +668,8 @@ def plot_recovery_indicators_with_maturation(deltad_threshold):
 
             
     """         
-    dates_to_use = ['230331', '230403', '230407', '230411']
-    maturation_dict = {'230331':10, '230403':13, '230407':17, '230411':21}
+    dates_to_use = ['230331', '230403', '230407']
+    maturation_dict = {'230331':10, '230403':13, '230407':17}
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "_indicators_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -844,9 +844,9 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold):
             
     """    
     maturation = [10, 13, 17, 21]
-    dates_to_use = ['230331', '230403', '230407', '230411']
-    maturation_dict = {'230331': 10, '230403': 13, '230407': 17, '230411': 21}
-    maturation_dict_plots = {'230331': 'J+10', '230403': 'J+13', '230407': 'J+17', '230411': 'J+21'}
+    dates_to_use = ['230331', '230403', '230407']
+    maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
+    maturation_dict_plots = {'230331': 'J+10', '230403': 'J+13', '230407': 'J+17'}
     maturation_FF_dict = {k: v - 0.1 for k, v in maturation_dict.items()}
     maturation_RDG_dict = {k: v + 0.1 for k, v in maturation_dict.items()}
     
@@ -1694,9 +1694,9 @@ if __name__ == "__main__":
     ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict = utils.extract_A_data_from_pkl()
     # ids_where_not_failed, date_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed    = remove_failed_A(ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
     # ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
-    compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold)
-    export_indocators_as_txt(deltad_threshold)
-    plot_recovery_indicators_with_maturation(deltad_threshold) 
+    # compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold)
+    # export_indocators_as_txt(deltad_threshold)
+    # plot_recovery_indicators_with_maturation(deltad_threshold) 
 
     plot_laser_indicators_vs_texturometer_forces(deltad_threshold)
     # irr_indicator_list = ['relaxation_slope',
