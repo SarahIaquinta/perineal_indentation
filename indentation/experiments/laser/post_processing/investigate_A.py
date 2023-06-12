@@ -2350,11 +2350,11 @@ if __name__ == "__main__":
     ids_where_not_failed, date_dict_not_failed, Umax_dict_not_failed, def_dict_not_failed, thickness_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed  = remove_failed_A(ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict)
     ids_where_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
     print(ids_where_not_failed_and_not_small_deltad)
-    # compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold, strain_threshold)
-    # export_indocators_as_txt(deltad_threshold, strain_threshold)
-    # plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold) 
+    compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold, strain_threshold)
+    export_indocators_as_txt(deltad_threshold, strain_threshold)
+    plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold) 
 
-    # plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_threshold)
+    plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_threshold)
     # irr_indicator_list = ['relaxation_slope',
     #             'delta_f',
     #             'delta_f_star',

@@ -169,11 +169,8 @@ def transform_csv_input_A_into_pkl(csv_filename):
     def_dict = {ids[i]: defs.tolist()[i] for i in range(len(ids_list))}
     thickness_list = [u/d for u,d in zip(Umax_dict.values(), def_dict.values())]
     thickness_dict = {ids[i]:thickness_list[i] for i in range(len(ids_list))}
-
-
-    #TODO contine def dict
     deltad_dict = {ids_list[i]: deltads.tolist()[i] for i in range(len(ids_list))}
-    deltadstar_dict = {ids_list[i]: deltadstars.tolist()[i] for i in range(len(ids_list))}
+    deltadstar_dict = {ids_list[i]: deltads.tolist()[i]/umaxs.tolist()[i] for i in range(len(ids_list))}
     dmin_dict = {ids_list[i]: dmin.tolist()[i] for i in range(len(ids_list))}
     A_dict = {ids_list[i]: A.tolist()[i] for i in range(len(ids_list))}
     failed_dict = {ids_list[i]: faileds.tolist()[i] for i in range(len(ids_list))}
