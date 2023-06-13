@@ -20,17 +20,17 @@ import pandas as pd
 from indentation.experiments.zwick.post_processing.utils import find_nearest
 
 def get_data_from_file():
-    path_to_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\raw_data'
-    complete_excel_filename = path_to_data + "/" + '230331_FF2_7.xlsx'
+    path_to_data = r'C:\Users\c2ma\Documents\Sarah\perineal_indentation\indentation\experiments\texturometer\raw_data'
+    complete_excel_filename = path_to_data + "\\" + '230331_FF2_7.xlsx'
     # pd.read_excel(path_to_metadatafile, sheet_name='laser', header=1, names=["Id", "imposed_disp"], usecols="A:B", decimal=',')
     datas = pd.read_excel(complete_excel_filename, header=0, decimal=',')
     disp = datas.U
     force = datas.F
     max_disp = np.max(disp)
-    disp_at_80 = find_nearest(disp, max_disp * 0.8)
+    disp_at_80 = find_nearest(disp,(max_disp+2) * 0.8)
     index_where_disp_is_disp_at_80 = np.where(disp == find_nearest(disp, disp_at_80))[0][0]
     force_at_80 = force.to_list()[index_where_disp_is_disp_at_80]
-    disp_at_20 = find_nearest(disp, max_disp * 0.2)
+    disp_at_20 = find_nearest(disp,(max_disp+2) * 0.2)
     index_where_disp_is_disp_at_20 = np.where(disp == find_nearest(disp, disp_at_20))[0][0]
     force_at_20 = force.to_list()[index_where_disp_is_disp_at_20]
     return disp, force, disp_at_20, force_at_20, disp_at_80, force_at_80
