@@ -250,7 +250,6 @@ def compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict,
             f,
         )
  
- 
 
 def export_data_as_txt(indicator):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
@@ -445,7 +444,6 @@ def export_data_as_txt(indicator):
         
         
     f.close()
-
 
 
 def plot_data_with_maturation(indicator):
