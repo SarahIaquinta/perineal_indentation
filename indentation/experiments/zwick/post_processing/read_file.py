@@ -108,7 +108,6 @@ class Files_Zwick:
         sheets_list_with_data = [i for i in sheets_list if i.startswith(date) or i.startswith('RDG') or i.startswith('FF')]
         return datafile_as_pds, sheets_list_with_data
         
-        
     def read_sheet_in_datafile(self, datafile, sheet):
         """
         Extracts the measured time, force and displacement values in a sheet
@@ -148,9 +147,6 @@ class Files_Zwick:
         disp0 = disp[0]
         disp = disp - disp[0]
         return time, force, disp
-    
-
-        
 
     def read_metadatas_zwick(self, metadatafile):
         date = metadatafile[0:6]
