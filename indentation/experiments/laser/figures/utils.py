@@ -12,6 +12,10 @@ class Fonts:
         font = font_manager.FontProperties(family="serif", weight="normal", style="normal", size=18)
         return font
     
+    def serif_1(self):
+        font = font_manager.FontProperties(family="serif", weight="normal", style="normal", size=24)
+        return font
+    
     def serif_rz_legend(self):
         font = font_manager.FontProperties(family="serif", weight="normal", style="normal", size=9)
         return font

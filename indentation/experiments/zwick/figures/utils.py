@@ -10,8 +10,11 @@ from indentation.experiments.zwick.post_processing.utils import get_path_to_figu
 class Fonts:
     def serif(self):
         font = font_manager.FontProperties(family="serif", weight="normal", style="normal", size=18)
-        return font
+        return font    
     
+    def serif_1(self):
+        font = font_manager.FontProperties(family="serif", weight="normal", style="normal", size=24)
+        return font
     def serif_rz_legend(self):
         font = font_manager.FontProperties(family="serif", weight="normal", style="normal", size=9)
         return font

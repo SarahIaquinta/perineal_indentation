@@ -141,6 +141,12 @@ class Files_Zwick:
         time = np.array([time_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
         force = np.array([force_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
         disp = np.array([disp_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
+        time0 = time[0]
+        time = time - time0
+        force0 = force[0]
+        force = force - force0
+        disp0 = disp[0]
+        disp = disp - disp[0]
         return time, force, disp
     
 
@@ -203,9 +209,9 @@ class Files_Zwick:
         
     def build_fig_to_plot_data_from_sheet_meat(self, datafile, sheet, createfigure, savefigure, fonts):
         time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
-        fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
-        fig_disp_vs_time = createfigure.rectangle_rz_figure(pixels=180)
-        fig_force_vs_disp = createfigure.rectangle_rz_figure(pixels=180)
+        fig_force_vs_time = createfigure.rectangle_figure(pixels=180)
+        fig_disp_vs_time = createfigure.rectangle_figure(pixels=180)
+        fig_force_vs_disp = createfigure.rectangle_figure(pixels=180)
         ax_force_vs_time = fig_force_vs_time.gca()
         ax_disp_vs_time = fig_disp_vs_time.gca()
         ax_force_vs_disp = fig_force_vs_disp.gca()
