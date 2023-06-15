@@ -86,19 +86,19 @@ def get_path_to_figures():
 
         
 def export_inputs_as_pkl():
-    elongation_dict, damage_dict = exd.get_inputs()
+    ids_list, elongation_dict, damage_dict = exd.get_inputs()
     complete_pkl_filename = get_path_to_processed_data() / "inputs.pkl"
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
-            [elongation_dict, damage_dict],
+            [ids_list, elongation_dict, damage_dict],
             f,
         )
         
 def extract_inputs_from_pkl():
     complete_pkl_filename = get_path_to_processed_data() / "inputs.pkl"
     with open(complete_pkl_filename, "rb") as f:
-        [elongation_dict, damage_dict] = pickle.load(f)
-    return elongation_dict, damage_dict
+        [ids_list, elongation_dict, damage_dict] = pickle.load(f)
+    return ids_list, elongation_dict, damage_dict
         
 def export_data_output_as_txt(filename, mat_Z, vec_time, vec_pos_axis):
     filename_time = filename[:-4] + '_time.txt'
