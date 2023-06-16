@@ -94,12 +94,43 @@ def export_inputs_as_pkl():
             f,
         )
         
+def export_stress_as_pkl():
+    time_list, stress_dict = exd.get_stress()
+    complete_pkl_filename = get_path_to_processed_data() / "stress.pkl"
+    with open(complete_pkl_filename, "wb") as f:
+        pickle.dump(
+            [time_list, stress_dict],
+            f,
+        )
+
+def export_disp_as_pkl():
+    time_list, disp_dict = exd.get_disp()
+    complete_pkl_filename = get_path_to_processed_data() / "disp.pkl"
+    with open(complete_pkl_filename, "wb") as f:
+        pickle.dump(
+            [time_list, disp_dict],
+            f,
+        )
+
 def extract_inputs_from_pkl():
     complete_pkl_filename = get_path_to_processed_data() / "inputs.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [ids_list, elongation_dict, damage_dict] = pickle.load(f)
     return ids_list, elongation_dict, damage_dict
-        
+
+def extract_stress_from_pkl():
+    complete_pkl_filename = get_path_to_processed_data() / "stress.pkl"
+    with open(complete_pkl_filename, "rb") as f:
+        [time_list, stress_dict] = pickle.load(f)
+    return time_list, stress_dict
+       
+def extract_disp_from_pkl():
+    complete_pkl_filename = get_path_to_processed_data() / "disp.pkl"
+    with open(complete_pkl_filename, "rb") as f:
+        [time_list, disp_dict] = pickle.load(f)
+    return time_list, disp_dict 
+
+
 def export_data_output_as_txt(filename, mat_Z, vec_time, vec_pos_axis):
     filename_time = filename[:-4] + '_time.txt'
     filename_axis = filename[:-4] + '_axis.txt'

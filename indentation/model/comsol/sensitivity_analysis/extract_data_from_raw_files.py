@@ -25,25 +25,36 @@ def get_inputs():
     damage_dict = {ids.tolist()[i]: damages.tolist()[i] for i in range(len(ids.tolist()))}
     return ids_list, elongation_dict, damage_dict
 
-def get_output2():
+def get_stress():
+    ids_list, _, _ = utils.extract_inputs_from_pkl()
     path_to_file_stress = utils.reach_data_path() / 'stress_silicone.xlsx'
     stress_data = pd.read_excel(path_to_file_stress, sheet_name='output', header=0)
     times = stress_data.time
-    ids = stress_data.Id
-    elongations = stress_data.elongation
-    damages = stress_data.damage
-    elongation_dict = {ids.tolist()[i]: elongations.tolist()[i] for i in range(len(ids.tolist()))}
-    damage_dict = {ids.tolist()[i]: damages.tolist()[i] for i in range(len(ids.tolist()))}
-    return elongation_dict, damage_dict
+    time_list = [float(t) for t in times.to_list()]
+    stress_dict = {}
+    for id in ids_list:
+        stress_id = stress_data[id]
+        stress_dict[id] = [float(s) for s in stress_id.to_list()]
+    return time_list, stress_dict
 
-
+def get_disp():
+    ids_list, _, _ = utils.extract_inputs_from_pkl()
+    path_to_file_disp = utils.reach_data_path() / 'disp_silicone.xlsx'
+    disp_data = pd.read_excel(path_to_file_disp, sheet_name='output', header=0)
+    times = disp_data.time
+    time_list = [float(t) for t in times.to_list()]
+    disp_dict = {}
+    for id in ids_list:
+        disp_id = disp_data[id]
+        disp_dict[id] = [float(s) for s in disp_id.to_list()]
+    return time_list, disp_dict
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    utils.export_inputs_as_pkl()
-    # ids_list, elongation_dict, damage_dict = utils.extract_inputs_from_pkl()
-
+    ids_list, elongation_dict, damage_dict = utils.extract_inputs_from_pkl()
+    time_list, disp_dict = utils.extract_disp_from_pkl()
+    time_list, stress_dict = utils.extract_stress_from_pkl()
     print('hello')
 
