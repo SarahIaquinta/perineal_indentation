@@ -5,7 +5,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from PIL import Image
-from indentation.experiments.laser.post_processing.utils import get_path_to_figures
+from pathlib import Path
+
+
+def get_path_to_figures():
+    """
+    Returns the path where the processed data is stored
+
+    Parameters:
+        ----------
+        None
+
+    Returns:
+        -------
+        path_to_processed_data: str (Path)
+            Path format string
+
+    """
+    path_to_figure = Path.cwd() / 'indentation\\model\\comsol\\sensitivity_analysis\\figures'
+    return path_to_figure
 
 class Fonts:
     def serif(self):
