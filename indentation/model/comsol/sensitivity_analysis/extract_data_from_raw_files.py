@@ -235,10 +235,7 @@ def plot_reshaped_data(input_id):
     plt.close(fig_stress_vs_time)
 
     recovery_time_list_linear, fitted_response_linear, A_linear, intercept_linear = find_recovery_slope(input_id)
-    # log_time, fitted_response_log, A_log, intercept_log, fitted_response_power, A_power, intercept_power, fitted_response_linear, A_linear, intercept_linear = find_indicators_recovery(input_id)
-    # ax_disp_vs_time.plot(np.exp(log_time), fitted_response_log ,   '--', color = color_rocket[4], label =r"$z = A \log{t} + z_{t=1}$" + "\nA = " + str(np.round(A_log, 2)) , lw=3)
-    # ax_disp_vs_time.plot(np.exp(log_time), np.exp(fitted_response_power) ,   '--', color = color_rocket[5], label =r"$z = a t^{n}$" + "\na = " + str(np.round(np.exp(intercept_power), 2)) + " ; n = " + str(np.round(A_power, 2)) , lw=3)
-    ax_disp_vs_time.plot(recovery_time_list_linear, fitted_response_linear ,   '-', color = color_rocket[3], label =r"$z = a t$" + "\na = " + str(np.round(np.exp(A_linear), 2)), lw=3)
+    ax_disp_vs_time.plot(recovery_time_list_linear, fitted_response_linear ,   '-', color = color_rocket[3], label =r"$z = a t$" + "\na = " + str(np.round((A_linear), 2)), lw=3)
     ax_disp_vs_time.plot([recovery_time_list_linear[0], recovery_time_list_linear[-1]], [fitted_response_linear[0], fitted_response_linear[0]] ,   '--', color = color_rocket[3],  lw=3)
     ax_disp_vs_time.plot([recovery_time_list_linear[-1], recovery_time_list_linear[-1]], [fitted_response_linear[0], fitted_response_linear[-1]] ,   '--', color = color_rocket[3],  lw=3)
 
@@ -390,7 +387,7 @@ def export_indicators_as_txt():
         )
     f.close()    
     
-def compute_cumulative_mean_std(vector)
+def compute_cumulative_mean_std(vector):
     cumulative_mean = np.zeros(len(vector))
     cumulative_std = np.zeros_like(cumulative_mean)
     for i in range(len(vector)):
@@ -408,11 +405,11 @@ if __name__ == "__main__":
     # time_list, disp_dict = utils.extract_disp_from_pkl()
     # time_list, stress_dict = utils.extract_stress_from_pkl()
     # reshape_disp_to_recovery(1)
-    # for id in ids_list:
-    #     plot_reshaped_data(id)
+    for id in ids_list:
+        plot_reshaped_data(id)
         # reshape_stress_to_indentation_relaxation(id)
     # compute_and_export_all_indicators()
-    export_indicators_as_txt()
+    # export_indicators_as_txt()
     # find_indicators_recovery(1)
     print('hello')
 
