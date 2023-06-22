@@ -15,12 +15,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from scipy.signal import argrelextrema
-
 import multiprocessing as mp
-# from indentation.experiments.zwick.post_processing.utils import find_nearest
 from functools import partial
 from indentation.experiments.zwick.post_processing.utils import find_nearest
 from datetime import datetime
+
 def get_inputs():
     path_to_file = utils.reach_data_path() / 'disp_silicone.xlsx'
     input_data = pd.read_excel(path_to_file, sheet_name='input', header=0, names=["Id", "elongation", "damage"]) 
@@ -387,15 +386,7 @@ def export_indicators_as_txt():
         )
     f.close()    
     
-def compute_cumulative_mean_std(vector):
-    cumulative_mean = np.zeros(len(vector))
-    cumulative_std = np.zeros_like(cumulative_mean)
-    for i in range(len(vector)):
-        cumulative_mean[i] = np.mean(vector[0:i])
-        cumulative_std[i] = np.std(vector[0:i])
-    return cumulative_mean, cumulative_std
 
-#TODO regarder cumulative mean etc
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
