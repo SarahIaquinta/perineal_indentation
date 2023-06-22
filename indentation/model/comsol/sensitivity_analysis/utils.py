@@ -7,6 +7,10 @@ from os import listdir
 from os.path import isfile, join
 import pandas as pd
 import indentation.model.comsol.sensitivity_analysis.extract_data_from_raw_files as exd
+import pickle
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+import openturns as ot
 
 def get_current_path(): 
     """
@@ -201,3 +205,93 @@ def transform_csv_input_A_into_pkl(csv_filename):
     pkl_filename = csv_filename[:-4] + '.pkl'
     complete_pkl_filename = get_path_to_processed_data() / pkl_filename
     export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict )
+    
+    
+    
+    
+
+def export_gridsearch(scaler, grid, complete_filename):
+    """
+    Exports the objects to the metamodel .pkl
+
+    Parameters:
+        ----------
+        y_test: array
+            test data used to validate the ANN
+        y_pred: array
+            predictions of the ANN
+        Q2: float
+            predictivity factor obtained with y_test and y_pred, computed with sklearn
+
+    Returns:
+        -------
+        None
+    """
+    with open(get_path_to_processed_data() / complete_filename, "wb") as f:
+        pickle.dump(
+            [scaler, grid],
+            f,
+        )
+
+
+def extract_gridsearch(complete_filename):
+    """
+    Exports the objects to the metamodel .pkl
+
+    Parameters:
+        ----------
+        y_test: array
+            test data used to validate the ANN
+        y_pred: array
+            predictions of the ANN
+        Q2: float
+            predictivity factor obtained with y_test and y_pred, computed with sklearn
+
+    Returns:
+        -------
+        None
+    """
+    with open(get_path_to_processed_data() / complete_filename, "rb") as f:
+        [scaler, grid] = pickle.load(f)
+    return scaler, grid
+
+
+def export_predictions(y_test, y_pred, Q2, complete_filename):
+    """
+    Exports the objects to the metamodel .pkl
+
+    Parameters:
+        ----------
+        y_test: array
+            test data used to validate the ANN
+        y_pred: array
+            predictions of the ANN
+        Q2: float
+            predictivity factor obtained with y_test and y_pred, computed with sklearn
+
+    Returns:
+        -------
+        None
+    """
+    with open(get_path_to_processed_data() / complete_filename, "wb") as f:
+        pickle.dump(
+            [y_test, y_pred, Q2],
+            f,
+        )
+        
+def compute_output_ANN_inverse_model(x):
+    complete_filename_grid = "grid_search_inverse.pkl"
+    sc_X, grid = extract_gridsearch(complete_filename_grid)
+    # sc_X = StandardScaler()
+    input = ot.Sample(1, 5)
+    output_reshaped = ot.Sample(1, 1)
+    for i in range(5):
+        input[0, i] = x[i]
+    # input[0, 0] = x
+    X_testscaled=sc_X.transform(input)
+    output = grid.predict(X_testscaled)
+    output_reshaped[0, 0] = output[0]
+    # print(output_reshaped)
+    y = [output[0]]
+    # print('hello')
+    return y
