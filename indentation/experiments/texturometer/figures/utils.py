@@ -1,10 +1,10 @@
-from io import BytesIO
+"""
+This file gathers the standardized tools for the generation of figures
+(same figure size, fonts, format for saving).
+"""
 
 import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-from PIL import Image
 from indentation.experiments.texturometer.post_processing.utils import get_path_to_figures
 
 class Fonts:
