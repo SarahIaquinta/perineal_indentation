@@ -1,18 +1,12 @@
-import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
-import utils
-import os
+"""
+This file aims at investigating the repeatability of the laser measure
+by plotting the altitude measure during each testing in the same graph
+"""
+
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
-import indentation.experiments.zwick.post_processing.read_file as zrf
 import indentation.experiments.laser.post_processing.read_file as lrf
-import indentation.experiments.zwick.post_processing.identify_force_controlled_recovery as z_id_recovery
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
 from indentation.experiments.laser.post_processing.read_file import Files
-from tqdm import tqdm
-import pandas as pd
-from scipy.signal import argrelextrema
 from indentation.experiments.laser.post_processing.identify_movement import Recovery
 
 def find_ids_with_same_imposed_displacement_laser(files_zwick, datafile, imposed_displacement):
@@ -80,7 +74,6 @@ def plot_recovery_data_for_imposed_displacement_laser(files_zwick, datafile, imp
                 ax_disp_vs_time_during_recovery.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
                 ax_disp_vs_time_during_recovery.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
         savefigure.save_as_png(fig_disp_vs_time_during_recovery, location_key + "_repetability_recovery_imposed_disp_" + str(imposed_displacement))
-
 
 
 if __name__ == "__main__":

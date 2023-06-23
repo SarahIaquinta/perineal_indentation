@@ -1,18 +1,19 @@
+"""
+This file consists in measuring the variation of altitude at the deepest measured
+point and to use it to compute the variation of depth during recovery and 
+to perform a logarithmic fit of the variation of altitude in terms of the 
+recovery time.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
 import utils
-import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
-import indentation.experiments.laser.post_processing.read_file as rf
 import indentation.experiments.laser.post_processing.display_profiles as dp
 from indentation.experiments.laser.post_processing.read_file import Files
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
-from scipy.signal import lfilter
 import pickle
-
 
 class Recovery:
     """

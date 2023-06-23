@@ -1,6 +1,11 @@
+"""
+This file contains functions that are used several times in the folder.
+They mostly intent to locate the path to save or pick objects from the repository.
+Many of the function do not contain documentation, however their name is 
+descriptive enough.
+"""
+
 import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
 from pathlib import Path
 import pickle
 from os import listdir
@@ -115,13 +120,11 @@ def get_existing_processed_data():
     all_existing_pkl = [i[0:-4] for i in all_existing_filenames if i.endswith('.pkl')]
     return all_existing_pkl
 
-
 def extract_recovery_data_from_pkl(filename):
     complete_pkl_filename = get_path_to_processed_data() / filename
     with open(complete_pkl_filename, "rb") as f:
         [filenames_to_export, delta_d_to_export, delta_d_stars_to_export, d_min_to_export, A_to_export] = pickle.load(f)
     return filenames_to_export, delta_d_to_export, delta_d_stars_to_export, d_min_to_export, A_to_export
-
 
 def export_A_data_as_pkl(complete_pkl_filename, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict ):
     with open(complete_pkl_filename, "wb") as f:
@@ -137,9 +140,27 @@ def extract_A_data_from_pkl():
         [ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict] = pickle.load(f)
     return ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict
 
-
-
 def transform_csv_input_A_into_pkl(csv_filename):
+    """
+    Transforms the csv file, that contains data from the testings and their postprocessing
+    (recovery indicators, deformation of the testing and thickness of the sample)
+    Into a pkl file containing this data. 
+    This function is used to provide a quick way to acess the data by ectracting them from the pkl, 
+    instead of extracting them from the csv everytime they are needed.
+    The data in the pkl file is formated as a dictionnary that associates the id of each testing to the 
+    corresponding computed variable.
+    
+    Parameters:
+        ----------
+        csv_filename: str
+            name of the csv file that contains the data. 
+            example: 'locations_recoveries_A.csv'
+
+    Returns:
+        -------
+        None
+
+    """
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_csv_filename = path_to_processed_data + "/" + csv_filename
     ids_list = []

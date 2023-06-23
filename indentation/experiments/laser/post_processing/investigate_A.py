@@ -1,19 +1,21 @@
+""""
+This file consists in removing the mismeasured recovery indicators, 
+based on a dictionnary that references the id of the failed laser acqusitions, ie those
+that need to be removed (note that this dictionnary, called failed_laser_acquisition, 
+is filled manually), and those for which values of a are outliers (not well indentified 
+or negative values)
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from math import nan
-from pathlib import Path
 import utils
-import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
-import indentation.experiments.laser.post_processing.read_file as rf
-import indentation.experiments.laser.post_processing.display_profiles as dp
-from indentation.experiments.laser.post_processing.read_file import Files
-import indentation.experiments.texturometer.post_processing.compute_forces as cf
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
-from scipy.signal import lfilter
 import pickle
 import statistics
+
 
 def remove_failed_A(filenames_from_pkl, dates_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions   ):
     """

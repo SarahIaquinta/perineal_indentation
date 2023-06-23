@@ -1,17 +1,23 @@
+"""
+This file contains tools to extract data from the laser raw datafiles, 
+in order to compute spatio temporal evolution of the altitude measured
+by the laser during the experiment. 
+The script catches the region of interest, based on the location dictionnary
+(that needs to be entered manually), then applies a median filter to smooth
+noised experimental data and finally returns the spatial and temporal discretisation vector,
+with the corresponding altitudes.
+"""
+
 import numpy as np
-from matplotlib import pyplot as plt
 from math import nan
-from pathlib import Path
 import utils
 import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
 from tqdm import tqdm
 import pandas as pd
-import scipy
-import skimage
 import multiprocessing as mp
 from indentation.experiments.zwick.post_processing.utils import find_nearest
-from functools import partial
+
 
 class Files:
     """
@@ -313,22 +319,6 @@ def read_metadatas_laser(metadatafile):
     return imposed_disp_dict
 
 
-def test_meadian_filter():
-    mat_Z_1, vec_time_1, vec_pos_axis_1 = utils.extract_data_from_pkl('0_230331_FF1_1A_(2).pkl')
-    mat_Z_locations, vec_time_locations, vec_pos_axis_locations = utils.extract_data_from_pkl('0_locations_230331_FF1_1A_(2).pkl')
-    plt.figure()
-    # for t in range(0, len(vec_time_1), 100):
-    time_index_test = 5000
-    z0_1 = mat_Z_1[time_index_test, 1:]
-    z0_locations = mat_Z_locations[time_index_test, :]
-    plt.plot(vec_pos_axis_1, z0_1, '--k')
-    plt.plot(vec_pos_axis_locations, z0_locations, ':r')
-    plt.xlim((0, 20))
-    plt.title('test')
-    plt.legend()
-    plt.xlabel('x [mm]')
-    plt.ylabel('z [mm]')
-
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
@@ -339,7 +329,6 @@ if __name__ == "__main__":
     
     # read_all_files(experiment_dates, meat_pieces)
         
-    diff_mat_Z, diff_vec_time, diff_vec_pos_axis = test_meadian_filter()
     print('hello')
 
 

@@ -1,3 +1,7 @@
+""""
+This file is used to generate nice looking figures for illustrating articles.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from math import nan

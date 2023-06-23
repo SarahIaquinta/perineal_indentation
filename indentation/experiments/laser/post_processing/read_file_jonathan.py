@@ -1,13 +1,13 @@
-import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
-
 """
 This file is the initial version of the routine for extracting data
 from the laset acquisition and then to apply a median filter to it. 
 This code was reshaped to fit into the main read_file.py file. 
 This code is kept for possible further interest in conducting similar analyses.
 """
+
+import numpy as np
+from matplotlib import pyplot as plt
+from math import nan
 
 ## Select folder
 # fime_name = '230407_FF2A.csv'
