@@ -1,10 +1,10 @@
-from io import BytesIO
+"""
+This file gathers the standardized tools for the generation of figures
+(same figure size, fonts, format for saving).
+"""
 
 import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-from PIL import Image
 from indentation.experiments.zwick.post_processing.utils import get_path_to_figures
 
 class Fonts:
@@ -36,7 +36,6 @@ class Fonts:
     def fig_title_size(self):
         return 18
     
-    
 class SaveFigure:
     def save_as_png(self, fig, filename):
         filename_png = filename + '.png'
@@ -45,8 +44,6 @@ class SaveFigure:
     def save_as_svg(self, fig, filename):
         filename_svg = filename + '.svg'
         fig.savefig(get_path_to_figures() / filename_svg, format="svg")
-        
-        
         
 class CreateFigure:
     def rectangle_figure(self, pixels):

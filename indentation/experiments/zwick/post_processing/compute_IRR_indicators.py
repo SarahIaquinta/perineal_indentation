@@ -1,13 +1,14 @@
+""" 
+The objective of this file is to extract and post-process the indicators from
+the IRR testing (indentation and relaxation part). Note that the recovery is 
+investigated in the "laser" folder.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from math import nan
-from pathlib import Path
-import utils
-import os
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
-from tqdm import tqdm
 import pickle
-import pandas as pd
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
 from indentation.experiments.laser.post_processing.investigate_A import extract_data_at_given_date_and_meatpiece
 from indentation.experiments.zwick.post_processing.utils import find_nearest
@@ -16,6 +17,21 @@ import statistics
 from sklearn.linear_model import LinearRegression
 
 def get_data_at_given_strain_rate(files_zwick, datafile, sheet, strain_rate):
+    """Extracts the value of time, disp and force measured when the strain
+    reaches a given strain rate.
+
+    Args:
+        files_zwick (class object): class that contains the tools to extract and read datafiles
+        datafile (str): name of the excel file that contains the testing data
+        sheet (str): name of the sxcel sheet to be red. The sheets often have the 
+            following format: date_meatpeace_1. example: 200403_FF1_1
+        strain_rate (float): amount of the total applied disp 
+
+    Returns:
+        time_at_strain_rate (float): time at which the disp equals the disp at strain_rate
+        force_at_strain_rate (float): force at which the disp equals the disp at strain_rate
+        disp_at_strain_rate (float): disp at strain_rate
+    """ #TODO continue documentation
     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
     max_disp = np.nanmax(disp)
     disp_at_strain_rate = find_nearest(disp, max_disp * strain_rate)
@@ -24,36 +40,13 @@ def get_data_at_given_strain_rate(files_zwick, datafile, sheet, strain_rate):
     time_at_strain_rate = time[index_where_disp_is_disp_at_strain_rate]
     return time_at_strain_rate, force_at_strain_rate, disp_at_strain_rate
 
-
 def get_data_at_given_time(files_zwick, datafile, sheet, given_time):
     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
     time_given_time = find_nearest(time,  given_time)
     index_where_time_is_time_given_time = np.where(time == find_nearest(time, time_given_time))[0]
     force_given_time = force[index_where_time_is_time_given_time]
-    disp_given_time = time[index_where_time_is_time_given_time]
+    disp_given_time = disp[index_where_time_is_time_given_time]
     return time_given_time, force_given_time, disp_given_time
-
-
-# def compute_indicators_indentation_at_strain_rate(files_zwick, datafile, sheet, strain_rate=0.25):
-#     time_at_strain_rate_0, force_at_strain_rate_0, disp_at_strain_rate_0 = get_data_at_given_strain_rate(files_zwick, datafile, sheet, 0.05)
-#     time_at_strain_rate, force_at_strain_rate, disp_at_strain_rate = get_data_at_given_strain_rate(files_zwick, datafile, sheet, strain_rate)
-#     i_disp = (force_at_strain_rate - force_at_strain_rate_0) / (disp_at_strain_rate - disp_at_strain_rate_0)
-#     i_time = (force_at_strain_rate - force_at_strain_rate_0) / (time_at_strain_rate - time_at_strain_rate_0)
-#     return i_disp, i_time
-
-# def compute_indicators_relaxation(files_zwick, datafile, sheet):
-#     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
-#     max_force = np.max(force)
-#     index_where_force_is_max = np.where(force == max_force)[0]
-#     time_when_force_is_max = time[index_where_force_is_max]
-#     index_where_time_is_end_relaxation_slope = np.where(time == find_nearest(time, time_when_force_is_max+1))[0]
-#     relaxation_slope = (force[index_where_time_is_end_relaxation_slope] - force[index_where_force_is_max ]) / (time[index_where_time_is_end_relaxation_slope] - time[index_where_force_is_max])
-#     relaxation_duration = 20
-#     end_of_relaxation = time_when_force_is_max + relaxation_duration
-#     index_where_time_is_end_relaxation = np.where(time == find_nearest(time, end_of_relaxation))[0]
-#     delta_f = max_force - force[index_where_time_is_end_relaxation]
-#     delta_f_star = delta_f / max_force
-#     return relaxation_slope, delta_f, delta_f_star
 
 def compute_indicators_indentation_relaxation(files_zwick, datafile, sheet):
     time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet)
@@ -178,10 +171,6 @@ def export_indicators(datafile_list):
             f,
         )
     return ids_list, date_dict, meat_piece_dict, relaxation_slope_dict, delta_f_dict, delta_f_star_dict, i_disp_time_dict, i_time_time_dict     
-        
-# def extract_data
-
-
 
 def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, meat_piece_dict, date_dict, data_dict):
     ids_at_date = [id for id in ids_list if date_dict[id] == date]
@@ -199,7 +188,6 @@ def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, meat_pie
     data_dict_at_date_and_meatpiece = {ids_at_date_and_meatpiece[i]: data_list[i] for i in range(len(ids_at_date_and_meatpiece))}
     return ids_at_date_and_meatpiece, data_dict_at_date_and_meatpiece      
         
-
 def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, meat_piece_dict, date_dict, data_dict):
     ids_at_date_and_meatpiece, data_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, meat_piece_dict, date_dict, data_dict)
     mean_data, std_data = nan, nan
@@ -210,7 +198,6 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
         except:
             pass
     return mean_data, std_data
-
 
 def compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, data_dict, indicator):
     dates = list(set(date_dict.values()))
@@ -250,7 +237,6 @@ def compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict,
             f,
         )
  
-
 def export_data_as_txt(indicator):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_" + indicator + ".pkl"
@@ -444,7 +430,6 @@ def export_data_as_txt(indicator):
         
         
     f.close()
-
 
 def plot_data_with_maturation(indicator):
     maturation = [10, 13, 17, 21]
@@ -787,7 +772,6 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     ax_data_vs_force20.set_xlabel('Force 20 % [N]', font=fonts.serif_rz_legend())
     savefigure.save_as_png(fig_data_vs_force20, irr_indicator + "_vs_force20_1+2")
     plt.close(fig_data_vs_force20)
-        
         
 if __name__ == "__main__":
     createfigure = CreateFigure()
