@@ -1,13 +1,13 @@
-import numpy as np
-import utils
-from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
-from indentation.experiments.laser.post_processing.read_file import Files
-
 """
 This file aims at generating plots of the altitude of the meat, measured 
 with the laser. The data is previously extracted from experimental data via 
 the read_file.py file.
 """
+
+import numpy as np
+import utils
+from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
+from indentation.experiments.laser.post_processing.read_file import Files
 
 def plot_Z_profile(filename, createfigure, savefigure, fonts):
     """

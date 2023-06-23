@@ -1,24 +1,36 @@
-import numpy as np
+"""
+This file contains routine aimed at extracting the indicators from the
+texturometer testing (the force measured for a displacement equivalent
+to 20 % and 80 % of the sample thickness). These indicators are then
+plotted in terms of the maturation of the sample on which they have 
+been measured.
+"""
+
 from matplotlib import pyplot as plt
 from math import nan
-from pathlib import Path
-import utils
-import os
 from indentation.experiments.texturometer.figures.utils import CreateFigure, Fonts, SaveFigure
-import indentation.experiments.laser.post_processing.read_file as rf
-import indentation.experiments.laser.post_processing.display_profiles as dp
-from indentation.experiments.laser.post_processing.read_file import Files
-import seaborn as sns
-from sklearn.linear_model import LinearRegression
-from scipy.signal import lfilter
 import pickle
-import csv
-import pandas as pd
 import statistics
 import seaborn as sns
 
-
 def remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict):
+    """Removes the data where the experimental acquisition did not go well. 
+    The failed acquisition are referenced in a dictionnary.
+
+    Args:
+        ids_list (list): list of the testing ids
+        date_dict (dict): dictionnary associating the experiment date to each id
+        force20_dict (dict): dictionnary associating the force at 20 % to each id
+        force80_dict (dict): dictionnary associating the force at 80 % to each id
+        failed_dict (dict): dictionnary describing for each id if the acquisition 
+                            failed (value is 1) or not (value is 0)
+
+    Returns:
+        ids_where_not_failed (list): list of the ids of the testing that did not fail
+        date_dict_not_failed (dict): dictionnary associating the experiment date to each unfailed testing id
+        force20_dict_not_failed (dict): dictionnary associating the force at 20 % to each unfailed testing id
+        force80_dict_not_failed (dict): dictionnary associating the force at 80 % to each unfailed testing id
+    """
     ids_where_not_failed = [id for id in ids_list if failed_dict[id] == 0]
     date_dict_not_failed = {id: date_dict[id] for id in ids_where_not_failed}
     force20_dict_not_failed = {id: force20_dict[id] for id in ids_where_not_failed}
@@ -26,6 +38,24 @@ def remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_d
     return ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed
 
 def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dict, force20_dict, force80_dict):
+    """Extracts the ids of the testings that have been performed on a given date 
+    and on a specific meatpiece (FF or RDG), along with the corresponding values 
+    of the indicators.
+
+    Args:
+        date (str): experiment date, in the YYMMDD format
+        meatpiece (str): meatpiece on which the esperiment has been performed
+        ids_list (list): list of the testing ids
+        date_dict (dict): dictionnary associating the experiment date to each id
+        force20_dict (dict): dictionnary associating the force at 20 % to each id
+        force80_dict (dict): dictionnary associating the force at 80 % to each id
+
+    Returns:
+        ids_where_not_failed (list): list of the ids of the testing that did not fail
+        date_dict_not_failed (dict): dictionnary associating the experiment date to each unfailed testing id
+        force20_dict_not_failed (dict): dictionnary associating the force at 20 % to each unfailed testing id
+        force80_dict_not_failed (dict): dictionnary associating the force at 80 % to each unfailed testing id
+    """
     ids_at_date = [id for id in ids_list if date_dict[id] == date]
     ids_at_date_and_meatpiece = [id for id in ids_at_date if id[0:len(str(date)) + 1 + len(meatpiece)] == str(date) + '_' + meatpiece] 
     force20_dict_at_date_and_meatpiece = {id: force20_dict[id] for id in ids_at_date_and_meatpiece}
@@ -33,6 +63,24 @@ def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dic
     return ids_at_date_and_meatpiece, force20_dict_at_date_and_meatpiece, force80_dict_at_date_and_meatpiece
 
 def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dict, force20_dict, force80_dict):
+    """Computes the mean and the standard deviation of the indicators
+    that have been extracted from measurements conducted on the same day (date)
+    and on the same meatpiece (FF or RDG)
+
+    Args:
+        date (str): experiment date, in the YYMMDD format
+        meatpiece (str): meatpiece on which the esperiment has been performed
+        ids_list (list): list of the testing ids
+        date_dict (dict): dictionnary associating the experiment date to each id
+        force20_dict (dict): dictionnary associating the force at 20 % to each id
+        force80_dict (dict): dictionnary associating the force at 80 % to each id
+
+    Returns:
+        mean_force20 (float): mean value of the force at 20 % indicator
+        std_force20 (float): standard deviation of the force at 20 % indicator
+        mean_force80 (float): mean value of the force at 20 % indicator
+        std_force80 (float): standard deviation of the force at 20 % indicator
+    """
     ids_at_date_and_meatpiece, force20_dict_at_date_and_meatpiece, force80_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dict, force20_dict, force80_dict)
     mean_force20, std_force20, mean_force80, std_force80 = nan, nan, nan, nan
     if ids_at_date_and_meatpiece != []:
@@ -41,7 +89,6 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
         mean_force80 = statistics.mean(list(force80_dict_at_date_and_meatpiece.values()))
         std_force80 = statistics.stdev(list(force80_dict_at_date_and_meatpiece.values()))
     return mean_force20, std_force20, mean_force80, std_force80
-
 
 def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict):
     dates = list(set(date_dict.values()))
@@ -323,7 +370,6 @@ def export_forces_as_txt():
         
     f.close()
 
-
 def plot_forces_with_maturation():
     maturation = [10, 13, 17, 21]
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
@@ -477,9 +523,6 @@ def plot_forces_with_maturation():
     plt.close(fig_force8020_1)
     savefigure.save_as_png(fig_force8020_2, "force8020_vs_maturation_2")
     plt.close(fig_force8020_2)
-
-
-
 
 if __name__ == "__main__":
     createfigure = CreateFigure()

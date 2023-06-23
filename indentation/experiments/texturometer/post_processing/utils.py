@@ -1,3 +1,10 @@
+"""
+This file contains functions that are used several times in the folder.
+They mostly intent to locate the path to save or pick objects from the repository.
+Many of the function do not contain documentation, however their name is 
+descriptive enough.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from math import nan
@@ -6,6 +13,7 @@ import pickle
 from os import listdir
 from os.path import isfile, join
 import pandas as pd
+
 def get_current_path(): 
     """
     Return the current path
@@ -119,7 +127,6 @@ def get_existing_processed_data():
     all_existing_filenames = {f for f in listdir(path_to_processed_data) if isfile(join(path_to_processed_data, f))}
     all_existing_pkl = [i[0:-4] for i in all_existing_filenames if i.endswith('.pkl')]
     return all_existing_pkl
-
 
 def extract_recovery_data_from_pkl(filename):
     complete_pkl_filename = get_path_to_processed_data() / filename
