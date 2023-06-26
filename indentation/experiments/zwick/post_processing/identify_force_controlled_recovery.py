@@ -1,14 +1,9 @@
+"""This file contains functions to identify and plot the force-controlled recovery, 
+ie generated with the Zwick instead of laser"""
+
 import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
-import utils
-import os
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
-import indentation.experiments.zwick.post_processing.read_file as zrf
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
-from tqdm import tqdm
-import pandas as pd
 from scipy.signal import argrelextrema
 
 

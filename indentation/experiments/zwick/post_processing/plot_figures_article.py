@@ -1,3 +1,7 @@
+""""
+This file is used to generate nice looking figures for illustrating articles.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from math import nan
@@ -6,13 +10,10 @@ import utils
 import os
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
-from indentation.experiments.zwick.post_processing.compute_IRR_indicators import get_data_at_given_strain_rate, get_data_at_given_time
+from indentation.experiments.zwick.post_processing.compute_IRR_indicators import get_data_at_given_time
 from sklearn.linear_model import LinearRegression
 import seaborn as sns 
 from indentation.experiments.zwick.post_processing.utils import find_nearest
-# from matplotlib import AngleAnnotation
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 import pickle 
@@ -27,20 +28,11 @@ def compute_alpha(files_zwick, degree):
     time_relaxation = time[index_where_force_is_max:]
     log_time_unshaped = np.array([-t**degree for t in time_relaxation])
     log_time = log_time_unshaped.reshape((-1, 1))
-    # degree=9
-    # polyreg=make_pipeline(PolynomialFeatures(degree),LinearRegression())
-    # polyreg.fit(log_time,force_relaxation)
     model = LinearRegression()
     model.fit(log_time, force_relaxation)
     fitted_response = model.predict(log_time)
-    alpha = 0#model.coef_
+    alpha = 0
     score = np.sqrt(r2_score(force_relaxation, fitted_response))
-    # plt.figure()
-    # plt.plot(log_time_unshaped, force_relaxation, 'b')
-    # plt.plot(time_relaxation, force_relaxation, 'k')
-    # plt.plot(log_time_unshaped, fitted_response, '--g')
-    # plt.plot(1/log_time_unshaped, fitted_response, 'r')
-    # plt.show()
     return alpha, fitted_response, log_time, force_relaxation, score
 
 def compute_gamma(files_zwick, degree):
@@ -71,8 +63,6 @@ def compute_gamma(files_zwick, degree):
     # plt.show()
     return gamma, fitted_response, log_time, force_relaxation, score
 
-
-
 def plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure, fonts):
     datafile = '230403_C_Indentation_relaxation_500N_force.xlsx'
     sheet = '230403-FF2A'
@@ -82,23 +72,13 @@ def plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure
     fig_disp_vs_time = createfigure.rectangle_figure(pixels=180)
     ax_disp_vs_time = fig_disp_vs_time.gca()
 
-    date = datafile[0:6]
-    colors = sns.color_palette("Paired")
     kwargs = {"color":'k', "linewidth": 3}
-    palette = sns.color_palette("YlOrBr", 10)
     time0 = time[0]
     time = time - time0
     force0 = force[0]
     force = force - force0
-    disp0 = disp[0]
     disp = disp - disp[0]
-
-    # for degree in np.arange(1):
-    #     # degree = int(degree)
-    #     gamma, fitted_response, log_time_relaxation, force_relaxation, score = compute_gamma(files_zwick, degree)
-    #     ax_force_vs_time.plot(np.exp(log_time_relaxation)- time0, np.exp(fitted_response) ,   '-', color = palette[3+int(degree)], label = 'd = ' + str(gamma) + " R2 = " + str(np.round(score,3)))
-    # ax_force_vs_time.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-    # ax_force_vs_time.set_title('fit en t')
+    
     max_force = np.nanmax(force)
     index_where_force_is_max = np.where(force == max_force)[0]
     time_when_force_is_max = time[index_where_force_is_max]
@@ -147,9 +127,6 @@ def plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure
     plt.close(fig_force_vs_time)
     savefigure.save_as_png(fig_disp_vs_time, "article_disp_vs_time_with_indicators")
     plt.close(fig_disp_vs_time)
-
-    
-    
 
 def plot_indentation_relaxation_indicator_vs_texturometer_forces_beta(irr_indicator):
     maturation = [10, 13, 17, 21]
@@ -277,9 +254,6 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces_beta(irr_indica
     savefigure.save_as_png(fig_data_vs_force20, "article_" + irr_indicator + "_vs_force20_1+2")
     plt.close(fig_data_vs_force20)
         
-        
-
-
 def plot_indentation_relaxation_indicator_vs_texturometer_forces_alpha(irr_indicator):
     maturation = [10, 13, 17, 21]
     dates_to_use = ['230331', '230403', '230407']
@@ -391,11 +365,6 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces_alpha(irr_indic
     savefigure.save_as_png(fig_data_vs_force20, "article_" + irr_indicator + "_vs_force20_1+2")
     plt.close(fig_data_vs_force20)
         
-        
-
-
-
-
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()

@@ -78,8 +78,8 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
     Returns:
         mean_force20 (float): mean value of the force at 20 % indicator
         std_force20 (float): standard deviation of the force at 20 % indicator
-        mean_force80 (float): mean value of the force at 20 % indicator
-        std_force80 (float): standard deviation of the force at 20 % indicator
+        mean_force80 (float): mean value of the force at 80 % indicator
+        std_force80 (float): standard deviation of the force at 80 % indicator
     """
     ids_at_date_and_meatpiece, force20_dict_at_date_and_meatpiece, force80_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dict, force20_dict, force80_dict)
     mean_force20, std_force20, mean_force80, std_force80 = nan, nan, nan, nan
@@ -91,6 +91,23 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
     return mean_force20, std_force20, mean_force80, std_force80
 
 def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict):
+    """Computes the mean and the standard deviation of the indicators
+    that have been extracted from measurements conducted on the same day (date)
+    and on the same meatpiece (FF or RDG). This operation is repeated for all the 
+    dates at which experiments have been conducted in order to 
+    investigate the evolution of these indicators with the maturation of the meatpiece.
+    Dictionnaries associating each date to the mean and standard deviation of each indicator
+    are finally created and exported in a pkl file.
+
+    Args:
+        ids_list (list): list of the testing ids
+        date_dict (dict): dictionnary associating the experiment date to each id
+        force20_dict (dict): dictionnary associating the force at 20 % to each id
+        force80_dict (dict): dictionnary associating the force at 80 % to each id
+
+    Returns:
+        None
+    """
     dates = list(set(date_dict.values()))
     mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict = {}, {}, {}, {}
     mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict = {}, {}, {}, {}
@@ -129,6 +146,9 @@ def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force2
         )
    
 def export_forces_as_txt():
+    """Creation of a textfile that contains the mean and standard deviation
+    of both indicators (force at 20 % and 80 %) at every date. 
+    """
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -371,6 +391,10 @@ def export_forces_as_txt():
     f.close()
 
 def plot_forces_with_maturation():
+    """Plots the evolution of the mean of the force at 20 % and 80 %, along
+    with their standard deviation, in terms of the maturation of the meatpiece
+    (ie the date on which the experiment has been performed)
+    """
     maturation = [10, 13, 17, 21]
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
@@ -382,7 +406,6 @@ def plot_forces_with_maturation():
              mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
              mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
              ] = pickle.load(f)
-        
     
     dates_to_use = ['230331', '230403', '230407']
     maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
@@ -538,6 +561,4 @@ if __name__ == "__main__":
     plot_forces_with_maturation()
     # export_forces_as_txt()
     print('hello')
-    
-    
     

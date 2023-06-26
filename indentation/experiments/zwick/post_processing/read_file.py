@@ -1,11 +1,15 @@
+"""
+This file contains tools to extract data from the zwick raw datafiles, 
+in order to compute the evolution of force and displacement of the 
+indentor during the experiment.
+The script removes the experiments that failed, based on information given in 
+a .csv file, and then plots the force vs disp, force vs time and disp vs time curves.
+"""
+
 import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
 import utils
 import os
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
-from tqdm import tqdm
 import pandas as pd
 import seaborn as sns
 
@@ -172,7 +176,6 @@ class Files_Zwick:
         list_of_correct_sheets = [sheet for sheet in sheets_list_with_data if not self.is_testing_failed(datafile, sheet)]
         return list_of_correct_sheets
             
-        
     def plot_data_from_sheet(self, datafile, sheet, createfigure, savefigure, fonts):
         time, force, disp = self.read_sheet_in_datafile(datafile, sheet)
         fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
@@ -237,9 +240,6 @@ class Files_Zwick:
         savefigure.save_as_png(fig_disp_vs_time, date + '_' + sheet + "_disp_vs_time")
         savefigure.save_as_png(fig_force_vs_disp, date + '_' + sheet + "_force_vs_disp")
         
-
-
- 
     def plot_all_data(self, date, createfigure, savefigure, fonts):
         fig_force_vs_time = createfigure.rectangle_rz_figure(pixels=180)
         fig_disp_vs_time = createfigure.rectangle_rz_figure(pixels=180)
@@ -294,7 +294,6 @@ class Files_Zwick:
         savefigure.save_as_png(fig_force_vs_time, date + "all_force_vs_time")
         savefigure.save_as_png(fig_disp_vs_time, date + "all_disp_vs_time")
         savefigure.save_as_png(fig_force_vs_disp, date + "all_force_vs_disp")
-
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
