@@ -1,3 +1,12 @@
+"""
+This file contains functions that are used to build an input dataset containing
+the samples (tuples lambda and damage) to be used as input parameters for the COMSOL
+model. The corresponding temporal evolution of stress and displacement, computed with the COMSOL model
+for each set of input parameters, are then post processed to extract indicators.
+Note that the elongation parameter cannot be called "lambda" in the script as "lambda"
+is used as an internal variable in Python. For this reason, it is called "elongation" in the script.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import qmc
@@ -6,7 +15,7 @@ import seaborn as sns
 
 def generate_dataset(expected_sample_size):
     """
-    Generates a Sobol quasi Monte Carlo dataset
+    Generates a Sobol quasi Monte Carlo dataset. 
 
     Parameters:
         ----------

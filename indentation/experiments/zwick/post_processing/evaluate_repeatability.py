@@ -1,16 +1,12 @@
-import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
-import utils
-import os
+"""
+The objective of this file is to compare the "recovery" profile when obtained
+with the laser and when artificially reproduced with a force-controlled
+indenter removal via the zwick pull test machine.
+"""
+
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
-import indentation.experiments.zwick.post_processing.read_file as zrf
 import indentation.experiments.zwick.post_processing.identify_force_controlled_recovery as z_id_recovery
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
-from tqdm import tqdm
-import pandas as pd
-from scipy.signal import argrelextrema
 
 def find_ids_with_same_imposed_displacement_zwick(files_zwick, datafile, imposed_displacement):
     metadatafile = files_zwick.import_metadatafile(datafile[0:6])

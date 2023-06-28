@@ -1,26 +1,37 @@
+"""
+This script aims at creating an ANN whose input parameters are the indicators
+and the output parameters are elongation and damage. The objective is to perform an inverse
+approach.
+"""
+
 import os
-import time
-from pathlib import Path
-import matplotlib.pyplot as plt
 import numpy as np
 import openturns as ot
 import seaborn as sns
 from indentation.model.comsol.sensitivity_analysis.figures.utils import CreateFigure, Fonts, SaveFigure
-
 ot.Log.Show(ot.Log.NONE)
-import pandas as pd
-from sklearn import datasets
-from sklearn.datasets import make_regression
 from sklearn.metrics import r2_score
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network import MLPRegressor
-from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn_evaluation import plot
 import utils
 import pickle
 
 def define_test_train_datset_inverse_model(training_amount):
+    """Separates the dataset into a training and testing dataset. 
+    The training dataset will be used to train the ANN whose predictivity
+    will be evaluated with the testing dataset
+
+    Args:
+        training_amount (float): amount of the dataset that is used for training.
+            Between 0 and 1
+
+    Returns:
+        input_dataset_train (array):    part of the input dataset used for training
+        input_dataset_test (array):     part of the input dataset used for testing
+        output_dataset_train (array):   part of the output dataset used for training
+        output_dataset_test (array):    part of the output dataset used for testing
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "indicators.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [alpha_p_dict, beta_dict, delta_f_dict, delta_f_star_dict, a_dict] = pickle.load(f)
@@ -45,9 +56,16 @@ def define_test_train_datset_inverse_model(training_amount):
         input_dataset_test[:, i] = np.array(indicator_vector_test)
     return input_dataset_train, input_dataset_test, output_dataset_train, output_dataset_test
 
-
-
 def ANN_gridsearch_inverse_model(X_train, X_test, y_train, y_test):
+    """Creates the ANN. In order to find the best settings for the ANN,
+    ie those which maiximize the predictivity, a gridsearch is implemented.
+
+    Args:
+        X_train (array): part of the input dataset used for training
+        X_test (array): part of the input dataset used for testing
+        y_train (array): part of the output dataset used for training
+        y_test (array): part of the output dataset used for testing
+    """
     sc_X = StandardScaler()
     X_trainscaled = sc_X.fit_transform(X_train)
     X_testscaled = sc_X.transform(X_test)
@@ -98,9 +116,15 @@ def ANN_gridsearch_inverse_model(X_train, X_test, y_train, y_test):
     print("The Score with ", Q2)
     utils.export_predictions(y_test, y_pred, Q2, "predictions_grid_inverse.pkl")
     
-
-
 def plot_true_vs_predicted_inverse_model(createfigure, savefigure, fonts):
+    """Compares the values predicted with the ANN (from the gridsearch)
+    using the testing input parameters to the testing output values.
+
+    Args:
+        createfigure (class): class used to provide consistent settings for the creation of figures
+        savefigure (class):class used to provide consistent settings for saving figures
+        fonts (class): class used to provide consistent fonts for the figures
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "predictions_grid_inverse.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [y_test, y_pred, Q2] = pickle.load(f)
@@ -115,8 +139,6 @@ def plot_true_vs_predicted_inverse_model(createfigure, savefigure, fonts):
     ax.set_xlabel(r"true values of $\lambda$" , font=fonts.serif(), fontsize=fonts.axis_label_size())
     ax.set_ylabel(r"predicted values of $\lambda$" , font=fonts.serif(), fontsize=fonts.axis_label_size())
     savefigure.save_as_png(fig, "results_inverse_ANN")
-
-
 
 if __name__ == "__main__":
     createfigure = CreateFigure()

@@ -1,10 +1,15 @@
+"""
+This file contains functions that are used several times in the folder.
+They mostly intent to locate the path to save or pick objects from the repository.
+Many of the function do not contain documentation, however their name is 
+descriptive enough.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from math import nan
 from pathlib import Path
-import pickle
-from os import listdir
-from os.path import isfile, join
+
 
 def get_current_path(): 
     """

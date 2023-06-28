@@ -1,34 +1,37 @@
+"""
+This file contains functions to evaluate the representativeness of a dataset 
+based on its size. A dataset is large enough to be representative if its behavior 
+(represented by its mean and standard deviation) is similar to that of a very large dataset 
+(converged behavior). 
+The dataset is divided in smaller subdatasets, of which the mean and
+standard deviation are calculated. Then, they are compared for subdatasets of different size,
+in order to identifiy for which size they converge (ie having a large dataset would not 
+improve the representativeness.)
+"""
+
 import numpy as np
-from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
 from indentation.model.comsol.sensitivity_analysis import utils
-import os
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-from matplotlib import cm
 import numpy as np
-from sys import argv
 from indentation.model.comsol.sensitivity_analysis.figures.utils import CreateFigure, Fonts, SaveFigure
-from tqdm import tqdm
-import pandas as pd
-import scipy
-import skimage
 import pickle
 import seaborn as sns
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.pipeline import make_pipeline
-from scipy.signal import argrelextrema
-import multiprocessing as mp
-from functools import partial
-from indentation.experiments.zwick.post_processing.utils import find_nearest
-from datetime import datetime
-
-
 
 
 def compute_cumulative_mean_std(vector):
+    """Compute the mean and standard deviation of each subdivision of a vector. 
+    Each subdivision is made of the previous one + one element. The first subdivision
+    is the first vector element.
+
+    Args:
+        vector (list or array): vector whose cumulative means and standard deviations
+            are to be computed
+
+    Returns:
+        cumulative_mean (array): array of the same shape as the input vector, whose 
+        i_th element is the mean of the 0_th to i_th elements of the input vector
+        cumulative_std (array): array of the same shape as the input vector, whose 
+        i_th element is the standard deviation of the 0_th to i_th elements of the input vector
+    """
     cumulative_mean = np.zeros(len(vector))
     cumulative_std = np.zeros_like(cumulative_mean)
     cumulative_mean[0] = vector[0]
@@ -39,6 +42,14 @@ def compute_cumulative_mean_std(vector):
     return cumulative_mean, cumulative_std
 
 def plot_cumulative_mean_vs_sample_size_indicators(createfigure, savefigure, fonts):
+    """Generate and save a figure depicting the variation of the cumulative mean
+    and standard deviation of the dataset in terms of the size. 
+
+    Args:
+        createfigure (class): class used to provide consistent settings for the creation of figures
+        savefigure (class):class used to provide consistent settings for saving figures
+        fonts (class): class used to provide consistent fonts for the figures
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "indicators.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [alpha_p_dict, beta_dict, delta_f_dict, delta_f_star_dict, a_dict] = pickle.load(f)
@@ -73,6 +84,10 @@ def plot_cumulative_mean_vs_sample_size_indicators(createfigure, savefigure, fon
         savefigure.save_as_png(fig_std, "cumulative_std_vs_sample_size_" + label_title)
 
 def plot_outputs():
+    """Create and save figure showing the temporal evolution of stress and displacement
+    computed via the COMSOL model for every set of input parameters. The corresponding indicators are 
+    also displayed.
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "indicators.pkl"
     # kwargs = {'marker':'o', 's':'10'}
     with open(complete_pkl_filename, "rb") as f:

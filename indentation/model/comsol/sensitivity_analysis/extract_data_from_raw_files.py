@@ -1,26 +1,34 @@
+"""
+The objective of this file is to extract the stress and displacement values, generated
+via the COMSOL model, from the corresponding txt excel file.
+The indicatrs are then computed based on this data.
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
-from math import nan
-from pathlib import Path
 from indentation.model.comsol.sensitivity_analysis import utils
-import os
 from indentation.model.comsol.sensitivity_analysis.figures.utils import CreateFigure, Fonts, SaveFigure
-from tqdm import tqdm
 import pandas as pd
-import scipy
-import skimage
 import pickle
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
-from scipy.signal import argrelextrema
-import multiprocessing as mp
-from functools import partial
 from indentation.experiments.zwick.post_processing.utils import find_nearest
 from datetime import datetime
 
 def get_inputs():
+    """Extract the input dataset from the "disp_silicone.xlsx" file. 
+    Note that it could also have been extracted from the "stress_silicone.xlsx" file,
+    since both contain an "input" tab.
+
+    Returns:
+        ids_list (list):list containing the id of each input sample
+        elongation_dict (dictionnary): dictionnary that assocites to each id the corresponding elongation
+            used as an input parameter. The elongation is also called "lambda" in the excel files.
+        damage_dict (dictionnary): dictionnary that assocites to each id the corresponding damage
+            used as an input parameter
+    """
     path_to_file = utils.reach_data_path() / 'disp_silicone.xlsx'
     input_data = pd.read_excel(path_to_file, sheet_name='input', header=0, names=["Id", "elongation", "damage"]) 
     ids = input_data.Id
@@ -32,6 +40,13 @@ def get_inputs():
     return ids_list, elongation_dict, damage_dict
 
 def get_stress():
+    """Extract the stress in terms of time from the COMSOL model, for each input sample.
+
+    Returns:
+        time_list (list): temporal discretisation used to compute the COMSOL model. 
+        stress_dict (dictionnary): dictionnary that associatesto each id the corresponding temporal
+            evolution of stress
+    """
     ids_list, _, _ = utils.extract_inputs_from_pkl()
     path_to_file_stress = utils.reach_data_path() / 'stress_silicone.xlsx'
     stress_data = pd.read_excel(path_to_file_stress, sheet_name='output', header=0)
@@ -44,6 +59,13 @@ def get_stress():
     return time_list, stress_dict
 
 def get_disp():
+    """Extract the disp in terms of time from the COMSOL model, for each input sample.
+
+    Returns:
+        time_list (list): temporal discretisation used to compute the COMSOL model. 
+        disp_dict (dictionnary): dictionnary that associatesto each id the corresponding temporal
+            evolution of disp
+    """
     ids_list, _, _ = utils.extract_inputs_from_pkl()
     path_to_file_disp = utils.reach_data_path() / 'disp_silicone.xlsx'
     disp_data = pd.read_excel(path_to_file_disp, sheet_name='output', header=0)
@@ -56,6 +78,19 @@ def get_disp():
     return time_list, disp_dict
 
 def get_data(input_id):
+    """Give, for a given input sample id, the corresponding input parameters and COMSOL model outputs
+
+    Args:
+        input_id (float): id of the input sample
+
+    Returns:
+        elongation (float): value of elongation (lambda) used for this sample
+        damage (float): value of damage used for this sample
+        disp (array): temporal evolution of displacement, computed with the COMSOL model, 
+            for the input parameters corresponding to the id input sample
+        stress (array): temporal evolution of stress, computed with the COMSOL model, 
+            for the input parameters corresponding to the id input sample
+    """
     _, elongation_dict, damage_dict = utils.extract_inputs_from_pkl()
     _, disp_dict = utils.extract_disp_from_pkl()
     _, stress_dict = utils.extract_stress_from_pkl()
@@ -63,40 +98,58 @@ def get_data(input_id):
     stress = stress_dict[input_id]
     elongation = elongation_dict[input_id]
     damage = damage_dict[input_id]
-    time_list, _ = utils.extract_disp_from_pkl()
-    # plt.figure()
-    # plt.plot(time_list, disp)
-    # plt.show()
     return elongation, damage, disp, stress
 
-
 def compute_dz(input_id):
-    elongation, damage, disp, stress = get_data(input_id)
-    sample_width = 36 # in mm
+    """Compute the variation in height of the silicon piece during elongation
+
+    Args:
+        input_id (float): id of the input sample
+
+    Returns:
+        dz (float): variation in height of the silicon piece during elongation
+    """
+    elongation, _, _, _ = get_data(input_id)
+    sample_width = 36
     dz = sample_width * (1 - (1 / elongation)**2)
     return dz
 
 def reshape_disp_to_recovery(input_id):
+    """Shorten the displacement vector to the recovery phase, which is defined, based on the COMSOL model,
+    to be started after 6 seconds.
+
+    Args:
+        input_id (float): id of the input sample
+
+    Returns:
+        recovery_time_list (list): temporal discretisation during the recovery phase, after removing the offset.
+        recovery_disp_list (list): variation of displacement during the recovery phase, after removing the offset.
+    """
     _, _, disp, _ = get_data(input_id)
     time_list, _ = utils.extract_disp_from_pkl()
     begginning_recovery_time = 6
     index_where_recovery_beggins = np.where(time_list == find_nearest(time_list, begginning_recovery_time))[0][0]
     recovery_time_list = [t - time_list[index_where_recovery_beggins+1] for t in time_list[index_where_recovery_beggins+1:]]
     recovery_disp_list = [d - disp[index_where_recovery_beggins+1] for d in disp[index_where_recovery_beggins+1:]]
-    # plt.figure()
-    # plt.plot(time_list, disp)
-    # plt.plot(recovery_time_list, recovery_disp_list)
-    # plt.show()
     return recovery_time_list, recovery_disp_list
 
 def reshape_stress_to_indentation_relaxation(input_id):
+    """Shorten the stress vector to the indentation-relaxation phases, which is defined, based on the COMSOL model,
+    to be started at the end of elongation, ie when the displacement equals that computed with the compute_dz function.
+
+    Args:
+        input_id (float): id of the input sample
+
+    Returns:
+        indentation_relaxation_time_list (list): temporal discretisation during the indentation-relaxation phases, 
+            after removing the offset.
+        indentation_relaxation_stress_list (list): variation of stress during the indentation-relaxation phases, 
+            after removing the offset.
+    """
     _, _, disp, stress = get_data(input_id)
     time_list, _ = utils.extract_disp_from_pkl()
     dz = compute_dz(input_id)
-    max_force_index = np.argmin(stress)
-    # begginning_indentation_time_index = np.where(np.array(time_list) == find_nearest(np.array(time_list), -dz/10))[0][-1] 
     begginning_indentation_time_index = np.where(disp[0:int(len(disp)/2)] == find_nearest(disp[0:int(len(disp)/2)], -dz/10))[0][-1] 
-    # begginning_indentation_time = time_list[begginning_indentation_time_index + 1]
     index_where_indentation_beggins = begginning_indentation_time_index + 0
     end_relaxation_time = 6
     index_where_relaxation_ends = np.where(time_list == find_nearest(time_list, end_relaxation_time))[0][0]
@@ -105,43 +158,37 @@ def reshape_stress_to_indentation_relaxation(input_id):
     indentation_relaxation_stress_list = [-s for s in indentation_relaxation_stress_list]
     return indentation_relaxation_time_list, indentation_relaxation_stress_list
 
-
 def get_data_at_given_indentation_relaxation_time(input_id, given_time):
+    """ Provides the stress value measured for a given id input sample at a given time
+
+    Args:
+        input_id (float): id of the input sample
+        given_time (float): time (in second) at which the stress is measured
+
+    Returns:
+        time_given_time (float): time at the given time. Generated only for internal validation, to make sure that
+            the value that is returned acutally corresponds to the given_time
+        stress_given_time (float): stress measured at a given_time
+    """
     indentation_relaxation_time_list, indentation_relaxation_stress_list = reshape_stress_to_indentation_relaxation(input_id)
-    # recovery_time_list, recovery_disp_list = reshape_disp_to_recovery(input_id)
     time_given_time = find_nearest(indentation_relaxation_time_list,  given_time)
     index_where_time_is_time_given_time = np.where(indentation_relaxation_time_list == find_nearest(indentation_relaxation_time_list, time_given_time))[0][0]
     stress_given_time = indentation_relaxation_stress_list[index_where_time_is_time_given_time]
     return time_given_time, stress_given_time
 
-
-def find_indicators_recovery(input_id):
-    recovery_time_list, recovery_disp_list = reshape_disp_to_recovery(input_id)
-    recovery_disp_list_in_mm = [d*10 for d in recovery_disp_list]
-    log_time = np.array([np.log(t+0.01) for t in recovery_time_list])
-    log_disp = np.array([np.log(t+0.01) for t in recovery_disp_list])
-    poly = PolynomialFeatures(degree=1, include_bias=False)
-    poly_features_log = poly.fit_transform(log_time.reshape(-1, 1))
-    model_log = make_pipeline(poly, LinearRegression())
-    model_log.fit(poly_features_log, recovery_disp_list_in_mm)
-    fitted_response_log = model_log.predict(log_time.reshape(-1, 1))
-    A_log = model_log.steps[1][1].coef_[0]
-    intercept_log = model_log.steps[1][1].intercept_
-    model_power = make_pipeline(poly, LinearRegression())
-    model_power.fit(poly_features_log, log_disp)
-    fitted_response_power = model_power.predict(log_time.reshape(-1, 1))
-    A_power = model_power.steps[1][1].coef_[0]
-    intercept_power = model_power.steps[1][1].intercept_
-    poly_features_linear = poly.fit_transform(np.array(recovery_time_list).reshape(-1, 1))
-    model_linear = make_pipeline(poly, LinearRegression())
-    model_linear.fit(poly_features_linear, recovery_disp_list_in_mm)
-    fitted_response_linear = model_linear.predict(np.array(recovery_time_list).reshape(-1, 1))
-    A_linear = model_linear.steps[1][1].coef_[0]
-    intercept_linear = model_linear.steps[1][1].intercept_
-    return log_time, fitted_response_log, A_log, intercept_log, fitted_response_power, A_power, intercept_power, fitted_response_linear, A_linear, intercept_linear
-
-    
 def find_recovery_slope(input_id):
+    """Computes the initial slope of the displcaement with respect to time 
+    during the recovery phase. The slope is measured during the 100 first time instants
+
+    Args:
+        input_id (float): id of the input sample
+
+    Returns:
+        recovery_time_list (list): time values used for the fit
+        fitted_response_linear (list): fitted values of displacement
+        A_linear (float): value of the slope of the fitted linear function (y = ax+b)
+        intercept_linear (float): value of the intercept of the fitted linear function (y = ax+b)
+    """
     recovery_time_list, recovery_disp_list = reshape_disp_to_recovery(input_id)
     recovery_disp_list_in_mm = [d*10 for d in recovery_disp_list]
     recovery_time_list = recovery_time_list[0:100]
@@ -156,6 +203,20 @@ def find_recovery_slope(input_id):
     return recovery_time_list, fitted_response_linear, A_linear, intercept_linear
 
 def find_indicators_indentation_relaxation(input_id):
+    """Compute the indicators for the indentation-relaxation phases
+
+    Args:
+        input_id (float): id of the input sample
+
+    Returns:
+        delta_f (float): variation of force during the first 10 seconds of relaxation.
+        delta_f_star (float): delta_f, normalized by the peak force
+        relaxation_slope (float): slope of the force in terms of time at the very beginning of 
+            the relaxation phase (first 0.5 second). The beginning of relaxation is designated by
+            the instant where the force reaches the peak force.
+        i_time (float): slope of the force in terms of time at the very beginning of the indentation
+            phase (first second).    
+    """
     indentation_relaxation_time_list, indentation_relaxation_stress_list = reshape_stress_to_indentation_relaxation(input_id)
     indentation_relaxation_stress_list_in_kpa = [s/1000 for s in indentation_relaxation_stress_list]
     max_force = np.nanmax(indentation_relaxation_stress_list_in_kpa)
@@ -175,10 +236,12 @@ def find_indicators_indentation_relaxation(input_id):
     i_time = (stress_given_time - stress_at_time_0) / (time_given_time - time_at_time_0) /1000    
     return delta_f, delta_f_star, relaxation_slope, i_time
 
-
-
-
 def plot_reshaped_data(input_id):
+    """Plot the stress and displacement curves after removing the offsets, with indicators.
+
+    Args:
+        input_id (float): id of the input sample
+    """
     indentation_relaxation_time_list, indentation_relaxation_stress_list = reshape_stress_to_indentation_relaxation(input_id)
     recovery_time_list, recovery_disp_list = reshape_disp_to_recovery(input_id)
     elongation, damage, _, _ = get_data(input_id)
@@ -188,11 +251,8 @@ def plot_reshaped_data(input_id):
     ax_disp_vs_time = fig_disp_vs_time.gca()
     colors = sns.color_palette("Paired")
     color_rocket = sns.color_palette("rocket")
-
     indentation_relaxation_stress_list_in_kpa = [s/1000 for s in indentation_relaxation_stress_list]
     recovery_disp_list_in_mm = [d*10 for d in recovery_disp_list]
-    
-    
     max_force = np.nanmax(indentation_relaxation_stress_list_in_kpa)
     index_where_force_is_max = np.where(indentation_relaxation_stress_list_in_kpa == max_force)[0][0]
     time_when_force_is_max = indentation_relaxation_time_list[index_where_force_is_max]
@@ -212,33 +272,21 @@ def plot_reshaped_data(input_id):
     ax_stress_vs_time.plot([indentation_relaxation_time_list[index_where_time_is_end_relaxation]-0.2, indentation_relaxation_time_list[index_where_time_is_end_relaxation]+0.2], [max_force, max_force], '--', color = 'g', linewidth=2)
     max_stress_index = np.argmax(np.array(indentation_relaxation_stress_list))
     time_given_time, stress_given_time = indentation_relaxation_time_list[max_stress_index-1], indentation_relaxation_stress_list[max_stress_index-1]
-    # time_at_time_0, stress_at_time_0 = indentation_relaxation_time_list[max_stress_index-2], indentation_relaxation_stress_list[max_stress_index-2]
     time_at_time_0, stress_at_time_0 = get_data_at_given_indentation_relaxation_time(input_id, time_given_time - 0.1) 
-    # # time_given_time, stress_given_time = get_data_at_given_indentation_relaxation_time(input_id, 0.2) 
     i_time = (stress_given_time - stress_at_time_0) / (time_given_time - time_at_time_0) /1000
     ax_stress_vs_time.plot([time_at_time_0, time_given_time ], [stress_at_time_0/1000, stress_given_time/1000], '-', color = 'b', label = r"$\alpha'$ = " + str(np.round(i_time, 2)) + r' $kPa.s^{-1}$', linewidth=3)
     ax_stress_vs_time.plot([time_given_time, time_given_time ], [stress_at_time_0/1000, stress_given_time/1000], '--', color = 'b', linewidth=2)
     ax_stress_vs_time.plot([time_at_time_0, time_given_time ], [stress_at_time_0/1000, stress_at_time_0/1000], '--', color = 'b', linewidth=2)
-    
-    
-    
     ax_stress_vs_time.plot(indentation_relaxation_time_list, indentation_relaxation_stress_list_in_kpa, ':k', label = r"$\lambda$ = " + str(np.round(elongation, 3)) + r" ; $D$ = " + str(np.round(damage, 3)), linewidth=3)
-    # ax_stress_vs_time.set_xticks([0, 1, 2, 3, 4])
-    # ax_stress_vs_time.set_xticklabels([0, 1, 2, 3, 4], font=fonts.serif(), fontsize=24)
-    # ax_stress_vs_time.set_yticks([100, 200, 300, 400, 500])
-    # ax_stress_vs_time.set_yticklabels([100, 200, 300, 400, 500], font=fonts.serif(), fontsize=24)
     ax_stress_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_stress_vs_time.set_ylabel("stress [kPa]", font=fonts.serif(), fontsize=26)
     ax_stress_vs_time.legend(prop=fonts.serif(), loc='lower right', framealpha=0.7)
     savefigure.save_as_png(fig_stress_vs_time, "stress_vs_time_id" + str(input_id) )
     plt.close(fig_stress_vs_time)
-
     recovery_time_list_linear, fitted_response_linear, A_linear, intercept_linear = find_recovery_slope(input_id)
     ax_disp_vs_time.plot(recovery_time_list_linear, fitted_response_linear ,   '-', color = color_rocket[3], label =r"$z = a t$" + "\na = " + str(np.round((A_linear), 2)), lw=3)
     ax_disp_vs_time.plot([recovery_time_list_linear[0], recovery_time_list_linear[-1]], [fitted_response_linear[0], fitted_response_linear[0]] ,   '--', color = color_rocket[3],  lw=3)
     ax_disp_vs_time.plot([recovery_time_list_linear[-1], recovery_time_list_linear[-1]], [fitted_response_linear[0], fitted_response_linear[-1]] ,   '--', color = color_rocket[3],  lw=3)
-
-
     ax_disp_vs_time.plot(recovery_time_list, recovery_disp_list_in_mm, ':k', label = r"$\lambda$ = " + str(np.round(elongation, 3)) + r" ; $D$ = " + str(np.round(damage, 3)), linewidth=3)
     ax_disp_vs_time.set_xticks([0, 1, 2, 3, 4])
     ax_disp_vs_time.set_xticklabels([0, 1, 2, 3, 4], font=fonts.serif(), fontsize=24)
@@ -250,86 +298,37 @@ def plot_reshaped_data(input_id):
     savefigure.save_as_png(fig_disp_vs_time, "disp_vs_time_id" + str(input_id) )
     plt.close(fig_disp_vs_time)
     
+def plot_entire_data(input_id):
+    """Plot the stress and displacement curves, before any kind of post processing
 
-def plot_entire_data(input_id): #TODO plot data entiere
+    Args:
+        input_id (float): id of the input sample
+    """
     elongation, damage, disp, stress = get_data(input_id)
-    time_list, stress_dict = get_stress()
-    # indentation_relaxation_time_list, indentation_relaxation_stress_list = reshape_stress_to_indentation_relaxation(input_id)
-    # recovery_time_list, recovery_disp_list = reshape_disp_to_recovery(input_id)
-    # elongation, damage, _, _ = get_data(input_id)
+    time_list, _ = get_stress()
     fig_stress_vs_time = createfigure.rectangle_figure(pixels=180)
     ax_stress_vs_time = fig_stress_vs_time.gca()
     fig_disp_vs_time = createfigure.rectangle_figure(pixels=180)
     ax_disp_vs_time = fig_disp_vs_time.gca()
-    colors = sns.color_palette("Paired")
-    color_rocket = sns.color_palette("rocket")
-
     stress_in_kpa = np.array([s/1000 for s in stress])
     disp_in_mm = [d*10 for d in disp]
-    
-    
-    
-    
-    
-    max_force = np.nanmax(stress_in_kpa)
-    index_where_force_is_max = np.where(stress_in_kpa == max_force)[0][0]
-    time_when_force_is_max = time_list[index_where_force_is_max]
-    index_where_time_is_end_relaxation_slope = np.where(time_list == find_nearest(time_list, time_when_force_is_max+0.5))[0][0]
-    relaxation_slope = (stress_in_kpa[index_where_time_is_end_relaxation_slope] - stress_in_kpa[index_where_force_is_max ]) / (time_list[index_where_time_is_end_relaxation_slope] - time_list[index_where_force_is_max])
-    time_when_force_is_max = time_list[index_where_force_is_max]
-    relaxation_duration = np.min([10, np.max(np.array(time_list))])
-    end_of_relaxation = time_when_force_is_max + relaxation_duration
-    index_where_time_is_end_relaxation = np.where(time_list == find_nearest(time_list, end_of_relaxation))[0][0]
-    delta_f = max_force - stress_in_kpa[index_where_time_is_end_relaxation]
-    delta_f_star = delta_f / max_force
-    # ax_stress_vs_time.plot([time_list[index_where_force_is_max ], time_list[index_where_time_is_end_relaxation_slope]], [stress_in_kpa[index_where_force_is_max ], stress_in_kpa[index_where_time_is_end_relaxation_slope]], '-', color = 'r', label = r"$\beta$ = " + str(np.round(relaxation_slope, 2)) + r" $kPa.s^{-1}$", linewidth=3)
-    # ax_stress_vs_time.plot([time_list[index_where_time_is_end_relaxation_slope], time_list[index_where_time_is_end_relaxation_slope]], [stress_in_kpa[index_where_force_is_max ], stress_in_kpa[index_where_time_is_end_relaxation_slope]], '--', color = 'r', linewidth=2)
-    # ax_stress_vs_time.plot([time_list[index_where_force_is_max ], time_list[index_where_time_is_end_relaxation_slope]], [stress_in_kpa[index_where_force_is_max ], stress_in_kpa[index_where_force_is_max ]], '--', color = 'r', linewidth=2)
-    # ax_stress_vs_time.plot([time_list[index_where_time_is_end_relaxation], time_list[index_where_time_is_end_relaxation]], [stress_in_kpa[index_where_time_is_end_relaxation], max_force], '-', color = 'g', label = r"$\Delta F$  = " + str(np.round(delta_f, 2)) + " kPa \n" + r"$\Delta F^*$ = " + str(np.round(delta_f_star, 2)), linewidth=3)
-    # ax_stress_vs_time.plot([time_list[index_where_time_is_end_relaxation]-0.2, time_list[index_where_time_is_end_relaxation]+0.2], [stress_in_kpa[index_where_time_is_end_relaxation], stress_in_kpa[index_where_time_is_end_relaxation]], '--', color = 'g', linewidth=2)
-    # ax_stress_vs_time.plot([time_list[index_where_time_is_end_relaxation]-0.2, time_list[index_where_time_is_end_relaxation]+0.2], [max_force, max_force], '--', color = 'g', linewidth=2)
-    # [time_at_time_0, stress_at_time_0] = [0, 0]
-    # time_given_time, stress_given_time = get_data_at_given_indentation_relaxation_time(input_id, 0.1) 
-    # i_time = (stress_given_time - stress_at_time_0) / (time_given_time - time_at_time_0) /1000
-    # ax_stress_vs_time.plot([0, time_given_time ], [0, stress_given_time/1000], '-', color = 'b', label = r"$\alpha$ = " + str(np.round(i_time, 2)) + r' $kPa.s^{-1}$', linewidth=3)
-    # ax_stress_vs_time.plot([time_given_time, time_given_time ], [0, stress_given_time/1000], '--', color = 'b', linewidth=2)
-    # ax_stress_vs_time.plot([0, time_given_time ], [0, 0], '--', color = 'b', linewidth=2)
-    
-    
-    
     ax_stress_vs_time.plot(time_list, stress_in_kpa, ':k', label = r"$\lambda$ = " + str(np.round(elongation, 3)) + r" ; $D$ = " + str(np.round(damage, 3)), linewidth=3)
-    # ax_stress_vs_time.set_xticks([0, 1, 2, 3, 4])
-    # ax_stress_vs_time.set_xticklabels([0, 1, 2, 3, 4], font=fonts.serif(), fontsize=24)
-    # ax_stress_vs_time.set_yticks([100, 200, 300, 400, 500])
-    # ax_stress_vs_time.set_yticklabels([100, 200, 300, 400, 500], font=fonts.serif(), fontsize=24)
     ax_stress_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_stress_vs_time.set_ylabel("stress [kPa]", font=fonts.serif(), fontsize=26)
     ax_stress_vs_time.legend(prop=fonts.serif(), loc='lower right', framealpha=0.7)
     savefigure.save_as_png(fig_stress_vs_time, "entire_stress_vs_time_id" + str(input_id) )
     plt.close(fig_stress_vs_time)
-
-    recovery_time_list_linear, fitted_response_linear, A_linear, intercept_linear = find_recovery_slope(input_id)
-    # log_time, fitted_response_log, A_log, intercept_log, fitted_response_power, A_power, intercept_power, fitted_response_linear, A_linear, intercept_linear = find_indicators_recovery(input_id)
-    # ax_disp_vs_time.plot(np.exp(log_time), fitted_response_log ,   '--', color = color_rocket[4], label =r"$z = A \log{t} + z_{t=1}$" + "\nA = " + str(np.round(A_log, 2)) , lw=3)
-    # ax_disp_vs_time.plot(np.exp(log_time), np.exp(fitted_response_power) ,   '--', color = color_rocket[5], label =r"$z = a t^{n}$" + "\na = " + str(np.round(np.exp(intercept_power), 2)) + " ; n = " + str(np.round(A_power, 2)) , lw=3)
-    # ax_disp_vs_time.plot(recovery_time_list_linear, fitted_response_linear ,   '-', color = color_rocket[3], label =r"$z = a t$" + "\na = " + str(np.round(np.exp(A_linear), 2)), lw=3)
-    # ax_disp_vs_time.plot([recovery_time_list_linear[0], recovery_time_list_linear[-1]], [fitted_response_linear[0], fitted_response_linear[0]] ,   '--', color = color_rocket[3],  lw=3)
-    # ax_disp_vs_time.plot([recovery_time_list_linear[-1], recovery_time_list_linear[-1]], [fitted_response_linear[0], fitted_response_linear[-1]] ,   '--', color = color_rocket[3],  lw=3)
-
-
     ax_disp_vs_time.plot(time_list, disp_in_mm, ':k', label = r"$\lambda$ = " + str(np.round(elongation, 3)) + r" ; $D$ = " + str(np.round(damage, 3)), linewidth=3)
-    # ax_disp_vs_time.set_xticks([0, 1, 2, 3, 4])
-    # ax_disp_vs_time.set_xticklabels([0, 1, 2, 3, 4], font=fonts.serif(), fontsize=24)
-    # ax_disp_vs_time.set_yticks([0, 1, 2, 3, 4])
-    # ax_disp_vs_time.set_yticklabels([0, 1, 2, 3, 4], font=fonts.serif(), fontsize=24)
     ax_disp_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_disp_vs_time.set_ylabel("U [mm]", font=fonts.serif(), fontsize=26)
     ax_disp_vs_time.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
     savefigure.save_as_png(fig_disp_vs_time, "entire_disp_vs_time_id" + str(input_id) )
     plt.close(fig_disp_vs_time)
     
-
 def compute_and_export_all_indicators():
+    """Computes the indicators (both related to indentation-relaxation and recovery phases)
+    and exports them in a pkl file named "indicators.pkl"
+    """
     ids_list, _, _ = utils.extract_inputs_from_pkl()
     alpha_p_dict = {}
     beta_dict = {}
@@ -352,6 +351,9 @@ def compute_and_export_all_indicators():
         )
 
 def export_indicators_as_txt():    
+    """Takes the indicators from the .pkl file generated via the compute_and_export_all_indicators()
+    function and writes them into a .txt file, named "indicators.txt"
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "indicators.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [alpha_p_dict, beta_dict, delta_f_dict, delta_f_star_dict, a_dict] = pickle.load(f)
@@ -387,7 +389,6 @@ def export_indicators_as_txt():
     f.close()    
     
 
-
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
@@ -401,6 +402,5 @@ if __name__ == "__main__":
         # reshape_stress_to_indentation_relaxation(id)
     # compute_and_export_all_indicators()
     # export_indicators_as_txt()
-    # find_indicators_recovery(1)
     print('hello')
 

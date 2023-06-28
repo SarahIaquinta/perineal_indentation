@@ -1,27 +1,35 @@
-import os
-import time
-from pathlib import Path
+"""
+This file contains the functions to build an ANN
+"""
 
-import matplotlib.pyplot as plt
+import os
 import numpy as np
 import openturns as ot
 import seaborn as sns
 from indentation.model.comsol.sensitivity_analysis.figures.utils import CreateFigure, Fonts, SaveFigure
-
 ot.Log.Show(ot.Log.NONE)
-import pandas as pd
-from sklearn import datasets
-from sklearn.datasets import make_regression
 from sklearn.metrics import r2_score
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network import MLPRegressor
-from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn_evaluation import plot
 import utils
 import pickle
 
 def define_test_train_datset(training_amount):
+    """Separates the dataset into a training and testing dataset. 
+    The training dataset will be used to train the ANN whose predictivity
+    will be evaluated with the testing dataset
+
+    Args:
+        training_amount (float): amount of the dataset that is used for training.
+            Between 0 and 1
+
+    Returns:
+        input_dataset_train (array):    part of the input dataset used for training
+        input_dataset_test (array):     part of the input dataset used for testing
+        output_dataset_train (array):   part of the output dataset used for training
+        output_dataset_test (array):    part of the output dataset used for testing
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "indicators.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [alpha_p_dict, beta_dict, delta_f_dict, delta_f_star_dict, a_dict] = pickle.load(f)
@@ -48,8 +56,21 @@ def define_test_train_datset(training_amount):
         output_dataset_test[:, i] = np.array(indicator_vector_test)
     return input_dataset_train, input_dataset_test, output_dataset_train, output_dataset_test
 
-
 def define_test_train_datset_wo_damage(training_amount):
+    """Equivalent to the define_test_train_datset() function, but only the 
+    elongation input parameter is taken, while damage is removed.
+    This function may be removed in the future.
+
+    Args:
+        training_amount (float): amount of the dataset that is used for training.
+            Between 0 and 1
+
+    Returns:
+        input_dataset_train (array): part of the input dataset used for training
+        input_dataset_test (array): part of the input dataset used for testing
+        output_dataset_train (array): part of the output dataset used for training
+        output_dataset_test (array): part of the output dataset used for testing
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "indicators.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [alpha_p_dict, beta_dict, delta_f_dict, delta_f_star_dict, a_dict] = pickle.load(f)
@@ -74,8 +95,16 @@ def define_test_train_datset_wo_damage(training_amount):
         output_dataset_test[:, i] = np.array(indicator_vector_test)
     return input_dataset_train, input_dataset_test, output_dataset_train, output_dataset_test
 
-
 def ANN_gridsearch(X_train, X_test, y_train, y_test):
+    """Creates the ANN. In order to find the best settings for the ANN,
+    ie those which maiximize the predictivity, a gridsearch is implemented.
+
+    Args:
+        X_train (array): part of the input dataset used for training
+        X_test (array): part of the input dataset used for testing
+        y_train (array): part of the output dataset used for training
+        y_test (array): part of the output dataset used for testing
+    """
     sc_X = StandardScaler()
     X_trainscaled = sc_X.fit_transform(X_train)
     X_testscaled = sc_X.transform(X_test)
@@ -124,10 +153,19 @@ def ANN_gridsearch(X_train, X_test, y_train, y_test):
     y_pred = gridCV.predict(X_testscaled)
     Q2 = r2_score(y_pred, y_test)
     print("The Score with ", Q2)
-    utils.export_predictions(y_test, y_pred, Q2, "predictions_grid.pkl")
-    
+    utils.export_predictions(y_test, y_pred, Q2, "predictions_grid.pkl")   
 
 def ANN_gridsearch_wo_damage(X_train, X_test, y_train, y_test):
+    """Equivalent to the ANN_gridsearch() function, but only the 
+    elongation input parameter is taken, while damage is removed.
+    This function may be removed in the future.
+
+    Args:
+        X_train (array): part of the input dataset used for training
+        X_test (array): part of the input dataset used for testing
+        y_train (array): part of the output dataset used for training
+        y_test (array): part of the output dataset used for testing
+    """    
     sc_X = StandardScaler()
     X_trainscaled = sc_X.fit_transform(X_train)
     X_testscaled = sc_X.transform(X_test)
@@ -179,6 +217,14 @@ def ANN_gridsearch_wo_damage(X_train, X_test, y_train, y_test):
     utils.export_predictions(y_test, y_pred, Q2, "predictions_grid_wo_damage.pkl")
 
 def plot_true_vs_predicted(createfigure, savefigure, fonts):
+    """Compares the values predicted with the ANN (from the gridsearch)
+    using the testing input parameters to the testing output values.
+
+    Args:
+        createfigure (class): class used to provide consistent settings for the creation of figures
+        savefigure (class):class used to provide consistent settings for saving figures
+        fonts (class): class used to provide consistent fonts for the figures
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "predictions_grid.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [y_test, y_pred, Q2] = pickle.load(f)
@@ -213,8 +259,16 @@ def plot_true_vs_predicted(createfigure, savefigure, fonts):
         ax.set_ylabel(r"predicted values of " + label_dict[label], font=fonts.serif(), fontsize=fonts.axis_label_size())
         savefigure.save_as_png(fig, "results_ANN_" + labels[i])
 
-
 def plot_true_vs_predicted_wo_damage(createfigure, savefigure, fonts):
+    """Equivalent to the plot_true_vs_predicted() function, but only the 
+    elongation input parameter is taken, while damage is removed.
+    This function may be removed in the future.
+
+    Args:
+        createfigure (class): class used to provide consistent settings for the creation of figures
+        savefigure (class):class used to provide consistent settings for saving figures
+        fonts (class): class used to provide consistent fonts for the figures
+    """
     complete_pkl_filename = utils.get_path_to_processed_data() / "predictions_grid_wo_damage.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [y_test, y_pred, Q2] = pickle.load(f)
@@ -248,7 +302,6 @@ def plot_true_vs_predicted_wo_damage(createfigure, savefigure, fonts):
         ax.set_xlabel(r"true values of " + label_dict[label], font=fonts.serif(), fontsize=fonts.axis_label_size())
         ax.set_ylabel(r"predicted values of " + label_dict[label], font=fonts.serif(), fontsize=fonts.axis_label_size())
         savefigure.save_as_png(fig, "results_ANN_wo_damage" + labels[i])
-
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
