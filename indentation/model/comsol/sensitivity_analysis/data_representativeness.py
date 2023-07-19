@@ -110,11 +110,12 @@ def plot_outputs():
         x = list(elongation_dict.values())
         y = list(damage_dict.values())
         z = list(indicator_dict.values())
+        alpha_list = [1] * len(z)
         sorted_elongation = [x for _,x in sorted(zip(z,x))]
         sorted_damage = [y for _,y in sorted(zip(z,y))]
         sorted_indicator = sorted(z)
-        ax3D.scatter(sorted_elongation, sorted_damage, sorted_indicator, c = sns.color_palette("flare", len(z)),
-                       lw=0, antialiased=False, s = 100 + np.zeros_like(np.array(z)), alpha = 1 + np.zeros_like(np.array(z)))
+        ax3D.scatter(sorted_elongation, sorted_damage, sorted_indicator, c = sns.color_palette("flare", len(sorted_elongation)),
+                       lw=0, antialiased=False, s = 100 + np.zeros_like(np.array(z)), alpha = 1)
         ax3D.set_xlabel(r"$\lambda$ [-]", font=fonts.serif(), fontsize=26)
         ax3D.set_ylabel(r"D [-]", font=fonts.serif(), fontsize=26)
         ax3D.set_zlabel(label_dict[label], font=fonts.serif(), fontsize=26)
@@ -125,13 +126,13 @@ def plot_outputs():
         ax3D.xaxis.pane.fill = False
         ax3D.yaxis.pane.fill = False
         ax3D.zaxis.pane.fill = False
-        ax_indicator_vs_elongation.scatter(sorted_elongation, sorted_indicator, c = sns.color_palette("rocket", len(z)), s = 100 + np.zeros_like(np.array(z)))
+        ax_indicator_vs_elongation.scatter(sorted_elongation, sorted_indicator, c = sns.color_palette("rocket", len(sorted_elongation)), s = 100 + np.zeros_like(np.array(z)))
         ax_indicator_vs_elongation.set_xlabel(r"$\lambda$ [-]", font=fonts.serif(), fontsize=26)
         ax_indicator_vs_elongation.set_ylabel(label_dict[label], font=fonts.serif(), fontsize=26)
         ax_indicator_vs_elongation.set_xticks([1, 1.1, 1.2, 1.3, 1.4, 1.5])
         ax_indicator_vs_elongation.set_xticklabels([1, 1.1, 1.2, 1.3, 1.4, 1.5], font=fonts.serif(), fontsize=16)
 
-        ax_indicator_vs_damage.scatter(sorted_damage, sorted_indicator, c = sns.color_palette("viridis", len(z)), s = 100 + np.zeros_like(np.array(z)))
+        ax_indicator_vs_damage.scatter(sorted_damage, sorted_indicator, c = sns.color_palette("viridis", len(sorted_elongation)), s = 100 + np.zeros_like(np.array(z)))
         ax_indicator_vs_damage.set_xlabel(r"D [-]", font=fonts.serif(), fontsize=26)
         ax_indicator_vs_damage.set_ylabel(label_dict[label], font=fonts.serif(), fontsize=26)
         ax_indicator_vs_damage.set_xticks([0, 0.2, 0.4, 0.6, 0.8])
@@ -145,5 +146,5 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    # plot_outputs()
+    plot_outputs()
     plot_cumulative_mean_vs_sample_size_indicators(createfigure, savefigure, fonts)

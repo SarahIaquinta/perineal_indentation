@@ -61,7 +61,8 @@ class Files:
                         "230327": [-10, 10],
                         "230403": [8, 40],
                         "230407": [-30, -10],
-                        "230411": [-10, 10]}
+                        "230411": [-10, 10],
+                        "230718":[-30,30]}
 
     def import_files(self, date):
         """
@@ -324,7 +325,7 @@ if __name__ == "__main__":
     fonts = Fonts()
     savefigure = SaveFigure()
     experiment_dates = ['230718']#'230331', '230403', '230407', '230411']
-    meat_pieces = ['FF']
+    meat_pieces = ['FF1']
 
     
     read_all_files(experiment_dates, meat_pieces)
