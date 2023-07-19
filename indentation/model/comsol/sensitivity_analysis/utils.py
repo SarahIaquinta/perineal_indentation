@@ -96,12 +96,12 @@ def export_inputs_as_pkl():
             f,
         )
         
-def export_stress_as_pkl():
-    time_list, stress_dict = exd.get_stress()
-    complete_pkl_filename = get_path_to_processed_data() / "stress.pkl"
+def export_force_as_pkl():
+    time_list, force_dict = exd.get_force()
+    complete_pkl_filename = get_path_to_processed_data() / "force.pkl"
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
-            [time_list, stress_dict],
+            [time_list, force_dict],
             f,
         )
 
@@ -120,11 +120,11 @@ def extract_inputs_from_pkl():
         [ids_list, elongation_dict, damage_dict] = pickle.load(f)
     return ids_list, elongation_dict, damage_dict
 
-def extract_stress_from_pkl():
-    complete_pkl_filename = get_path_to_processed_data() / "stress.pkl"
+def extract_force_from_pkl():
+    complete_pkl_filename = get_path_to_processed_data() / "force.pkl"
     with open(complete_pkl_filename, "rb") as f:
-        [time_list, stress_dict] = pickle.load(f)
-    return time_list, stress_dict
+        [time_list, force_dict] = pickle.load(f)
+    return time_list, force_dict
        
 def extract_disp_from_pkl():
     complete_pkl_filename = get_path_to_processed_data() / "disp.pkl"

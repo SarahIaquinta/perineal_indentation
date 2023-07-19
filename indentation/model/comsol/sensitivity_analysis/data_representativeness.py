@@ -136,14 +136,14 @@ def plot_outputs():
         ax_indicator_vs_damage.set_ylabel(label_dict[label], font=fonts.serif(), fontsize=26)
         ax_indicator_vs_damage.set_xticks([0, 0.2, 0.4, 0.6, 0.8])
         ax_indicator_vs_damage.set_xticklabels([0, 0.2, 0.4, 0.6, 0.8], font=fonts.serif(), fontsize=16)
-        savefigure.save_as_png(fig3D, "3Dplot_" + label)
-        savefigure.save_as_png(fig_indicator_vs_damage, "2Dplot_" + label + "_vs_damage")
-        savefigure.save_as_png(fig_indicator_vs_elongation, "2Dplot_" + label + "_vs_elongation")
+        savefigure.save_as_png(fig3D, "3Dplot_v2_" + label)
+        savefigure.save_as_png(fig_indicator_vs_damage, "2Dplot_v2_" + label + "_vs_damage")
+        savefigure.save_as_png(fig_indicator_vs_elongation, "2Dplot_v2_" + label + "_vs_elongation")
 
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    plot_outputs()
-    # plot_cumulative_mean_vs_sample_size_indicators(createfigure, savefigure, fonts)
+    # plot_outputs()
+    plot_cumulative_mean_vs_sample_size_indicators(createfigure, savefigure, fonts)

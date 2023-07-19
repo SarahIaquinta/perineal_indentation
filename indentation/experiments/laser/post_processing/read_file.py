@@ -323,11 +323,11 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230331', '230403', '230407', '230411']
-    meat_pieces = ['FF', 'RDG']
+    experiment_dates = ['230718']#'230331', '230403', '230407', '230411']
+    meat_pieces = ['FF']
 
     
-    # read_all_files(experiment_dates, meat_pieces)
+    read_all_files(experiment_dates, meat_pieces)
         
     print('hello')
 
