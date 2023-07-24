@@ -62,7 +62,7 @@ class Files:
                         "230403": [8, 40],
                         "230407": [-30, -10],
                         "230411": [-10, 10],
-                        "230718":[-30,30]}
+                        "230718":[-30,5]}
 
     def import_files(self, date):
         """
@@ -83,7 +83,6 @@ class Files:
         path_to_data_folder = utils.reach_data_path(date)
         entries = os.listdir(path_to_data_folder)
         beginning_to_test = date + '_' + self.beginning
-        # '0_locations_' + experiment_date + '_' + meat_piece
         len_beginning = len(beginning_to_test)
         datafile_list = []
         for i in range(len(entries)):
@@ -258,8 +257,8 @@ class Files:
         
         vec_time_rescaled = vec_time - min(vec_time)
         
-        utils.export_data_output_as_txt('0_locations_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
-        utils.export_data_output_as_pkl('0_locations_' + filename , mat_Z, vec_time_rescaled, vec_pos_axis)
+        utils.export_data_output_as_txt(filename , mat_Z, vec_time_rescaled, vec_pos_axis)
+        utils.export_data_output_as_pkl(filename , mat_Z, vec_time_rescaled, vec_pos_axis)
         print(filename, 'done')
 
 
@@ -325,7 +324,7 @@ if __name__ == "__main__":
     fonts = Fonts()
     savefigure = SaveFigure()
     experiment_dates = ['230718']#'230331', '230403', '230407', '230411']
-    meat_pieces = ['FF1']
+    meat_pieces = ['FF']
 
     
     read_all_files(experiment_dates, meat_pieces)

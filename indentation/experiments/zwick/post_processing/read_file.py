@@ -152,6 +152,21 @@ class Files_Zwick:
         disp = disp - disp[0]
         return time, force, disp
 
+    def get_umax_and_strain(self, datafile, sheet):
+        date = datafile[0:6]
+        path_to_datafile = utils.reach_data_path(date) / datafile
+        data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:D", decimal=',') 
+        time_with_offset = data_in_sheet.s
+        force_with_offset = data_in_sheet.N
+        disp_with_offset = data_in_sheet.mm
+        time_with_offset, force_with_offset, disp_with_offset = time_with_offset.to_numpy(), force_with_offset.to_numpy(), disp_with_offset.to_numpy() 
+        nb_points = len(time_with_offset)
+        time = np.array([time_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
+        force = np.array([force_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
+        disp = np.array([disp_with_offset[i] for i in range(nb_points) if force_with_offset[i]>0.05])
+
+        
+
     def read_metadatas_zwick(self, metadatafile):
         date = metadatafile[0:6]
         path_to_metadatafile = utils.reach_data_path(date) / metadatafile
@@ -299,13 +314,13 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_dates = ['230407', '230331', '230411', '230327', '230403']
+    experiment_dates = ['230718']
     types_of_essay = ['C_Indentation_relaxation_500N_force.xlsx']#,'C_Indentation_relaxation_maintienFnulle_500N_trav.xls',  'RDG']
     files_zwick = Files_Zwick(types_of_essay[0])
-    # datafile_list = files_zwick.import_files(experiment_dates[0])
-    # datafile = datafile_list[0]
-    # datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
-    # correct_sheets_in_data = files_zwick.find_only_correct_sheets_in_datafile(datafile)
+    datafile_list = files_zwick.import_files(experiment_dates[0])
+    datafile = datafile_list[0]
+    datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
+    correct_sheets_in_data = files_zwick.find_only_correct_sheets_in_datafile(datafile)
     # sheet1 = correct_sheets_in_data[0]
     # time, force, disp = files_zwick.read_sheet_in_datafile(datafile, sheet1)
     # for sheet in correct_sheets_in_data:

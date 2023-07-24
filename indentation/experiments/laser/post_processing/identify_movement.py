@@ -79,18 +79,18 @@ class Recovery:
                 list of .csv files starting by "beginning"
 
         """
-        # [x_min_index, x_max_index] = self.find_location_indices()
-        # len_region = int(x_max_index - x_min_index) + 1
+        [x_min_index, x_max_index] = self.find_location_indices()
+        len_region = int(x_max_index - x_min_index) + 1
         # smoothed_Z = self.mat_Z
         # smoothed_Z = self.smooth_Z_profile(n_smooth)
-        # mat_Z_indent = np.zeros((len(self.vec_time), len_region))
-        # vec_pos_axis_indent = np.zeros((len_region))
-        # for i in range(len_region):
-        #     vec_pos_axis_indent[i] = self.vec_pos_axis[x_min_index + i]
-        #     mat_Z_at_position = smoothed_Z[:, x_min_index + i]
-        #     mat_Z_indent[:, i] = mat_Z_at_position
-        # return vec_pos_axis_indent, mat_Z_indent
-        return self.vec_pos_axis, self.mat_Z
+        mat_Z_indent = np.zeros((len(self.vec_time), len_region))
+        vec_pos_axis_indent = np.zeros((len_region))
+        for i in range(len_region):
+            vec_pos_axis_indent[i] = self.vec_pos_axis[x_min_index + i]
+            mat_Z_at_position = self.mat_Z[:, x_min_index + i]
+            mat_Z_indent[:, i] = mat_Z_at_position
+        return vec_pos_axis_indent, mat_Z_indent
+        # return self.vec_pos_axis, self.mat_Z
 
     # def smooth_Z_profile(self, n_smooth):
     #     """
@@ -191,8 +191,8 @@ class Recovery:
         # ax.set_yticklabels([-5, 0, 5], font=fonts.serif(), fontsize=24)
         # ax.set_ylim(-6, 2)
         # ax.legend(prop=fonts.serif_rz_legend(), loc='lower right', framealpha=0.7)
-        savefigure.save_as_png(fig, "zx_0_locations_profile_indent_timelapse_" + self.filename[0:-4])
-        savefigure.save_as_svg(fig, "zx_0_locations_profile_indent_timelapse_" + self.filename[0:-4])
+        savefigure.save_as_png(fig, "zx_profile_indent_timelapse_" + self.filename[0:-4])
+        savefigure.save_as_svg(fig, "zx_profile_indent_timelapse_" + self.filename[0:-4])
         plt.close(fig)
 
     def compute_recovery_with_time(self, n_smooth):
@@ -410,16 +410,16 @@ def plot_all_combined_profiles(experiment_dates, meat_pieces, locations, n_smoot
         None
             
     """ 
-    # location_keys = [key for key in locations]
+    location_keys = [key for key in locations]
     for experiment_date in experiment_dates:
         for meat_piece in meat_pieces:
             files_meat_piece = Files(meat_piece)
-            # location_key = '0_locations_' + experiment_date + '_' + meat_piece
-            # if location_key in location_keys :
-            list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
-                # location_at_date_meat_piece = locations[experiment_date + '_' + meat_piece]
+            location_key = experiment_date + '_' + meat_piece
+            if location_key in location_keys :
+                list_of_meat_piece_files = files_meat_piece.import_files(experiment_date)
+                location_at_date_meat_piece = locations[location_key]
             for filename in list_of_meat_piece_files:
-                recovery_at_date_meat_piece = Recovery('0_locations_' + filename, locations)
+                recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
                 recovery_at_date_meat_piece.combine_profile_timelapse(nb_of_time_increments_to_plot, n_smooth, createfigure, savefigure, fonts)
            
 def plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, failed_laser_acqusitions, createfigure, savefigure, fonts):
@@ -466,7 +466,7 @@ def plot_all_recoveries(experiment_dates, meat_pieces, locations, n_smooth, fail
                 location_at_date_meat_piece = locations[experiment_date + '_' + meat_piece]
                 for filename in list_of_meat_piece_files:
                     if filename[:-4] not in failed_laser_acqusitions:
-                        recovery_at_date_meat_piece = Recovery('0_locations_' + filename, location_at_date_meat_piece)
+                        recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
                         recovery_at_date_meat_piece.plot_recovery(n_smooth, createfigure, savefigure, fonts)
             
 def export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations, failed_laser_acqusitions):
@@ -522,7 +522,7 @@ def export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations
                 for filename in list_of_meat_piece_files:
                     if filename[:-4] not in failed_laser_acqusitions:
                         print(filename[:-4])
-                        recovery_at_date_meat_piece = Recovery('0_locations_' + filename, location_at_date_meat_piece)
+                        recovery_at_date_meat_piece = Recovery(filename, location_at_date_meat_piece)
                         _, min_recovery_position, _, delta_d, delta_d_star = recovery_at_date_meat_piece.compute_delta_d_star(n_smooth)
                         A, _, _ = recovery_at_date_meat_piece.compute_A(n_smooth)
                         delta_d_stars_to_export.append(delta_d_star)
@@ -530,7 +530,7 @@ def export_delta_d_star_and_A(experiment_dates, n_smooth, meat_pieces, locations
                         d_min_to_export.append(min_recovery_position)
                         filenames_to_export.append(filename[:-4])
                         A_to_export.append(A[0])
-    filename_export_all_delta_d_star = "0_locations_recoveries.txt"
+    filename_export_all_delta_d_star = "recoveries.txt"
     path_to_processed_data = utils.get_path_to_processed_data()
     path_to_export_file = path_to_processed_data / filename_export_all_delta_d_star
     f = open(path_to_export_file, "w")
@@ -594,9 +594,14 @@ if __name__ == "__main__":
                  "230411_RDG": [-10, 10],
                  "230411_RDG2D": [-10, 10],
                  "230515_P002": [-12, 0],
-                 "230515_P011": [-15, -2]}
-    experiment_dates = ['230331', '230403', '230407', '230411']#, '230331', '230327']
-    meat_pieces = ['FF', "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
+                 "230515_P011": [-15, -2],
+                 "230718_FF5": [-25, -12],
+                 "230718_FF4": [-25, -15],
+                 "230718_FF3": [-22, -18],
+                 "230718_FF2": [-24, -15],
+                 "230718_FF1": [-15, -8]}
+    experiment_dates = ['230718']#, '230331', '230327']
+    meat_pieces = ['FF1', 'FF2', 'FF3', 'FF4', 'FF5' ]#, "FF2_ENTIER", 'RDG', 'RDG1_ENTIER', "FF1_recouvrance_et_relaxation_max", "FF1_ENTIER"]
     failed_laser_acqusitions = ['230403_FF1B',
                                 '230403_FF1D',
                                 '230403_RDG1B',
@@ -609,6 +614,13 @@ if __name__ == "__main__":
                                 '230515_P002-1',
                                 '230331_FF2_1E',
                                 '230331_RDG1_ENTIER1'
+                                '230718_FF1_A'
+                                '230718_FF1_B'
+                                '230718_FF1_C'
+                                '230718_FF2_A'
+                                '230718_FF2_B'
+                                '230718_FF4_A'
+                                '230718_FF4_B'
                                 ]
     # filename = '0_locations_230407_FF1F.pkl'
     # recovery = Recovery(filename, locations)

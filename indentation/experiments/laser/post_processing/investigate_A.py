@@ -837,8 +837,8 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
 
             
     """         
-    dates_to_use = ['230331', '230403', '230407']
-    maturation_dict = {'230331':10, '230403':13, '230407':17}
+    dates_to_use = ['230718', '230331', '230403', '230407']
+    maturation_dict = {'230718':7, '230331':10, '230403':13, '230407':17}
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -919,6 +919,12 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
     ax_Umax.set_ylabel(r'$U_{max}$ [mm]', font=fonts.serif_rz_legend())
     ax_Umax_1.set_ylabel(r'$U_{max}$ [mm]', font=fonts.serif_rz_legend())
     ax_Umax_2.set_ylabel(r'$U_{max}$ [mm]', font=fonts.serif_rz_legend())
+    ax_Umax.set_xticks([7, 10, 13, 17])
+    ax_Umax.set_xticklabels(['7?', '10', '13', '17'])
+    ax_Umax_1.set_xticks([7, 10, 13, 17])
+    ax_Umax_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_Umax_2.set_xticks([7, 10, 13, 17])
+    ax_Umax_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_Umax, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_Umax_vs_maturation_1+2")
     plt.close(fig_Umax)        
     savefigure.save_as_png(fig_Umax_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_Umax_vs_maturation_1")
@@ -950,6 +956,12 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
     ax_strain.set_ylabel(r'$\varepsilon$ [-]', font=fonts.serif_rz_legend())
     ax_strain_1.set_ylabel(r'$\varepsilon$ [-]', font=fonts.serif_rz_legend())
     ax_strain_2.set_ylabel(r'$\varepsilon$ [-]', font=fonts.serif_rz_legend())
+    ax_strain.set_xticks([7, 10, 13, 17])
+    ax_strain.set_xticklabels(['7?', '10', '13', '17'])
+    ax_strain_1.set_xticks([7, 10, 13, 17])
+    ax_strain_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_strain_2.set_xticks([7, 10, 13, 17])
+    ax_strain_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_strain, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_strain_vs_maturation_1+2")
     plt.close(fig_strain)        
     savefigure.save_as_png(fig_strain_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_strain_vs_maturation_1")
@@ -981,6 +993,12 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
     ax_delta_d.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     ax_delta_d_1.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
     ax_delta_d_2.set_ylabel(r'$\Delta d$ [mm]', font=fonts.serif_rz_legend())
+    ax_delta_d.set_xticks([7, 10, 13, 17])
+    ax_delta_d.set_xticklabels(['7?', '10', '13', '17'])
+    ax_delta_d_1.set_xticks([7, 10, 13, 17])
+    ax_delta_d_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_delta_d_2.set_xticks([7, 10, 13, 17])
+    ax_delta_d_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_delta_d, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_delta_d_vs_maturation_1+2")
     plt.close(fig_delta_d)        
     savefigure.save_as_png(fig_delta_d_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_delta_d_vs_maturation_1")
@@ -1012,6 +1030,12 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
     ax_delta_d_star.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     ax_delta_d_star_1.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
     ax_delta_d_star_2.set_ylabel(r'$\Delta d^*$ [mm]', font=fonts.serif_rz_legend())
+    ax_delta_d_star.set_xticks([7, 10, 13, 17])
+    ax_delta_d_star.set_xticklabels(['7?', '10', '13', '17'])
+    ax_delta_d_star_1.set_xticks([7, 10, 13, 17])
+    ax_delta_d_star_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_delta_d_star_2.set_xticks([7, 10, 13, 17])
+    ax_delta_d_star_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_delta_d_star, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_delta_d_star_vs_maturation_1+2")
     plt.close(fig_delta_d_star)        
     savefigure.save_as_png(fig_delta_d_star_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_delta_d_star_vs_maturation_1")
@@ -1043,6 +1067,12 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
     ax_A.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     ax_A_1.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
     ax_A_2.set_ylabel(r'A [mm]', font=fonts.serif_rz_legend())
+    ax_A.set_xticks([7, 10, 13, 17])
+    ax_A.set_xticklabels(['7?', '10', '13', '17'])
+    ax_A_1.set_xticks([7, 10, 13, 17])
+    ax_A_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_A_2.set_xticks([7, 10, 13, 17])
+    ax_A_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_A, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_A_vs_maturation_1+2")
     plt.close(fig_A)        
     savefigure.save_as_png(fig_A_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_A_vs_maturation_1")
@@ -1074,6 +1104,12 @@ def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold)
     ax_d_min.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     ax_d_min_1.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
     ax_d_min_2.set_ylabel(r'$d_{min}$ [mm]', font=fonts.serif_rz_legend())
+    ax_d_min.set_xticks([7, 10, 13, 17])
+    ax_d_min.set_xticklabels(['7?', '10', '13', '17'])
+    ax_d_min_1.set_xticks([7, 10, 13, 17])
+    ax_d_min_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_d_min_2.set_xticks([7, 10, 13, 17])
+    ax_d_min_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_d_min, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_d_min_vs_maturation_1+2")
     plt.close(fig_d_min)        
     savefigure.save_as_png(fig_d_min_1, "0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_d_min_vs_maturation_1")
@@ -1094,10 +1130,10 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_thresh
 
             
     """    
-    maturation = [10, 13, 17, 21]
-    dates_to_use = ['230331', '230403', '230407']
-    maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
-    maturation_dict_plots = {'230331': 'J+10', '230403': 'J+13', '230407': 'J+17'}
+    maturation = [7, 10, 13, 17, 21]
+    dates_to_use = ['230718', '230331', '230403', '230407']
+    maturation_dict = {'230718':7, '230331': 10, '230403': 13, '230407': 17}
+    maturation_dict_plots = {'230718': 'J+7?', '230331': 'J+10', '230403': 'J+13', '230407': 'J+17'}
     maturation_FF_dict = {k: v - 0.1 for k, v in maturation_dict.items()}
     maturation_RDG_dict = {k: v + 0.1 for k, v in maturation_dict.items()}
     
@@ -2348,15 +2384,15 @@ if __name__ == "__main__":
     deltad_threshold = 0.22
     strain_threshold = 0.39
     utils.transform_csv_input_A_into_pkl('0_locations_recoveries_A.csv')
-    ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict = utils.extract_A_data_from_pkl()
-    ids_where_not_failed, date_dict_not_failed, Umax_dict_not_failed, def_dict_not_failed, thickness_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed  = remove_failed_A(ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict)
-    ids_where_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
-    print(ids_where_not_failed_and_not_small_deltad)
-    compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold, strain_threshold)
-    export_indocators_as_txt(deltad_threshold, strain_threshold)
+    # ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict = utils.extract_A_data_from_pkl()
+    # ids_where_not_failed, date_dict_not_failed, Umax_dict_not_failed, def_dict_not_failed, thickness_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed  = remove_failed_A(ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict)
+    # ids_where_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
+    # print(ids_where_not_failed_and_not_small_deltad)
+    # compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold, strain_threshold)
+    # export_indocators_as_txt(deltad_threshold, strain_threshold)
     plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold) 
 
-    plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_threshold)
+    # plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_threshold)
     # irr_indicator_list = ['relaxation_slope',
     #             'delta_f',
     #             'delta_f_star',

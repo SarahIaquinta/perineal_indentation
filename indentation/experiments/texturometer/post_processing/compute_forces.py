@@ -12,6 +12,7 @@ from indentation.experiments.texturometer.figures.utils import CreateFigure, Fon
 import pickle
 import statistics
 import seaborn as sns
+import utils
 
 def remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict):
     """Removes the data where the experimental acquisition did not go well. 
@@ -395,7 +396,7 @@ def plot_forces_with_maturation():
     with their standard deviation, in terms of the maturation of the meatpiece
     (ie the date on which the experiment has been performed)
     """
-    maturation = [10, 13, 17, 21]
+    maturation = [7, 10, 13, 17, 21]
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -407,8 +408,8 @@ def plot_forces_with_maturation():
              mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
              ] = pickle.load(f)
     
-    dates_to_use = ['230331', '230403', '230407']
-    maturation_dict = {'230331': 10, '230403': 13, '230407': 17}
+    dates_to_use = ['230718', '230331', '230403', '230407']
+    maturation_dict = {'230718':7, '230331': 10, '230403': 13, '230407': 17}
     color = sns.color_palette("Paired")
     color_rocket = sns.color_palette("rocket")
     kwargs_FF1 = {'marker':'o', 'mfc':color[6], 'elinewidth':3, 'ecolor':color[6], 'alpha':0.8, 'ms':'10', 'mec':color[6]}
@@ -457,6 +458,12 @@ def plot_forces_with_maturation():
     ax_force20.set_ylabel(r'$F_{20\%}$ [N]', font=fonts.serif_rz_legend())
     ax_force20_1.set_ylabel(r'$F_{20\%}$ [N]', font=fonts.serif_rz_legend())
     ax_force20_2.set_ylabel(r'$F_{20\%}$ [N]', font=fonts.serif_rz_legend())
+    ax_force20.set_xticks([7, 10, 13, 17])
+    ax_force20.set_xticklabels(['7?', '10', '13', '17'])
+    ax_force20_1.set_xticks([7, 10, 13, 17])
+    ax_force20_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_force20_2.set_xticks([7, 10, 13, 17])
+    ax_force20_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_force20, "force20_vs_maturation_1+2")
     plt.close(fig_force20)
     savefigure.save_as_png(fig_force20_1, "force20_vs_maturation_1")
@@ -491,6 +498,12 @@ def plot_forces_with_maturation():
     ax_force80.set_ylabel(r'$F_{80 \%}$ [N]', font=fonts.serif_rz_legend())
     ax_force80_1.set_ylabel(r'$F_{80 \%}$ [N]', font=fonts.serif_rz_legend())
     ax_force80_2.set_ylabel(r'$F_{80 \%}$ [N]', font=fonts.serif_rz_legend())
+    ax_force80.set_xticks([7, 10, 13, 17])
+    ax_force80.set_xticklabels(['7?', '10', '13', '17'])
+    ax_force80_1.set_xticks([7, 10, 13, 17])
+    ax_force80_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_force80_2.set_xticks([7, 10, 13, 17])
+    ax_force80_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_force80, "force80_vs_maturation_1+2")
     plt.close(fig_force80)
     savefigure.save_as_png(fig_force80_1, "force80_vs_maturation_1")
@@ -540,6 +553,12 @@ def plot_forces_with_maturation():
     ax_force8020.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
     ax_force8020_1.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
     ax_force8020_2.set_ylabel(r"$F_{80\%} - F_{20\%}$ [N]", font=fonts.serif_rz_legend())
+    ax_force8020.set_xticks([7, 10, 13, 17])
+    ax_force8020.set_xticklabels(['7?', '10', '13', '17'])
+    ax_force8020_1.set_xticks([7, 10, 13, 17])
+    ax_force8020_1.set_xticklabels(['7?', '10', '13', '17'])
+    ax_force8020_2.set_xticks([7, 10, 13, 17])
+    ax_force8020_2.set_xticklabels(['7?', '10', '13', '17'])    ###
     savefigure.save_as_png(fig_force8020, "force8020_vs_maturation_1+2")
     plt.close(fig_force8020)
     savefigure.save_as_png(fig_force8020_1, "force8020_vs_maturation_1")
