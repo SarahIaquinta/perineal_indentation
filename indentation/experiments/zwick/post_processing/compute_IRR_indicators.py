@@ -220,6 +220,31 @@ def export_indicators(datafile_list):
         )
     return ids_list, date_dict, meat_piece_dict, relaxation_slope_dict, delta_f_dict, delta_f_star_dict, i_disp_time_dict, i_time_time_dict     
 
+def export_all_indicators():
+    path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
+    complete_pkl_filename = path_to_processed_data + "/indicators_indentation_relaxation.pkl"
+    with open(complete_pkl_filename, "rb") as f:
+        ids_list, date_dict, meat_piece_dict, relaxation_slope_dict, delta_f_dict, delta_f_star_dict, i_disp_time_dict, i_time_time_dict = pickle.load(f)
+    complete_txt_filename = path_to_processed_data + "/indicators_zwick.txt"
+    f = open(complete_txt_filename, "w")
+    f.write("id \t date \t beta [N.s-1] \t delta_f [N] \t delta_f_star [-] \t alpha [N.s-1] \n")
+    for i in range(len(ids_list)):
+        id = ids_list[i]
+        f.write(id + "\t" +
+            str(date_dict[id])
+            + "\t"
+            + str(relaxation_slope_dict[id][0])
+            + "\t"
+            + str(delta_f_dict[id][0])
+            + "\t"
+            + str(delta_f_star_dict[id][0])
+            + "\t"
+            + str(i_time_time_dict[id][0])
+            + "\n"
+        )
+    f.close()
+
+
 def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, meat_piece_dict, date_dict, data_dict):
     """Finds the value of an indicator for a testing performed on a given date and on
         a given meatpiece
@@ -608,7 +633,7 @@ def plot_data_with_maturation(indicator):
 
     # Selects only the data to appear on plot, based on the dates given in 
     # the list dates_to_use
-    dates_to_use = ['230718', '230331', '230403', '230407']
+    dates_to_use = ['230718', '230331']
     [date, mean_data_FF1_dict, std_data_FF1_dict,
              mean_data_FF2_dict, std_data_FF2_dict,
              mean_data_RDG1_dict, std_data_RDG1_dict,
@@ -644,12 +669,12 @@ def plot_data_with_maturation(indicator):
     ax_data.set_ylabel(labels[indicator], font=fonts.serif_rz_legend())
     ax_data_1.set_ylabel(labels[indicator], font=fonts.serif_rz_legend())
     ax_data_2.set_ylabel(labels[indicator], font=fonts.serif_rz_legend())
-    ax_data.set_xticks([7, 10, 13, 17])
-    ax_data.set_xticklabels(['7?', '10', '13', '17'])
-    ax_data_1.set_xticks([7, 10, 13, 17])
-    ax_data_1.set_xticklabels(['7?', '10', '13', '17'])
-    ax_data_2.set_xticks([7, 10, 13, 17])
-    ax_data_2.set_xticklabels(['7?', '10', '13', '17'])
+    # ax_data.set_xticks([7, 10, 13, 17])
+    # ax_data.set_xticklabels(['7?', '10', '13', '17'])
+    # ax_data_1.set_xticks([7, 10, 13, 17])
+    # ax_data_1.set_xticklabels(['7?', '10', '13', '17'])
+    # ax_data_2.set_xticks([7, 10, 13, 17])
+    # ax_data_2.set_xticklabels(['7?', '10', '13', '17'])
     # Save and close figures
     savefigure.save_as_png(fig_data, indicator + "_vs_maturation_1+2")
     savefigure.save_as_png(fig_data_1, indicator + "_vs_maturation_1")
@@ -671,7 +696,7 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
                 - i_disp_time
                 - i_time_time
     """
-    dates_to_use = ['230718', '230331', '230403', '230407']
+    dates_to_use = ['230718', '230331']
     maturation_dict_plots = {'230718':'J+7?', '230331': 'J+10', '230403': 'J+13', '230407': 'J+17'}
     
     # Load indicator data
@@ -973,7 +998,7 @@ if __name__ == "__main__":
         datafile_list += files_zwick.import_files(experiment_dates[i])
 
 
-    export_indicators(datafile_list)
+    # export_indicators(datafile_list)
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
     complete_pkl_filename = path_to_processed_data + "/indicators_indentation_relaxation.pkl"
     with open(complete_pkl_filename, "rb") as f:
@@ -990,11 +1015,11 @@ if __name__ == "__main__":
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_star_dict, 'delta_f_star')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_time_dict, 'i_disp_time')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_time_dict, 'i_time_time')
-    for indicator in indicator_list:
-        # export_data_as_txt(indicator)
-        plot_data_with_maturation(indicator)
+    # for indicator in indicator_list:
+    #     export_data_as_txt(indicator)
+        # plot_data_with_maturation(indicator)
         # plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
-        
+    # export_all_indicators()
     # for datafile in datafile_list:
     #     sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
     #     for sheet in sheet_list:

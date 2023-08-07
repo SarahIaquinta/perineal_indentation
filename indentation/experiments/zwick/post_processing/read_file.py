@@ -109,7 +109,7 @@ class Files_Zwick:
         path_to_datafile = utils.reach_data_path(date)
         datafile_as_pds = pd.ExcelFile(path_to_datafile/datafile)
         sheets_list = datafile_as_pds.sheet_names
-        sheets_list_with_data = [i for i in sheets_list if i.startswith(date) or i.startswith('RDG') or i.startswith('FF')]
+        sheets_list_with_data = [i for i in sheets_list if i.startswith(date) or i.startswith('RDG') or i.startswith('FF') or i.startswith('C')]
         return datafile_as_pds, sheets_list_with_data
         
     def read_sheet_in_datafile(self, datafile, sheet):

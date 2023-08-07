@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
 from scipy.optimize import curve_fit
 from scipy.integrate import quad
+from numba import  prange
+from tqdm import tqdm
 
 def extract_hyperelastic_response(datafile, sheet):
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
@@ -54,7 +56,7 @@ def plot_hyperelastic_response(datafile, sheet):
     ax_stress_vs_elongation.grid(linestyle=':')
     
     c1, beta, tau, fitted_response = find_parameters(datafile, sheet)
-    ax_stress_vs_elongation.plot(hyperelastic_elongation, fitted_response, lw=2, label=r"$\Pi_x^H$ ; $c_1 = $" + str(np.round(c1, 1)) + r" kPa \n$\beta = $" + str(np.round(beta, 1)) + r"\n$\tau$ = " + str(np.round(tau, 1)) + "[s]")
+    ax_stress_vs_elongation.plot(hyperelastic_elongation, fitted_response, lw=2, label=r"$\Pi_x^H$ ; $c_1 = $" + str(np.round(c1, 1)) + " kPa \n" + r"$\beta = $" + str(np.round(beta, 1)) + "\n" + r"$\tau$ = " + str(np.round(tau, 1)) + "[s]")
     
     ax_stress_vs_elongation.legend(prop=fonts.serif(), loc='center right', framealpha=0.7)
     
@@ -75,22 +77,43 @@ def find_parameters(datafile, sheet):
         elongation = lambda_dot * t
         integrand = np.exp(t/tau)/(elongation**5)
         return integrand
-
-    def stress_first_cycle(t, c1, beta, tau):
+    
+    def stress_first_cycle(time, c1, beta, tau):
         hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
         lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
-        elongation = lambda_dot * t
-        B = quad(integrand_B, hyperelastic_time[0], hyperelastic_time[-1], args=(tau))[0]
-        return elongation*2*c1*(1 - 1/(elongation**4)) + elongation*8*c1*beta*lambda_dot*B*np.exp(-t/tau)
+        elongation = lambda_dot * time
+        B_vec = []
+        time_list = [hyperelastic_time[i] for i in range(5, len(hyperelastic_time), 100)]
+        for i in tqdm(prange(len(time_list))):
+            t = time_list[i]
+            B = quad(integrand_B, hyperelastic_time[5], t, args=(tau))[0]
+            B_vec.append(B)
+        return elongation*2*c1*(1 - 1/(elongation**4)) + elongation*8*c1*beta*lambda_dot*np.array(B_vec)*np.exp(-time/tau)
 
     hyperelastic_elongation, hyperelastic_time, hyperelastic_stress = extract_hyperelastic_response(datafile, sheet)
-
-    popt, pcov = curve_fit(stress_first_cycle, hyperelastic_time, hyperelastic_stress)
-    fitted_response = stress_first_cycle(hyperelastic_time, *popt)
+    time_list = [hyperelastic_time[i] for i in range(5, len(hyperelastic_time), 100)]
+    stress_list = [hyperelastic_stress[i] for i in range(5, len(hyperelastic_stress), 100)]
+    popt, pcov = curve_fit(stress_first_cycle, time_list, stress_list, p0=np.array([20, 0, 30]), bounds=([0, 0 , 10], [100, 60, 100]))
+    fitted_response = stress_first_cycle(time_list, *popt)
     (c1, beta, tau) = tuple(popt)
     return c1, beta, tau, fitted_response
         
+        
+def integrand_B(t, tau,  datafile, sheet):
+    hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
+    lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
+    elongation = lambda_dot * t
+    integrand = np.exp(t/tau)/(elongation**5)
+    return integrand
     
+def stress_first_cycle_test(t, c1, beta, tau, datafile, sheet):
+    hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
+    lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
+    elongation = lambda_dot * t
+    B = quad(integrand_B, hyperelastic_time[0]+1, t, args=(tau))[0]
+    return elongation*2*c1*(1 - 1/(elongation**4)) + elongation*8*c1*beta*lambda_dot*B*np.exp(-t/tau)  
+
+
     
 if __name__ == "__main__":
     createfigure = CreateFigure()
