@@ -47,7 +47,7 @@ def store_peaks_information(datafile, sheet):
     index_final_step_dict_relaxation = {}
     elongation_init_step_dict_relaxation = {}
     elongation_final_step_dict_relaxation = {}
-    for p in range(len(elongation_end_load_peak)-1):
+    for p in range(len(elongation_end_load_peak)):
         # elongation_step = elongation_beginning_relaxation_peak[p]
         elongation_init_step_relaxation = elongation_end_load_peak[p]
         elongation_final_step_relaxation = elongation_beginning_load_peak[p+1]
@@ -73,43 +73,67 @@ def extract_response_step(datafile, sheet, step_number):
     Returns:
         _type_: _description_
     """
-    index_init_step_dict, index_final_step_dict, elongation_init_step_dict, elongation_final_step_dict = store_peaks_information(datafile, sheet)
+    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation = store_peaks_information(datafile, sheet)
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
-    step_index_init = index_init_step_dict[step_number] 
-    step_index_final = index_final_step_dict[step_number] 
-    elongation_during_step = elongation[step_index_init:step_index_final]
-    time_during_step = time[step_index_init:step_index_final]
-    stress_during_step = stress[step_index_init:step_index_final]
-    if step_number == 0 :
-        stress_after_offset_indices_during_step = np.where(stress_during_step>1)
-        stress_during_step = stress_during_step[stress_after_offset_indices_during_step] - stress_during_step[stress_after_offset_indices_during_step][0]
-        time_during_step = time_during_step[stress_after_offset_indices_during_step] - time_during_step[stress_after_offset_indices_during_step][0]
-        elongation_during_step = elongation_during_step[stress_after_offset_indices_during_step] - elongation_during_step[stress_after_offset_indices_during_step][0] +1
-    return elongation_during_step, time_during_step, stress_during_step
+    
+    step_index_init_load = index_init_step_dict_load[step_number] 
+    step_index_final_load = index_final_step_dict_load[step_number] 
+    elongation_during_step_load = elongation[step_index_init_load:step_index_final_load]
+    time_during_step_load = time[step_index_init_load:step_index_final_load]
+    stress_during_step_load = stress[step_index_init_load:step_index_final_load]
+    # if step_number == 0 :
+    #     stress_after_offset_indices_during_step_load = np.where(stress_during_step_load>1)
+    #     stress_during_step_load = stress_during_step_load[stress_after_offset_indices_during_step_load] - stress_during_step_load[stress_after_offset_indices_during_step_load][0]
+    #     time_during_step_load = time_during_step_load[stress_after_offset_indices_during_step_load] - time_during_step_load[stress_after_offset_indices_during_step_load][0]
+    #     elongation_during_step_load = elongation_during_step_load[stress_after_offset_indices_during_step_load] - elongation_during_step_load[stress_after_offset_indices_during_step_load][0] +1
+
+    step_index_init_relaxation = index_init_step_dict_relaxation[step_number] 
+    step_index_final_relaxation = index_final_step_dict_relaxation[step_number] 
+    elongation_during_step_relaxation = elongation[step_index_init_relaxation:step_index_final_relaxation]
+    time_during_step_relaxation = time[step_index_init_relaxation:step_index_final_relaxation]
+    stress_during_step_relaxation = stress[step_index_init_relaxation:step_index_final_relaxation]
+
+    return elongation_during_step_load, time_during_step_load, stress_during_step_load, elongation_during_step_relaxation, time_during_step_relaxation, stress_during_step_relaxation
 
 def store_responses_of_steps(datafile, sheet):
-    index_init_step_dict, index_final_step_dict, elongation_init_step_dict, elongation_final_step_dict = store_peaks_information(datafile, sheet)
-    elongation_steps = index_init_step_dict.keys()
-    elongation_list_during_steps_dict = {}
-    time_list_during_steps_dict = {}
-    stress_list_during_steps_dict = {}
-    for p in elongation_steps:
-        elongation_during_step, time_during_step, stress_during_step = extract_response_step(datafile, sheet, p)
-        elongation_list_during_steps_dict[p] = elongation_during_step
-        time_list_during_steps_dict[p] = time_during_step
-        stress_list_during_steps_dict[p] = stress_during_step
-    return elongation_list_during_steps_dict, time_list_during_steps_dict, stress_list_during_steps_dict
+    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation = store_peaks_information(datafile, sheet)
+
+    elongation_steps_load = index_init_step_dict_load.keys()
+    elongation_list_during_steps_dict_load = {}
+    time_list_during_steps_dict_load = {}
+    stress_list_during_steps_dict_load = {}
+    for p in elongation_steps_load:
+        elongation_during_step_load, time_during_step_load, stress_during_step_load, _, _, _ = extract_response_step(datafile, sheet, p)
+        elongation_list_during_steps_dict_load[p] = elongation_during_step_load
+        time_list_during_steps_dict_load[p] = time_during_step_load
+        stress_list_during_steps_dict_load[p] = stress_during_step_load
+
+    elongation_steps_relaxation = index_init_step_dict_relaxation.keys()
+    elongation_list_during_steps_dict_relaxation = {}
+    time_list_during_steps_dict_relaxation = {}
+    stress_list_during_steps_dict_relaxation = {}
+    for p in elongation_steps_relaxation:
+        _, _, _, elongation_during_step_relaxation, time_during_step_relaxation, stress_during_step_relaxation = extract_response_step(datafile, sheet, p)
+        elongation_list_during_steps_dict_relaxation[p] = elongation_during_step_relaxation
+        time_list_during_steps_dict_relaxation[p] = time_during_step_relaxation
+        stress_list_during_steps_dict_relaxation[p] = stress_during_step_relaxation
+    return elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation
+
+
 
 def store_and_export_step_data(datafile, sheet):
-    index_init_step_dict, index_final_step_dict, elongation_init_step_dict, elongation_final_step_dict = store_peaks_information(datafile, sheet)
-    elongation_list_during_steps_dict, time_list_during_steps_dict, stress_list_during_steps_dict = store_responses_of_steps(datafile, sheet)
+    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation = store_peaks_information(datafile, sheet)
+    elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = store_responses_of_steps(datafile, sheet)
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/" + sheet + "_step_information.pkl"
+    complete_pkl_filename = path_to_processed_data + "/" + datafile[0:6] + "_" + sheet + "_step_information.pkl"
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
-            [index_init_step_dict, index_final_step_dict, elongation_init_step_dict,
-             elongation_final_step_dict, elongation_list_during_steps_dict,
-             time_list_during_steps_dict, stress_list_during_steps_dict
+            [index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load,
+             elongation_final_step_dict_load, elongation_list_during_steps_dict_load,
+             time_list_during_steps_dict_load, stress_list_during_steps_dict_load,
+             index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation,
+             elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation,
+             time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation
              ],
             f,
         )
@@ -125,7 +149,7 @@ if __name__ == "__main__":
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
-    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation = store_peaks_information(datafile, sheet1)
+    # index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation = store_peaks_information(datafile, sheet1)
     # elongation_list_during_steps_dict, time_list_during_steps_dict, stress_list_during_steps_dict = store_responses_of_steps(datafile, sheet1)
     store_and_export_step_data(datafile, sheet1)
     print('hello')
