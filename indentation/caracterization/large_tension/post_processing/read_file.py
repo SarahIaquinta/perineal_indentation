@@ -45,23 +45,49 @@ def read_sheet_in_datafile(datafile, sheet):
 
 def find_peaks(datafile, sheet):
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
-    elongation_step_values = np.arange(1, 2.2, 0.1)
-    elongation_steps = []
-    times_at_elongation_steps = []
-    stress_at_elongation_steps = []
+    elongation_step_values = np.arange(1.1, 2.2, 0.1)
+    end_load_peak_indices = []
+    elongation_end_load_peak = []
+    times_end_load_peak = []
+    stress_end_load_peak = []
+
+    beginning_load_peak_indices = [0]
+    elongation_beginning_load_peak = [1]
+    time_beginning_load_peak = [0]
+    stress_beginning_load_peak = [0]
     
     for elongation_step in elongation_step_values:
         first_elongation_step_index = np.where(elongation == utils.find_nearest(elongation, 0.999*elongation_step))[0][0]
         time_at_first_elongation_step = time[first_elongation_step_index]
         stress_at_first_elongation_step = stress[first_elongation_step_index]
-        elongation_steps.append(elongation[first_elongation_step_index])
-        times_at_elongation_steps.append(time_at_first_elongation_step)
-        stress_at_elongation_steps.append(stress_at_first_elongation_step)
-    return times_at_elongation_steps, stress_at_elongation_steps, elongation_steps
+        end_load_peak_indices.append(first_elongation_step_index)
+        elongation_end_load_peak.append(elongation[first_elongation_step_index])
+        times_end_load_peak.append(time_at_first_elongation_step)
+        stress_end_load_peak.append(stress_at_first_elongation_step)
+        
+    duration_step = np.diff(times_end_load_peak)[1]
+    for i in range(len(end_load_peak_indices)):
+        time_end_peak = times_end_load_peak[i]
+        time_at_beginning_load_peak = time_end_peak + duration_step/2
+        beginning_load_peak_index = np.where(time == utils.find_nearest(time, 0.999*time_at_beginning_load_peak))[0][0]
+        stress_beginning = stress[beginning_load_peak_index]
+        time_beginning = time[beginning_load_peak_index]
+        elongation_beginning = elongation[beginning_load_peak_index]
+        beginning_load_peak_indices.append(beginning_load_peak_index)
+        elongation_beginning_load_peak.append(elongation_beginning)
+        time_beginning_load_peak.append(time_beginning)
+        stress_beginning_load_peak.append(stress_beginning)  
+        
+    return times_end_load_peak, stress_end_load_peak, elongation_end_load_peak, end_load_peak_indices, time_beginning_load_peak, stress_beginning_load_peak, elongation_beginning_load_peak, beginning_load_peak_indices
+
+
+
+
 
 def plot_experimental_data(datafile, sheet):
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
-    times_at_elongation_steps, stress_at_elongation_steps, elongation_steps = find_peaks(datafile, sheet)
+    # times_at_elongation_steps, stress_at_elongation_steps, elongation_steps = find_end_load_peaks(datafile, sheet)
+    times_end_load_peak, stress_end_load_peak, elongation_end_load_peak, _, time_beginning_load_peak, stress_beginning_load_peak, elongation_beginning_load_peak, beginning_load_peak_indices = find_peaks(datafile, sheet)
     fig_elongation_vs_time = createfigure.rectangle_figure(pixels=180)
     fig_stress_vs_time = createfigure.rectangle_figure(pixels=180)
     fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
@@ -74,9 +100,13 @@ def plot_experimental_data(datafile, sheet):
     ax_stress_vs_time.plot(time, stress, **kwargs)
     ax_stress_vs_elongation.plot(elongation, stress, **kwargs)
     
-    ax_elongation_vs_time.plot(times_at_elongation_steps, elongation_steps, 'or')
-    ax_stress_vs_time.plot(times_at_elongation_steps, stress_at_elongation_steps, 'or')
-    ax_stress_vs_elongation.plot(elongation_steps, stress_at_elongation_steps, 'or')
+    ax_elongation_vs_time.plot(times_end_load_peak, elongation_end_load_peak, 'or')
+    ax_stress_vs_time.plot(times_end_load_peak, stress_end_load_peak, 'or')
+    ax_stress_vs_elongation.plot(elongation_end_load_peak, stress_end_load_peak, 'or')
+
+    ax_elongation_vs_time.plot(time_beginning_load_peak, elongation_beginning_load_peak, 'ob')
+    ax_stress_vs_time.plot(time_beginning_load_peak, stress_beginning_load_peak, 'ob')
+    ax_stress_vs_elongation.plot(elongation_beginning_load_peak, stress_beginning_load_peak, 'ob')
     
     ax_elongation_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_stress_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
@@ -110,7 +140,8 @@ if __name__ == "__main__":
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
     # time, elongation, stress = read_sheet_in_datafile(datafile, sheet1)
-    for sheet in sheets_list_with_data:
-        plot_experimental_data(datafile, sheet)
+    plot_experimental_data(datafile, sheet1)
+    # for sheet in sheets_list_with_data:
+    #     plot_experimental_data(datafile, sheet)
     # find_peaks(datafile, sheet1)
     print('hello')
