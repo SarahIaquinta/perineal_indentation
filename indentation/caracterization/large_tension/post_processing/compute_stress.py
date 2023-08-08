@@ -8,10 +8,11 @@ from indentation.caracterization.large_tension.post_processing.read_file import 
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, minimize, rosen, rosen_der
 from scipy.integrate import quad
 from numba import  prange
 from tqdm import tqdm
+from sklearn.metrics import mean_squared_error
 
 def extract_hyperelastic_response(datafile, sheet):
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
@@ -67,53 +68,49 @@ def plot_hyperelastic_response(datafile, sheet):
 
 
 
-
-
-    
 def find_parameters(datafile, sheet):
-    def integrand_B(t, tau):
-        hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
-        lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
-        elongation = lambda_dot * t
-        integrand = np.exp(t/tau)/(elongation**5)
-        return integrand
-    
-    def stress_first_cycle(time, c1, beta, tau):
-        hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
-        lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
-        elongation = lambda_dot * time
-        B_vec = []
-        time_list = [hyperelastic_time[i] for i in range(5, len(hyperelastic_time), 100)]
-        for i in tqdm(prange(len(time_list))):
-            t = time_list[i]
-            B = quad(integrand_B, hyperelastic_time[5], t, args=(tau))[0]
-            B_vec.append(B)
-        return elongation*2*c1*(1 - 1/(elongation**4)) + elongation*8*c1*beta*lambda_dot*np.array(B_vec)*np.exp(-time/tau)
+    elongation_list, time, experimental_stress = extract_hyperelastic_response(datafile, sheet)
+    def compute_stress_vector(parameters):
+        # time, elongation_list, stress = read_sheet_in_datafile(datafile, sheet)
+        c1, beta, tau = parameters[0], parameters[1], parameters[2]
+        delta_t = np.diff(time)[0]
+        i_list = np.arange(0, len(time), 1, dtype=int)
+        S_H_list = np.zeros_like(i_list)
+        Q_list = np.zeros_like(i_list)
+        S_list = np.zeros_like(i_list)
+        Pi_list = np.zeros_like(i_list)
+        for i in i_list[1:]:
+            lambda_i = elongation_list[i]
+            S_H_i = 2*c1*(1-(lambda_i**(-4)))
+            Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
+            S_i = Q_i + S_H_i
+            S_H_list[i] = S_H_i 
+            Q_list[i] = Q_i 
+            S_list[i] = S_i
+        Pi_H_list = np.multiply(elongation_list, S_H_list)
+        Pi_Q_list = np.multiply(elongation_list, Q_list)
+        Pi_list = np.multiply(elongation_list, S_list)
+        return Pi_H_list, Pi_Q_list, Pi_list
 
-    hyperelastic_elongation, hyperelastic_time, hyperelastic_stress = extract_hyperelastic_response(datafile, sheet)
-    time_list = [hyperelastic_time[i] for i in range(5, len(hyperelastic_time), 100)]
-    stress_list = [hyperelastic_stress[i] for i in range(5, len(hyperelastic_stress), 100)]
-    popt, pcov = curve_fit(stress_first_cycle, time_list, stress_list, p0=np.array([20, 0, 30]), bounds=([0, 0 , 10], [100, 60, 100]))
-    fitted_response = stress_first_cycle(time_list, *popt)
-    (c1, beta, tau) = tuple(popt)
-    return c1, beta, tau, fitted_response
         
-        
-def integrand_B(t, tau,  datafile, sheet):
-    hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
-    lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
-    elongation = lambda_dot * t
-    integrand = np.exp(t/tau)/(elongation**5)
-    return integrand
+    def minimization_function(parameters):
+        _, _, Pi_list = compute_stress_vector(parameters)
+        least_square = mean_squared_error(experimental_stress, Pi_list)
+        return least_square
+
+    res = minimize(minimization_function, [20, 0, 30], method='Nelder-Mead',
+               options={'gtol': 1e-1, 'disp': True}) 
+    print(res.message)
+    parameters = res.x
+    optimized_c1, optimized_beta, optimized_tau = parameters[0], parameters[1], parameters[2]
+    print('c1 = ', optimized_c1, ' beta = ', optimized_beta, ' tau = ', optimized_tau)
+    _, _, fitted_function = compute_stress_vector(parameters)
+    plt.figure()
+    plt.plot(elongation_list, experimental_stress, 'ok', lw=0, label='exp')
+    plt.plot(elongation_list, fitted_function, '-b', lw=2, label='num')
+    plt.legend()
+    plt.show()
     
-def stress_first_cycle_test(t, c1, beta, tau, datafile, sheet):
-    hyperelastic_elongation, hyperelastic_time, _ = extract_hyperelastic_response(datafile, sheet)
-    lambda_dot = (hyperelastic_elongation[-1] - hyperelastic_elongation[0]) / (hyperelastic_time[-1] - hyperelastic_time[0])
-    elongation = lambda_dot * t
-    B = quad(integrand_B, hyperelastic_time[0]+1, t, args=(tau))[0]
-    return elongation*2*c1*(1 - 1/(elongation**4)) + elongation*8*c1*beta*lambda_dot*B*np.exp(-t/tau)  
-
-
     
 if __name__ == "__main__":
     createfigure = CreateFigure()
@@ -125,6 +122,10 @@ if __name__ == "__main__":
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
-    plot_hyperelastic_response(datafile, sheet1)
-    # find_parameters(datafile, sheet1)
+    # plot_hyperelastic_response(datafile, sheet1)
+    c1=20
+    beta=1
+    tau=1
+    # Pi_H_list, Pi_Q_list, S_list, Pi_list = compute_stress_vector(datafile, sheet1, c1, beta, tau)
+    find_parameters(datafile, sheet1)
     print('hello')
