@@ -15,6 +15,8 @@ import seaborn as sns
 from sklearn.linear_model import LinearRegression
 import pickle
 import statistics
+from scipy import stats
+
 
 
 def remove_failed_A(filenames_from_pkl, dates_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions   ):
@@ -300,12 +302,12 @@ def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, Um
     
     for i in range(len(dates)):
         date = dates[i]
-        mean_Umax_FF1, std_Umax_FF1, mean_def_FF1, std_def_FF1, mean_thickness_FF1, std_thickness_FF1, mean_delta_d_FF1_date, std_delta_d_FF1_date, mean_delta_d_star_FF1_date, std_delta_d_star_FF1_date, mean_d_min_FF1_date, std_d_min_FF1_date,  mean_A_FF1_date, std_A_FF1_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date), 'FF1', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
-        mean_Umax_FF2, std_Umax_FF2, mean_def_FF2, std_def_FF2, mean_thickness_FF2, std_thickness_FF2, mean_delta_d_FF2_date, std_delta_d_FF2_date, mean_delta_d_star_FF2_date, std_delta_d_star_FF2_date, mean_d_min_FF2_date, std_d_min_FF2_date,  mean_A_FF2_date, std_A_FF2_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date), 'FF2', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
-        mean_Umax_RDG1, std_Umax_RDG1, mean_def_RDG1, std_def_RDG1, mean_thickness_RDG1, std_thickness_RDG1, mean_delta_d_RDG1_date, std_delta_d_RDG1_date, mean_delta_d_star_RDG1_date, std_delta_d_star_RDG1_date, mean_d_min_RDG1_date, std_d_min_RDG1_date,  mean_A_RDG1_date, std_A_RDG1_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date), 'RDG1', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
-        mean_Umax_RDG2, std_Umax_RDG2, mean_def_RDG2, std_def_RDG2, mean_thickness_RDG2, std_thickness_RDG2, mean_delta_d_RDG2_date, std_delta_d_RDG2_date, mean_delta_d_star_RDG2_date, std_delta_d_star_RDG2_date, mean_d_min_RDG2_date, std_d_min_RDG2_date,  mean_A_RDG2_date, std_A_RDG2_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date), 'RDG2', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
-        mean_Umax_FF, std_Umax_FF, mean_def_FF, std_def_FF, mean_thickness_FF, std_thickness_FF, mean_delta_d_FF_date, std_delta_d_FF_date, mean_delta_d_star_FF_date, std_delta_d_star_FF_date, mean_d_min_FF_date, std_d_min_FF_date,  mean_A_FF_date, std_A_FF_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date), 'FF', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
-        mean_Umax_RDG, std_Umax_RDG, mean_def_RDG, std_def_RDG, mean_thickness_RDG, std_thickness_RDG ,mean_delta_d_RDG_date, std_delta_d_RDG_date, mean_delta_d_star_RDG_date, std_delta_d_star_RDG_date, mean_d_min_RDG_date, std_d_min_RDG_date,  mean_A_RDG_date, std_A_RDG_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date), 'RDG', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
+        mean_Umax_FF1, std_Umax_FF1, mean_def_FF1, std_def_FF1, mean_thickness_FF1, std_thickness_FF1, mean_delta_d_FF1_date, std_delta_d_FF1_date, mean_delta_d_star_FF1_date, std_delta_d_star_FF1_date, mean_d_min_FF1_date, std_d_min_FF1_date,  mean_A_FF1_date, std_A_FF1_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date[0:6]), 'FF1', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
+        mean_Umax_FF2, std_Umax_FF2, mean_def_FF2, std_def_FF2, mean_thickness_FF2, std_thickness_FF2, mean_delta_d_FF2_date, std_delta_d_FF2_date, mean_delta_d_star_FF2_date, std_delta_d_star_FF2_date, mean_d_min_FF2_date, std_d_min_FF2_date,  mean_A_FF2_date, std_A_FF2_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date[0:6]), 'FF2', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
+        mean_Umax_RDG1, std_Umax_RDG1, mean_def_RDG1, std_def_RDG1, mean_thickness_RDG1, std_thickness_RDG1, mean_delta_d_RDG1_date, std_delta_d_RDG1_date, mean_delta_d_star_RDG1_date, std_delta_d_star_RDG1_date, mean_d_min_RDG1_date, std_d_min_RDG1_date,  mean_A_RDG1_date, std_A_RDG1_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date[0:6]), 'RDG1', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
+        mean_Umax_RDG2, std_Umax_RDG2, mean_def_RDG2, std_def_RDG2, mean_thickness_RDG2, std_thickness_RDG2, mean_delta_d_RDG2_date, std_delta_d_RDG2_date, mean_delta_d_star_RDG2_date, std_delta_d_star_RDG2_date, mean_d_min_RDG2_date, std_d_min_RDG2_date,  mean_A_RDG2_date, std_A_RDG2_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date[0:6]), 'RDG2', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
+        mean_Umax_FF, std_Umax_FF, mean_def_FF, std_def_FF, mean_thickness_FF, std_thickness_FF, mean_delta_d_FF_date, std_delta_d_FF_date, mean_delta_d_star_FF_date, std_delta_d_star_FF_date, mean_d_min_FF_date, std_d_min_FF_date,  mean_A_FF_date, std_A_FF_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date[0:6]), 'FF', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
+        mean_Umax_RDG, std_Umax_RDG, mean_def_RDG, std_def_RDG, mean_thickness_RDG, std_thickness_RDG ,mean_delta_d_RDG_date, std_delta_d_RDG_date, mean_delta_d_star_RDG_date, std_delta_d_star_RDG_date, mean_d_min_RDG_date, std_d_min_RDG_date,  mean_A_RDG_date, std_A_RDG_date = compute_mean_and_std_at_given_date_and_meatpiece(int(date[0:6]), 'RDG', deltad_threshold,strain_threshold, ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
 
 
         mean_Umax_FF1_dict[date], std_Umax_FF1_dict[date], mean_def_FF1_dict[date], std_def_FF1_dict[date], mean_thickness_FF1_dict[date], std_thickness_FF1_dict[date], mean_delta_d_FF1_dict[date], std_delta_d_FF1_dict[date], mean_delta_d_star_FF1_dict[date], std_delta_d_star_FF1_dict[date] = mean_Umax_FF1, std_Umax_FF1, mean_def_FF1, std_def_FF1, mean_thickness_FF1, std_thickness_FF1 , mean_delta_d_FF1_date, std_delta_d_FF1_date, mean_delta_d_star_FF1_date, std_delta_d_star_FF1_date
@@ -323,8 +325,13 @@ def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, Um
         mean_d_min_RDG2_dict[date], std_d_min_RDG2_dict[date], mean_A_RDG2_dict[date], std_A_RDG2_dict[date] = mean_d_min_RDG2_date, std_d_min_RDG2_date, mean_A_RDG2_date, std_A_RDG2_date
         mean_d_min_FF_dict[date], std_d_min_FF_dict[date], mean_A_FF_dict[date], std_A_FF_dict[date] = mean_d_min_FF_date, std_d_min_FF_date, mean_A_FF_date, std_A_FF_date
         mean_d_min_RDG_dict[date], std_d_min_RDG_dict[date], mean_A_RDG_dict[date], std_A_RDG_dict[date] = mean_d_min_RDG_date, std_d_min_RDG_date, mean_A_RDG_date, std_A_RDG_date
+    
+    Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std.pkl"
+    complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std_pvalue.pkl"
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
             [dates, mean_delta_d_FF1_dict, std_delta_d_FF1_dict, mean_delta_d_star_FF1_dict, std_delta_d_star_FF1_dict, mean_d_min_FF1_dict, std_d_min_FF1_dict,  mean_A_FF1_dict, std_A_FF1_dict,
@@ -338,7 +345,11 @@ def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, Um
              mean_Umax_FF2_dict, std_Umax_FF2_dict, mean_def_FF2_dict, std_def_FF2_dict, mean_thickness_FF2_dict, std_thickness_FF2_dict,
              mean_Umax_RDG1_dict, std_Umax_RDG1_dict, mean_def_RDG1_dict, std_def_RDG1_dict, mean_thickness_RDG1_dict, std_thickness_RDG1_dict,
              mean_Umax_RDG_dict,   std_Umax_RDG_dict, mean_def_RDG_dict, std_def_RDG_dict, mean_thickness_RDG_dict, std_thickness_RDG_dict,
-             mean_Umax_RDG2_dict, std_Umax_RDG2_dict, mean_def_RDG2_dict, std_def_RDG2_dict, mean_thickness_RDG2_dict, std_thickness_RDG2_dict
+             mean_Umax_RDG2_dict, std_Umax_RDG2_dict, mean_def_RDG2_dict, std_def_RDG2_dict, mean_thickness_RDG2_dict, std_thickness_RDG2_dict,
+             Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1,
+             Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2 ,
+             Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12
+    
              ],
             f,
         )
@@ -358,7 +369,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             
     """     
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std.pkl"
+    complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std_pvalue.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [dates_laser, mean_delta_d_FF1_dict, std_delta_d_FF1_dict, mean_delta_d_star_FF1_dict, std_delta_d_star_FF1_dict, mean_d_min_FF1_dict, std_d_min_FF1_dict,  mean_A_FF1_dict, std_A_FF1_dict,
              mean_delta_d_FF2_dict, std_delta_d_FF2_dict, mean_delta_d_star_FF2_dict, std_delta_d_star_FF2_dict, mean_d_min_FF2_dict, std_d_min_FF2_dict,  mean_A_FF2_dict, std_A_FF2_dict,
@@ -371,7 +382,10 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
              mean_Umax_FF2_dict, std_Umax_FF2_dict, mean_def_FF2_dict, std_def_FF2_dict, mean_thickness_FF2_dict, std_thickness_FF2_dict,
              mean_Umax_RDG1_dict, std_Umax_RDG1_dict, mean_def_RDG1_dict, std_def_RDG1_dict, mean_thickness_RDG1_dict, std_thickness_RDG1_dict,
              mean_Umax_RDG_dict,   std_Umax_RDG_dict, mean_def_RDG_dict, std_def_RDG_dict, mean_thickness_RDG_dict, std_thickness_RDG_dict,
-             mean_Umax_RDG2_dict, std_Umax_RDG2_dict, mean_def_RDG2_dict, std_def_RDG2_dict, mean_thickness_RDG2_dict, std_thickness_RDG2_dict
+             mean_Umax_RDG2_dict, std_Umax_RDG2_dict, mean_def_RDG2_dict, std_def_RDG2_dict, mean_thickness_RDG2_dict, std_thickness_RDG2_dict,
+             Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1,
+             Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2 ,
+             Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12
              ] = pickle.load(f)
     
     complete_txt_filename_FF1 = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std_FF1.txt"
@@ -823,6 +837,480 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
         )
         
     f.close()
+
+
+    complete_txt_filename_all = path_to_processed_data + "/Umax_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("Umax - 1 \n")
+    f.write(" date \t  mean Umax FF1 \t  std Umax FF1 \t  mean Umax RDG1 \t  std Umax RDG1 \t  pvalue Umax (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_Umax_FF1_dict[date])
+            + "\t"
+            + str(mean_Umax_FF1_dict[date])
+            + "\t"
+            + str(std_Umax_FF1_dict[date])
+            + "\t"
+            + str(mean_Umax_RDG1_dict[date])
+            + "\t"
+            + str(std_Umax_RDG1_dict[date])
+            + "\t"
+            + str(Umax_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("Umax - 2 \n")
+    f.write(" date \t  mean Umax FF2 \t  std Umax FF2 \t  mean Umax RDG2 \t  std Umax RDG2 \t  pvalue Umax (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_Umax_FF2_dict[date])
+            + "\t"
+            + str(mean_Umax_FF2_dict[date])
+            + "\t"
+            + str(std_Umax_FF2_dict[date])
+            + "\t"
+            + str(mean_Umax_RDG2_dict[date])
+            + "\t"
+            + str(std_Umax_RDG2_dict[date])
+            + "\t"
+            + str(Umax_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("Umax - 1+2 \n")
+    f.write(" date \t  mean Umax FF \t  std Umax FF \t  mean Umax RDG \t  std Umax RDG \t  pvalue Umax (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_Umax_FF_dict[date])
+            + "\t"
+            + str(mean_Umax_FF_dict[date])
+            + "\t"
+            + str(std_Umax_FF_dict[date])
+            + "\t"
+            + str(mean_Umax_RDG_dict[date])
+            + "\t"
+            + str(std_Umax_RDG_dict[date])
+            + "\t"
+            + str(Umax_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+
+
+    complete_txt_filename_all = path_to_processed_data + "/def_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("def - 1 \n")
+    f.write(" date \t  mean def FF1 \t  std def FF1 \t  mean def RDG1 \t  std def RDG1 \t  pvalue def (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_def_FF1_dict[date])
+            + "\t"
+            + str(mean_def_FF1_dict[date])
+            + "\t"
+            + str(std_def_FF1_dict[date])
+            + "\t"
+            + str(mean_def_RDG1_dict[date])
+            + "\t"
+            + str(std_def_RDG1_dict[date])
+            + "\t"
+            + str(def_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("def - 2 \n")
+    f.write(" date \t  mean def FF2 \t  std def FF2 \t  mean def RDG2 \t  std def RDG2 \t  pvalue def (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_def_FF2_dict[date])
+            + "\t"
+            + str(mean_def_FF2_dict[date])
+            + "\t"
+            + str(std_def_FF2_dict[date])
+            + "\t"
+            + str(mean_def_RDG2_dict[date])
+            + "\t"
+            + str(std_def_RDG2_dict[date])
+            + "\t"
+            + str(def_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("def - 1+2 \n")
+    f.write(" date \t  mean def FF \t  std def FF \t  mean def RDG \t  std def RDG \t  pvalue def (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_def_FF_dict[date])
+            + "\t"
+            + str(mean_def_FF_dict[date])
+            + "\t"
+            + str(std_def_FF_dict[date])
+            + "\t"
+            + str(mean_def_RDG_dict[date])
+            + "\t"
+            + str(std_def_RDG_dict[date])
+            + "\t"
+            + str(def_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+
+
+    complete_txt_filename_all = path_to_processed_data + "/thickness_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("thickness - 1 \n")
+    f.write(" date \t  mean thickness FF1 \t  std thickness FF1 \t  mean thickness RDG1 \t  std thickness RDG1 \t  pvalue thickness (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_thickness_FF1_dict[date])
+            + "\t"
+            + str(mean_thickness_FF1_dict[date])
+            + "\t"
+            + str(std_thickness_FF1_dict[date])
+            + "\t"
+            + str(mean_thickness_RDG1_dict[date])
+            + "\t"
+            + str(std_thickness_RDG1_dict[date])
+            + "\t"
+            + str(thickness_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("thickness - 2 \n")
+    f.write(" date \t  mean thickness FF2 \t  std thickness FF2 \t  mean thickness RDG2 \t  std thickness RDG2 \t  pvalue thickness (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_thickness_FF2_dict[date])
+            + "\t"
+            + str(mean_thickness_FF2_dict[date])
+            + "\t"
+            + str(std_thickness_FF2_dict[date])
+            + "\t"
+            + str(mean_thickness_RDG2_dict[date])
+            + "\t"
+            + str(std_thickness_RDG2_dict[date])
+            + "\t"
+            + str(thickness_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("thickness - 1+2 \n")
+    f.write(" date \t  mean thickness FF \t  std thickness FF \t  mean thickness RDG \t  std thickness RDG \t  pvalue thickness (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_thickness_FF_dict[date])
+            + "\t"
+            + str(mean_thickness_FF_dict[date])
+            + "\t"
+            + str(std_thickness_FF_dict[date])
+            + "\t"
+            + str(mean_thickness_RDG_dict[date])
+            + "\t"
+            + str(std_thickness_RDG_dict[date])
+            + "\t"
+            + str(thickness_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+    
+    complete_txt_filename_all = path_to_processed_data + "/delta_d_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("delta_d - 1 \n")
+    f.write(" date \t  mean delta_d FF1 \t  std delta_d FF1 \t  mean delta_d RDG1 \t  std delta_d RDG1 \t  pvalue delta_d (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_delta_d_FF1_dict[date])
+            + "\t"
+            + str(mean_delta_d_FF1_dict[date])
+            + "\t"
+            + str(std_delta_d_FF1_dict[date])
+            + "\t"
+            + str(mean_delta_d_RDG1_dict[date])
+            + "\t"
+            + str(std_delta_d_RDG1_dict[date])
+            + "\t"
+            + str(delta_d_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("delta_d - 2 \n")
+    f.write(" date \t  mean delta_d FF2 \t  std delta_d FF2 \t  mean delta_d RDG2 \t  std delta_d RDG2 \t  pvalue delta_d (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_delta_d_FF2_dict[date])
+            + "\t"
+            + str(mean_delta_d_FF2_dict[date])
+            + "\t"
+            + str(std_delta_d_FF2_dict[date])
+            + "\t"
+            + str(mean_delta_d_RDG2_dict[date])
+            + "\t"
+            + str(std_delta_d_RDG2_dict[date])
+            + "\t"
+            + str(delta_d_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("delta_d - 1+2 \n")
+    f.write(" date \t  mean delta_d FF \t  std delta_d FF \t  mean delta_d RDG \t  std delta_d RDG \t  pvalue delta_d (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_delta_d_FF_dict[date])
+            + "\t"
+            + str(mean_delta_d_FF_dict[date])
+            + "\t"
+            + str(std_delta_d_FF_dict[date])
+            + "\t"
+            + str(mean_delta_d_RDG_dict[date])
+            + "\t"
+            + str(std_delta_d_RDG_dict[date])
+            + "\t"
+            + str(delta_d_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+
+    complete_txt_filename_all = path_to_processed_data + "/delta_d_star_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("delta_d_star - 1 \n")
+    f.write(" date \t  mean delta_d_star FF1 \t  std delta_d_star FF1 \t  mean delta_d_star RDG1 \t  std delta_d_star RDG1 \t  pvalue delta_d_star (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_delta_d_star_FF1_dict[date])
+            + "\t"
+            + str(mean_delta_d_star_FF1_dict[date])
+            + "\t"
+            + str(std_delta_d_star_FF1_dict[date])
+            + "\t"
+            + str(mean_delta_d_star_RDG1_dict[date])
+            + "\t"
+            + str(std_delta_d_star_RDG1_dict[date])
+            + "\t"
+            + str(delta_d_star_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("delta_d_star - 2 \n")
+    f.write(" date \t  mean delta_d_star FF2 \t  std delta_d_star FF2 \t  mean delta_d_star RDG2 \t  std delta_d_star RDG2 \t  pvalue delta_d_star (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_delta_d_star_FF2_dict[date])
+            + "\t"
+            + str(mean_delta_d_star_FF2_dict[date])
+            + "\t"
+            + str(std_delta_d_star_FF2_dict[date])
+            + "\t"
+            + str(mean_delta_d_star_RDG2_dict[date])
+            + "\t"
+            + str(std_delta_d_star_RDG2_dict[date])
+            + "\t"
+            + str(delta_d_star_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("delta_d_star - 1+2 \n")
+    f.write(" date \t  mean delta_d_star FF \t  std delta_d_star FF \t  mean delta_d_star RDG \t  std delta_d_star RDG \t  pvalue delta_d_star (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_delta_d_star_FF_dict[date])
+            + "\t"
+            + str(mean_delta_d_star_FF_dict[date])
+            + "\t"
+            + str(std_delta_d_star_FF_dict[date])
+            + "\t"
+            + str(mean_delta_d_star_RDG_dict[date])
+            + "\t"
+            + str(std_delta_d_star_RDG_dict[date])
+            + "\t"
+            + str(delta_d_star_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+
+    complete_txt_filename_all = path_to_processed_data + "/d_min_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("d_min - 1 \n")
+    f.write(" date \t  mean d_min FF1 \t  std d_min FF1 \t  mean d_min RDG1 \t  std d_min RDG1 \t  pvalue d_min (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_d_min_FF1_dict[date])
+            + "\t"
+            + str(mean_d_min_FF1_dict[date])
+            + "\t"
+            + str(std_d_min_FF1_dict[date])
+            + "\t"
+            + str(mean_d_min_RDG1_dict[date])
+            + "\t"
+            + str(std_d_min_RDG1_dict[date])
+            + "\t"
+            + str(d_min_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("d_min - 2 \n")
+    f.write(" date \t  mean d_min FF2 \t  std d_min FF2 \t  mean d_min RDG2 \t  std d_min RDG2 \t  pvalue d_min (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_d_min_FF2_dict[date])
+            + "\t"
+            + str(mean_d_min_FF2_dict[date])
+            + "\t"
+            + str(std_d_min_FF2_dict[date])
+            + "\t"
+            + str(mean_d_min_RDG2_dict[date])
+            + "\t"
+            + str(std_d_min_RDG2_dict[date])
+            + "\t"
+            + str(d_min_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("d_min - 1+2 \n")
+    f.write(" date \t  mean d_min FF \t  std d_min FF \t  mean d_min RDG \t  std d_min RDG \t  pvalue d_min (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_d_min_FF_dict[date])
+            + "\t"
+            + str(mean_d_min_FF_dict[date])
+            + "\t"
+            + str(std_d_min_FF_dict[date])
+            + "\t"
+            + str(mean_d_min_RDG_dict[date])
+            + "\t"
+            + str(std_d_min_RDG_dict[date])
+            + "\t"
+            + str(d_min_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+
+    complete_txt_filename_all = path_to_processed_data + "/A_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("A - 1 \n")
+    f.write(" date \t  mean A FF1 \t  std A FF1 \t  mean A RDG1 \t  std A RDG1 \t  pvalue A (FF1 vs RDG1) \n")
+    for i in range(len(mean_delta_d_FF1_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_A_FF1_dict[date])
+            + "\t"
+            + str(mean_A_FF1_dict[date])
+            + "\t"
+            + str(std_A_FF1_dict[date])
+            + "\t"
+            + str(mean_A_RDG1_dict[date])
+            + "\t"
+            + str(std_A_RDG1_dict[date])
+            + "\t"
+            + str(A_pvalue_dict_1[int(date[0:6])])
+            + "\n"
+        )    
+
+    f.write("A - 2 \n")
+    f.write(" date \t  mean A FF2 \t  std A FF2 \t  mean A RDG2 \t  std A RDG2 \t  pvalue A (FF2 vs RDG2) \n")
+    for i in range(len(mean_delta_d_FF2_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_A_FF2_dict[date])
+            + "\t"
+            + str(mean_A_FF2_dict[date])
+            + "\t"
+            + str(std_A_FF2_dict[date])
+            + "\t"
+            + str(mean_A_RDG2_dict[date])
+            + "\t"
+            + str(std_A_RDG2_dict[date])
+            + "\t"
+            + str(A_pvalue_dict_2[int(date[0:6])])
+            + "\n"
+        ) 
+        
+    f.write("A - 1+2 \n")
+    f.write(" date \t  mean A FF \t  std A FF \t  mean A RDG \t  std A RDG \t  pvalue A (FF vs RDG) \n")
+    for i in range(len(mean_delta_d_FF_dict)):
+        date = dates_laser[i]
+        f.write(
+            str(date)
+            + "\t"
+            + str(mean_A_FF_dict[date])
+            + "\t"
+            + str(mean_A_FF_dict[date])
+            + "\t"
+            + str(std_A_FF_dict[date])
+            + "\t"
+            + str(mean_A_RDG_dict[date])
+            + "\t"
+            + str(std_A_RDG_dict[date])
+            + "\t"
+            + str(A_pvalue_dict_12[int(date[0:6])])
+            + "\n"
+        )         
+    f.close()
+
+    
 
 def plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold):
     """
@@ -2370,7 +2858,57 @@ def plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_thresh
     plt.close(fig_d_min_vs_force20)
 
 
+def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict):
+    dates = list(set(date_dict.values()))
+    Umax_pvalue_dict = {}
+    def_pvalue_dict = {}
+    thickness_pvalue_dict = {}
+    delta_d_pvalue_dict = {}
+    delta_d_star_pvalue_dict = {}
+    d_min_pvalue_dict = {}
+    A_pvalue_dict = {}
 
+    for date in dates:
+        date = int(date)
+        ids_at_date_and_meatpiece1, Umax_dict_at_date_and_meatpiece1, def_dict_at_date_and_meatpiece1, thickness_dict_at_date_and_meatpiece1, delta_d_dict_at_date_and_meatpiece1, delta_d_star_dict_at_date_and_meatpiece1, d_min_dict_at_date_and_meatpiece1, A_dict_at_date_and_meatpiece1   = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+        ids_at_date_and_meatpiece2, Umax_dict_at_date_and_meatpiece2, def_dict_at_date_and_meatpiece2, thickness_dict_at_date_and_meatpiece2, delta_d_dict_at_date_and_meatpiece2, delta_d_star_dict_at_date_and_meatpiece2, d_min_dict_at_date_and_meatpiece2, A_dict_at_date_and_meatpiece2   = extract_data_at_given_date_and_meatpiece(date, meatpiece2, ids_list, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+        
+        A_meatpiece1 = list(A_dict_at_date_and_meatpiece1.values())
+        A_meatpiece2 = list(A_dict_at_date_and_meatpiece2.values())
+        p_value_A = stats.ttest_ind(A_meatpiece1, A_meatpiece2, equal_var=False).pvalue
+        A_pvalue_dict[date] = p_value_A
+
+        Umax_meatpiece1 = list(Umax_dict_at_date_and_meatpiece1.values())
+        Umax_meatpiece2 = list(Umax_dict_at_date_and_meatpiece2.values())
+        p_value_Umax = stats.ttest_ind(Umax_meatpiece1, Umax_meatpiece2, equal_var=False).pvalue
+        Umax_pvalue_dict[date] = p_value_Umax
+
+        def_meatpiece1 = list(def_dict_at_date_and_meatpiece1.values())
+        def_meatpiece2 = list(def_dict_at_date_and_meatpiece2.values())
+        p_value_def = stats.ttest_ind(def_meatpiece1, def_meatpiece2, equal_var=False).pvalue
+        def_pvalue_dict[date] = p_value_def
+        
+        thickness_meatpiece1 = list(thickness_dict_at_date_and_meatpiece1.values())
+        thickness_meatpiece2 = list(thickness_dict_at_date_and_meatpiece2.values())
+        p_value_thickness = stats.ttest_ind(thickness_meatpiece1, thickness_meatpiece2, equal_var=False).pvalue
+        thickness_pvalue_dict[date] = p_value_thickness
+
+        delta_d_meatpiece1 = list(delta_d_dict_at_date_and_meatpiece1.values())
+        delta_d_meatpiece2 = list(delta_d_dict_at_date_and_meatpiece2.values())
+        p_value_delta_d = stats.ttest_ind(delta_d_meatpiece1, delta_d_meatpiece2, equal_var=False).pvalue
+        delta_d_pvalue_dict[date] = p_value_delta_d
+
+        delta_d_star_meatpiece1 = list(delta_d_star_dict_at_date_and_meatpiece1.values())
+        delta_d_star_meatpiece2 = list(delta_d_star_dict_at_date_and_meatpiece2.values())
+        p_value_delta_d_star = stats.ttest_ind(delta_d_star_meatpiece1, delta_d_star_meatpiece2, equal_var=False).pvalue
+        delta_d_star_pvalue_dict[date] = p_value_delta_d_star
+
+        d_min_meatpiece1 = list(d_min_dict_at_date_and_meatpiece1.values())
+        d_min_meatpiece2 = list(d_min_dict_at_date_and_meatpiece2.values())
+        p_value_d_min = stats.ttest_ind(d_min_meatpiece1, d_min_meatpiece2, equal_var=False).pvalue
+        d_min_pvalue_dict[date] = p_value_d_min
+
+    return Umax_pvalue_dict, def_pvalue_dict, thickness_pvalue_dict, delta_d_pvalue_dict, delta_d_star_pvalue_dict, d_min_pvalue_dict, A_pvalue_dict
 
 
 if __name__ == "__main__":
@@ -2383,14 +2921,14 @@ if __name__ == "__main__":
     # recovery_pkl_file = '0_locations_recovery_meat.pkl'
     deltad_threshold = 0.22
     strain_threshold = 0.39
-    utils.transform_csv_input_A_into_pkl('0_locations_recoveries_A.csv')
-    # ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict = utils.extract_A_data_from_pkl()
-    # ids_where_not_failed, date_dict_not_failed, Umax_dict_not_failed, def_dict_not_failed, thickness_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed  = remove_failed_A(ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict)
-    # ids_where_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
+    # utils.transform_csv_input_A_into_pkl('0_locations_recoveries_A.csv')
+    ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict = utils.extract_A_data_from_pkl()
+    ids_where_not_failed, date_dict_not_failed, Umax_dict_not_failed, def_dict_not_failed, thickness_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed  = remove_failed_A(ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict)
+    ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
     # print(ids_where_not_failed_and_not_small_deltad)
-    # compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict, deltad_threshold, strain_threshold)
-    # export_indocators_as_txt(deltad_threshold, strain_threshold)
-    plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold) 
+    compute_and_export_indicators_with_maturation_as_pkl(ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad, failed_dict, deltad_threshold, strain_threshold)
+    export_indocators_as_txt(deltad_threshold, strain_threshold)
+    # plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold) 
 
     # plot_laser_indicators_vs_texturometer_forces(deltad_threshold, strain_threshold)
     # irr_indicator_list = ['relaxation_slope',

@@ -37,8 +37,8 @@ def read_sheet_in_datafile(datafile, sheet):
     stress = data_in_sheet.MPa
     time, elongation, stress = time.to_numpy(), elongation.to_numpy(), stress.to_numpy() 
     rescaled_elongation = np.array([e/100 + 1 for e in elongation[np.nonzero(time)]])
-    rescaled_elongation = np.array([e - rescaled_elongation[0] +1 for e in rescaled_elongation[np.nonzero(time)]])
-    rescaled_stress = np.array([s*1000 - stress[0]*1000 for s in stress])
+    rescaled_elongation = np.array([e - rescaled_elongation[0] +1 for e in rescaled_elongation])
+    rescaled_stress = np.array([s*1000 - stress[0]*1000 for s in stress[np.nonzero(time)]])
     rescaled_time = time[np.nonzero(time)] - time[np.nonzero(time)][0]
     # time = np.array([t - time[1] for t in time])
     return rescaled_time, rescaled_elongation, rescaled_stress

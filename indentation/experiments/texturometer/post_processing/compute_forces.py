@@ -13,6 +13,7 @@ import pickle
 import statistics
 import seaborn as sns
 import utils
+from scipy import stats
 
 def remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict):
     """Removes the data where the experimental acquisition did not go well. 
@@ -91,6 +92,26 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, ids_list, 
         std_force80 = statistics.stdev(list(force80_dict_at_date_and_meatpiece.values()))
     return mean_force20, std_force20, mean_force80, std_force80
 
+  
+def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dict, force20_dict, force80_dict):
+    dates = list(set(date_dict.values()))
+    force20_pvalue_dict = {}
+    force80_pvalue_dict = {}
+    for date in dates:
+        _, force20_dict_at_date_and_meatpiece1, force80_dict_at_date_and_meatpiece1 = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, date_dict, force20_dict, force80_dict)
+        _, force20_dict_at_date_and_meatpiece2, force80_dict_at_date_and_meatpiece2 = extract_data_at_given_date_and_meatpiece(date, meatpiece2, ids_list, date_dict, force20_dict, force80_dict)
+        forces_20_meatpiece1 = list(force20_dict_at_date_and_meatpiece1.values())
+        forces_20_meatpiece2 = list(force20_dict_at_date_and_meatpiece2.values())
+        forces_80_meatpiece1 = list(force80_dict_at_date_and_meatpiece1.values())
+        forces_80_meatpiece2 = list(force80_dict_at_date_and_meatpiece2.values())
+        p_value_force20 = stats.ttest_ind(forces_20_meatpiece1, forces_20_meatpiece2, equal_var=False).pvalue
+        p_value_force80 = stats.ttest_ind(forces_80_meatpiece1, forces_80_meatpiece2, equal_var=False).pvalue
+        force20_pvalue_dict[date] = p_value_force20
+        force80_pvalue_dict[date] = p_value_force80
+    return force20_pvalue_dict, force80_pvalue_dict
+      
+
+
 def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict):
     """Computes the mean and the standard deviation of the indicators
     that have been extracted from measurements conducted on the same day (date)
@@ -131,9 +152,12 @@ def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force2
         mean_force20_RDG2_dict[date], std_force20_RDG2_dict[date], mean_force80_RDG2_dict[date], std_force80_RDG2_dict[date] = mean_force20_RDG2_date, std_force20_RDG2_date, mean_force80_RDG2_date, std_force80_RDG2_date
         mean_force20_FF_dict[date], std_force20_FF_dict[date], mean_force80_FF_dict[date], std_force80_FF_dict[date] = mean_force20_FF_date, std_force20_FF_date, mean_force80_FF_date, std_force80_FF_date
         mean_force20_RDG_dict[date], std_force20_RDG_dict[date], mean_force80_RDG_dict[date], std_force80_RDG_dict[date] = mean_force20_RDG_date, std_force20_RDG_date, mean_force80_RDG_date, std_force80_RDG_date
-
+        force20_pvalue_dict_1, force80_pvalue_dict_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, force20_dict, force80_dict)
+        force20_pvalue_dict_2, force80_pvalue_dict_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, force20_dict, force80_dict)
+        force20_pvalue_dict_12, force80_pvalue_dict_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, force20_dict, force80_dict)
+        
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
+    complete_pkl_filename = path_to_processed_data + "/forces_mean_std_pvalue.pkl"
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
             [dates, mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict,
@@ -141,25 +165,35 @@ def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force2
              mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict,
              mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
              mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
-             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
+             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict,
+             force20_pvalue_dict_1, force80_pvalue_dict_1,
+             force20_pvalue_dict_2, force80_pvalue_dict_2,
+             force20_pvalue_dict_12, force80_pvalue_dict_12
              ],
             f,
         )
-   
+        
+
 def export_forces_as_txt():
     """Creation of a textfile that contains the mean and standard deviation
     of both indicators (force at 20 % and 80 %) at every date. 
     """
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/forces_mean_std.pkl"
+    complete_pkl_filename = path_to_processed_data + "/forces_mean_std_pvalue.pkl"
     with open(complete_pkl_filename, "rb") as f:
         [dates, mean_force20_FF1_dict, std_force20_FF1_dict, mean_force80_FF1_dict, std_force80_FF1_dict,
              mean_force20_FF2_dict, std_force20_FF2_dict, mean_force80_FF2_dict, std_force80_FF2_dict,
              mean_force20_RDG1_dict, std_force20_RDG1_dict, mean_force80_RDG1_dict, std_force80_RDG1_dict,
              mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
              mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
-             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict
+             mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict,
+             force20_pvalue_dict_1, force80_pvalue_dict_1,
+             force20_pvalue_dict_2, force80_pvalue_dict_2,
+             force20_pvalue_dict_12, force80_pvalue_dict_12
              ] = pickle.load(f)
+
+
+
     
     complete_txt_filename_FF1 = path_to_processed_data + "/forces_mean_std_FF1.txt"
     f = open(complete_txt_filename_FF1, "w")
@@ -285,6 +319,7 @@ def export_forces_as_txt():
 
     complete_txt_filename_all = path_to_processed_data + "/forces_mean_std.txt"
     f = open(complete_txt_filename_all, "w")
+    
     f.write("FORCES \n")
     f.write("FF1 \t  FF1 \t  FF1 \t  FF1 \t  FF1 \n")
     f.write("date \t mean force20 \t std force20 \t mean force80 \t std force80 \n")
@@ -390,6 +425,127 @@ def export_forces_as_txt():
         
         
     f.close()
+
+
+    complete_txt_filename_all = path_to_processed_data + "/forces_mean_std_and_pvalues.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write("FORCES 20 - 1 \n")
+    f.write(" date \t  mean force20 FF1 \t  std force20 FF1 \t  mean force20 RDG1 \t  std force20 RDG1 \t  pvalue force20 (FF1 vs RDG1) \n")
+    for i in range(len(mean_force20_FF1_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_force20_FF1_dict[date])
+            + "\t"
+            + str(std_force20_FF1_dict[date])
+            + "\t"
+            + str(mean_force20_RDG1_dict[date])
+            + "\t"
+            + str(std_force20_RDG1_dict[date])
+            + "\t"
+            + str(force20_pvalue_dict_1[date])
+            + "\n"
+        )    
+
+    f.write("FORCES 20 - 2 \n")
+    f.write(" date \t  mean force20 FF2 \t  std force20 FF2 \t  mean force20 RDG2 \t  std force20 RDG2 \t  pvalue force20 (FF2 vs RDG2) \n")
+    for i in range(len(mean_force20_FF2_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_force20_FF2_dict[date])
+            + "\t"
+            + str(std_force20_FF2_dict[date])
+            + "\t"
+            + str(mean_force20_RDG2_dict[date])
+            + "\t"
+            + str(std_force20_RDG2_dict[date])
+            + "\t"
+            + str(force20_pvalue_dict_2[date])
+            + "\n"
+        )    
+
+    f.write("FORCES 20 - 1+2 \n")
+    f.write(" date \t  mean force20 FF \t  std force20 FF \t  mean force20 RDG \t  std force20 RDG \t  pvalue force20 (FF vs RDG) \n")
+    for i in range(len(mean_force20_FF_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_force20_FF_dict[date])
+            + "\t"
+            + str(std_force20_FF_dict[date])
+            + "\t"
+            + str(mean_force20_RDG_dict[date])
+            + "\t"
+            + str(std_force20_RDG_dict[date])
+            + "\t"
+            + str(force20_pvalue_dict_12[date])
+            + "\n"
+        )      
+
+
+    f.write("FORCES 80 - 1 \n")
+    f.write(" date \t  mean force80 FF1 \t  std force80 FF1 \t  mean force80 RDG1 \t  std force80 RDG1 \t  pvalue force80 (FF1 vs RDG1) \n")
+    for i in range(len(mean_force80_FF1_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_force80_FF1_dict[date])
+            + "\t"
+            + str(std_force80_FF1_dict[date])
+            + "\t"
+            + str(mean_force80_RDG1_dict[date])
+            + "\t"
+            + str(std_force80_RDG1_dict[date])
+            + "\t"
+            + str(force80_pvalue_dict_1[date])
+            + "\n"
+        )    
+
+    f.write("FORCES 80 - 2 \n")
+    f.write(" date \t  mean force80 FF2 \t  std force80 FF2 \t  mean force80 RDG2 \t  std force80 RDG2 \t  pvalue force80 (FF2 vs RDG2) \n")
+    for i in range(len(mean_force80_FF2_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_force80_FF2_dict[date])
+            + "\t"
+            + str(std_force80_FF2_dict[date])
+            + "\t"
+            + str(mean_force80_RDG2_dict[date])
+            + "\t"
+            + str(std_force80_RDG2_dict[date])
+            + "\t"
+            + str(force80_pvalue_dict_2[date])
+            + "\n"
+        )    
+
+    f.write("FORCES 80 - 1+2 \n")
+    f.write(" date \t  mean force80 FF \t  std force80 FF \t  mean force80 RDG \t  std force80 RDG \t  pvalue force80 (FF vs RDG) \n")
+    for i in range(len(mean_force80_FF_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_force80_FF_dict[date])
+            + "\t"
+            + str(std_force80_FF_dict[date])
+            + "\t"
+            + str(mean_force80_RDG_dict[date])
+            + "\t"
+            + str(std_force80_RDG_dict[date])
+            + "\t"
+            + str(force80_pvalue_dict_12[date])
+            + "\n"
+        )      
+    f.close()
+
 
 def plot_forces_with_maturation():
     """Plots the evolution of the mean of the force at 20 % and 80 %, along
@@ -573,11 +729,13 @@ if __name__ == "__main__":
     
     # current_path = utils.get_current_path()
     # utils.transform_csv_input_into_pkl('texturometer_forces.csv')
-    # ids_list, date_dict, force20_dict, force80_dict, failed_dict = utils.extract_texturometer_data_from_pkl()
-    # ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed = remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict)
+    ids_list, date_dict, force20_dict, force80_dict, failed_dict = utils.extract_texturometer_data_from_pkl()
+    ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed = remove_failed_data(ids_list, date_dict, force20_dict, force80_dict, failed_dict)
     # mean_force20, std_force20, mean_force80, std_force80 = compute_mean_and_std_at_given_date_and_meatpiece(230327, 'FF', ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed)
     # compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict)
-    plot_forces_with_maturation()
-    # export_forces_as_txt()
+    # plot_forces_with_maturation()
+    # compute_pvalue_between_FF_and_RDG(ids_where_not_failed, date_dict_not_failed, force20_dict_not_failed, force80_dict_not_failed)
+    # compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force20_dict, force80_dict)
+    export_forces_as_txt()
     print('hello')
     

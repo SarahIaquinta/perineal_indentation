@@ -15,6 +15,8 @@ from indentation.experiments.zwick.post_processing.utils import find_nearest
 import seaborn as sns
 import statistics
 from sklearn.linear_model import LinearRegression
+from scipy import stats
+
 
 def get_data_at_given_strain_rate(files_zwick, datafile, sheet, strain_rate):
     """Extracts the value of time, disp and force measured when the strain
@@ -355,8 +357,14 @@ def compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict,
         mean_data_RDG2_dict[date], std_data_RDG2_dict[date] = mean_data_RDG2_date, std_data_RDG2_date
         mean_data_FF_dict[date], std_data_FF_dict[date] = mean_data_FF_date, std_data_FF_date
         mean_data_RDG_dict[date], std_data_RDG_dict[date] = mean_data_RDG_date, std_data_RDG_date
+        data_pvalue_dict_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, data_dict)
+        data_pvalue_dict_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, data_dict)
+        data_pvalue_dict_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, data_dict)
+        
+        
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_" + indicator + ".pkl"
+    complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_pvalue_" + indicator + ".pkl"
+    
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(
             [dates, mean_data_FF1_dict, std_data_FF1_dict,
@@ -364,7 +372,8 @@ def compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict,
              mean_data_RDG1_dict, std_data_RDG1_dict,
              mean_data_RDG2_dict, std_data_RDG2_dict,
              mean_data_FF_dict, std_data_FF_dict,
-             mean_data_RDG_dict, std_data_RDG_dict
+             mean_data_RDG_dict, std_data_RDG_dict,
+             data_pvalue_dict_1, data_pvalue_dict_2, data_pvalue_dict_12
              ],
             f,
         )
@@ -386,14 +395,15 @@ def export_data_as_txt(indicator):
                 - i_time_time
     """
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_" + indicator + ".pkl"
+    complete_pkl_filename = path_to_processed_data + "/indentation_relaxation_mean_std_pvalue_" + indicator + ".pkl"
     with open(complete_pkl_filename, "rb") as f:
         [dates, mean_data_FF1_dict, std_data_FF1_dict,
              mean_data_FF2_dict, std_data_FF2_dict,
              mean_data_RDG1_dict, std_data_RDG1_dict,
              mean_data_RDG2_dict, std_data_RDG2_dict,
              mean_data_FF_dict, std_data_FF_dict,
-             mean_data_RDG_dict, std_data_RDG_dict
+             mean_data_RDG_dict, std_data_RDG_dict,
+             data_pvalue_dict_1, data_pvalue_dict_2, data_pvalue_dict_12
              ] = pickle.load(f)
     
     complete_txt_filename_FF1 = path_to_processed_data + "/" + indicator + "_mean_std_FF1.txt"
@@ -576,6 +586,71 @@ def export_data_as_txt(indicator):
         )
         
         
+    f.close()
+    
+    
+    complete_txt_filename_all = path_to_processed_data + "/" + indicator + "_mean_std_pvalue.txt"
+    f = open(complete_txt_filename_all, "w")
+    
+    f.write(indicator + " - 1 \n")
+    f.write(" date \t  mean FF1 \t  std FF1 \t  mean RDG1 \t  std RDG1 \t  pvalue (FF1 vs RDG1) \n")
+    for i in range(len(mean_data_FF1_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_data_FF1_dict[date])
+            + "\t"
+            + str(std_data_FF1_dict[date])
+            + "\t"
+            + str(mean_data_RDG1_dict[date])
+            + "\t"
+            + str(std_data_RDG1_dict[date])
+            + "\t"
+            + str(data_pvalue_dict_1[date])
+            + "\n"
+        )    
+
+    f.write(indicator + " - 2 \n")
+    f.write(" date \t  mean  FF2 \t  std  FF2 \t  mean  RDG2 \t  std  RDG2 \t  pvalue  (FF2 vs RDG2) \n")
+    for i in range(len(mean_data_FF2_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_data_FF2_dict[date])
+            + "\t"
+            + str(std_data_FF2_dict[date])
+            + "\t"
+            + str(mean_data_RDG2_dict[date])
+            + "\t"
+            + str(std_data_RDG2_dict[date])
+            + "\t"
+            + str(data_pvalue_dict_2[date])
+            + "\n"
+        )    
+
+    f.write(indicator + " - 1+2 \n")
+    f.write(" date \t  mean FF \t  std FF \t  mean RDG \t  std RDG \t  pvalue (FF vs RDG) \n")
+    for i in range(len(mean_data_FF_dict)):
+        date = dates[i]
+        f.write(
+            str(dates[i])
+            + "\t"
+            + str(mean_data_FF_dict[date])
+            + "\t"
+            + str(std_data_FF_dict[date])
+            + "\t"
+            + str(mean_data_RDG_dict[date])
+            + "\t"
+            + str(std_data_RDG_dict[date])
+            + "\t"
+            + str(data_pvalue_dict_12[date])
+            + "\n"
+        )      
+
+
+
     f.close()
 
 def plot_data_with_maturation(indicator):
@@ -986,6 +1061,20 @@ def plot_indentation_relaxation_indicator_vs_texturometer_forces(irr_indicator):
     savefigure.save_as_png(fig_data_vs_force20, irr_indicator + "_vs_force20_1+2")
     plt.close(fig_data_vs_force20)
         
+def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dict, data_dict):
+    dates = list(set(date_dict.values()))
+    data_pvalue_dict = {}
+    for date in dates:
+        _, data_dict_at_date_and_meatpiece1   = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, meat_piece_dict, date_dict, data_dict)
+        _, data_dict_at_date_and_meatpiece2   = extract_data_at_given_date_and_meatpiece(date, meatpiece2, ids_list, meat_piece_dict, date_dict, data_dict)
+        data_meatpiece1 = list(data_dict_at_date_and_meatpiece1.values())
+        data_meatpiece2 = list(data_dict_at_date_and_meatpiece2.values())
+        p_value_data = stats.ttest_ind(data_meatpiece1, data_meatpiece2, equal_var=False).pvalue
+        data_pvalue_dict[date] = p_value_data
+    return data_pvalue_dict
+      
+
+        
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
@@ -1015,8 +1104,8 @@ if __name__ == "__main__":
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_star_dict, 'delta_f_star')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_time_dict, 'i_disp_time')
     # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_time_dict, 'i_time_time')
-    # for indicator in indicator_list:
-    #     export_data_as_txt(indicator)
+    for indicator in indicator_list:
+        export_data_as_txt(indicator)
         # plot_data_with_maturation(indicator)
         # plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
     # export_all_indicators()

@@ -36,12 +36,14 @@ def store_peaks_information(datafile, sheet):
         elongation_init_step_load = elongation_beginning_load_peak[p]
         elongation_final_step_load = elongation_end_load_peak[p]
         index_step_load = np.arange(beginning_load_peak_indices[p], end_load_peak_indices[p], 1)
-        index_init_step_load = index_step_load[0]
-        index_final_step_load = index_step_load[-1]
-        index_init_step_dict_load[p] = index_init_step_load
-        index_final_step_dict_load[p] = index_final_step_load
-        elongation_init_step_dict_load[p] = elongation_init_step_load
-        elongation_final_step_dict_load[p] = elongation_final_step_load
+        if len(index_step_load)>0:
+            index_init_step_load = index_step_load[0]
+            index_final_step_load = index_step_load[-1]
+            index_init_step_dict_load[p] = index_init_step_load
+            index_final_step_dict_load[p] = index_final_step_load
+            elongation_init_step_dict_load[p] = elongation_init_step_load
+            elongation_final_step_dict_load[p] = elongation_final_step_load
+            
 
     index_init_step_dict_relaxation = {}
     index_final_step_dict_relaxation = {}
@@ -52,12 +54,13 @@ def store_peaks_information(datafile, sheet):
         elongation_init_step_relaxation = elongation_end_load_peak[p]
         elongation_final_step_relaxation = elongation_beginning_load_peak[p+1]
         index_step_relaxation = np.arange(end_load_peak_indices[p], beginning_load_peak_indices[p+1], 1)
-        index_init_step_relaxation = index_step_relaxation[0]
-        index_final_step_relaxation = index_step_relaxation[-1]
-        index_init_step_dict_relaxation[p] = index_init_step_relaxation
-        index_final_step_dict_relaxation[p] = index_final_step_relaxation
-        elongation_init_step_dict_relaxation[p] = elongation_init_step_relaxation
-        elongation_final_step_dict_relaxation[p] = elongation_final_step_relaxation
+        if len(index_step_relaxation)>0:
+            index_init_step_relaxation = index_step_relaxation[0]
+            index_final_step_relaxation = index_step_relaxation[-1]
+            index_init_step_dict_relaxation[p] = index_init_step_relaxation
+            index_final_step_dict_relaxation[p] = index_final_step_relaxation
+            elongation_init_step_dict_relaxation[p] = elongation_init_step_relaxation
+            elongation_final_step_dict_relaxation[p] = elongation_final_step_relaxation
 
     return index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation
  
