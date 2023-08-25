@@ -243,12 +243,15 @@ def find_parameters_load_and_relaxation(datafile, sheet, step, previous_step_val
 
     def minimization_function(parameters):
         Q_list_load, S_list_load, S_H_list_load, Pi_list_load = compute_stress_vector_load(parameters, datafile, sheet, step, previous_step_values, c1)
-        least_square_load = mean_squared_error(experimental_stress_load, Pi_list_load)
+        # least_square_load = mean_squared_error(experimental_stress_load, Pi_list_load)
         load_step_values = Q_list_load[-1], S_list_load[-1], S_H_list_load[-1], Pi_list_load[-1]
         tau = parameters[1]
         Q_list_relaxation, S_list_relaxation, S_H_list_relaxation, Pi_list_relaxation = compute_stress_vector_relaxation_constant_tau(datafile, sheet, step, load_step_values, tau)
-        least_square_relaxation = mean_squared_error(experimental_stress_relaxation, Pi_list_relaxation)
-        least_square = np.sqrt(least_square_load**2 + least_square_relaxation**2)
+        experimental_stress_load_and_relaxation = np.concatenate((experimental_stress_load, experimental_stress_relaxation), axis=None)
+        Pi_list_load_and_relaxation = np.concatenate((Pi_list_load, Pi_list_relaxation), axis=None)
+        # least_square_load_relaxation = mean_squared_error(experimental_stress_load_and_relaxation, Pi_list_load_and_relaxation)
+        least_square_load_relaxation = np.linalg.norm((experimental_stress_load_and_relaxation - Pi_list_load_and_relaxation), ord=4)
+        least_square = least_square_load_relaxation#least_square_load + least_square_relaxation
         return least_square
 
     res = minimize(minimization_function, x0=previous_step_optimized_parameters, method=minimization_method, bounds=[(0, 50),(0.1, 100)],
