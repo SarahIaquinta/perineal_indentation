@@ -97,6 +97,10 @@ def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dic
     dates = list(set(date_dict.values()))
     force20_pvalue_dict = {}
     force80_pvalue_dict = {}
+    forces_20_meatpiece1_all_dates = []
+    forces_20_meatpiece2_all_dates = []
+    forces_80_meatpiece1_all_dates = []
+    forces_80_meatpiece2_all_dates = []
     for date in dates:
         _, force20_dict_at_date_and_meatpiece1, force80_dict_at_date_and_meatpiece1 = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, date_dict, force20_dict, force80_dict)
         _, force20_dict_at_date_and_meatpiece2, force80_dict_at_date_and_meatpiece2 = extract_data_at_given_date_and_meatpiece(date, meatpiece2, ids_list, date_dict, force20_dict, force80_dict)
@@ -104,11 +108,17 @@ def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dic
         forces_20_meatpiece2 = list(force20_dict_at_date_and_meatpiece2.values())
         forces_80_meatpiece1 = list(force80_dict_at_date_and_meatpiece1.values())
         forces_80_meatpiece2 = list(force80_dict_at_date_and_meatpiece2.values())
+        forces_20_meatpiece1_all_dates += forces_20_meatpiece1
+        forces_20_meatpiece2_all_dates += forces_20_meatpiece2
+        forces_80_meatpiece1_all_dates += forces_80_meatpiece1
+        forces_80_meatpiece2_all_dates += forces_80_meatpiece2
         p_value_force20 = stats.ttest_ind(forces_20_meatpiece1, forces_20_meatpiece2, equal_var=False).pvalue
         p_value_force80 = stats.ttest_ind(forces_80_meatpiece1, forces_80_meatpiece2, equal_var=False).pvalue
         force20_pvalue_dict[date] = p_value_force20
         force80_pvalue_dict[date] = p_value_force80
-    return force20_pvalue_dict, force80_pvalue_dict
+    force20_pvalue_all_dates = stats.ttest_ind(forces_20_meatpiece1_all_dates, forces_20_meatpiece2_all_dates, equal_var=False).pvalue
+    force80_pvalue_all_dates = stats.ttest_ind(forces_80_meatpiece1_all_dates, forces_80_meatpiece2_all_dates, equal_var=False).pvalue
+    return force20_pvalue_dict, force80_pvalue_dict, force20_pvalue_all_dates, force80_pvalue_all_dates
       
 
 
@@ -152,9 +162,9 @@ def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force2
         mean_force20_RDG2_dict[date], std_force20_RDG2_dict[date], mean_force80_RDG2_dict[date], std_force80_RDG2_dict[date] = mean_force20_RDG2_date, std_force20_RDG2_date, mean_force80_RDG2_date, std_force80_RDG2_date
         mean_force20_FF_dict[date], std_force20_FF_dict[date], mean_force80_FF_dict[date], std_force80_FF_dict[date] = mean_force20_FF_date, std_force20_FF_date, mean_force80_FF_date, std_force80_FF_date
         mean_force20_RDG_dict[date], std_force20_RDG_dict[date], mean_force80_RDG_dict[date], std_force80_RDG_dict[date] = mean_force20_RDG_date, std_force20_RDG_date, mean_force80_RDG_date, std_force80_RDG_date
-        force20_pvalue_dict_1, force80_pvalue_dict_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, force20_dict, force80_dict)
-        force20_pvalue_dict_2, force80_pvalue_dict_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, force20_dict, force80_dict)
-        force20_pvalue_dict_12, force80_pvalue_dict_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, force20_dict, force80_dict)
+    force20_pvalue_dict_1, force80_pvalue_dict_1,  force20_pvalue_all_dates_1, force80_pvalue_all_dates_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, force20_dict, force80_dict)
+    force20_pvalue_dict_2, force80_pvalue_dict_2,  force20_pvalue_all_dates_2, force80_pvalue_all_dates_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, force20_dict, force80_dict)
+    force20_pvalue_dict_12, force80_pvalue_dict_12,force20_pvalue_all_dates_12, force80_pvalue_all_dates_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, force20_dict, force80_dict)
         
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\texturometer\processed_data'
     complete_pkl_filename = path_to_processed_data + "/forces_mean_std_pvalue.pkl"
@@ -166,9 +176,9 @@ def compute_and_export_forces_with_maturation_as_pkl(ids_list, date_dict, force2
              mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
              mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
              mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict,
-             force20_pvalue_dict_1, force80_pvalue_dict_1,
-             force20_pvalue_dict_2, force80_pvalue_dict_2,
-             force20_pvalue_dict_12, force80_pvalue_dict_12
+             force20_pvalue_dict_1, force80_pvalue_dict_1,   force20_pvalue_all_dates_1, force80_pvalue_all_dates_1,
+             force20_pvalue_dict_2, force80_pvalue_dict_2,   force20_pvalue_all_dates_2, force80_pvalue_all_dates_2,
+             force20_pvalue_dict_12, force80_pvalue_dict_12, force20_pvalue_all_dates_12, force80_pvalue_all_dates_12
              ],
             f,
         )
@@ -187,9 +197,9 @@ def export_forces_as_txt():
              mean_force20_RDG2_dict, std_force20_RDG2_dict, mean_force80_RDG2_dict, std_force80_RDG2_dict,
              mean_force20_FF_dict, std_force20_FF_dict, mean_force80_FF_dict, std_force80_FF_dict,
              mean_force20_RDG_dict, std_force20_RDG_dict, mean_force80_RDG_dict, std_force80_RDG_dict,
-             force20_pvalue_dict_1, force80_pvalue_dict_1,
-             force20_pvalue_dict_2, force80_pvalue_dict_2,
-             force20_pvalue_dict_12, force80_pvalue_dict_12
+             force20_pvalue_dict_1, force80_pvalue_dict_1,  force20_pvalue_all_dates_1, force80_pvalue_all_dates_1,
+             force20_pvalue_dict_2, force80_pvalue_dict_2,  force20_pvalue_all_dates_2, force80_pvalue_all_dates_2,
+             force20_pvalue_dict_12, force80_pvalue_dict_12, force20_pvalue_all_dates_12, force80_pvalue_all_dates_12
              ] = pickle.load(f)
 
 
@@ -431,7 +441,7 @@ def export_forces_as_txt():
     f = open(complete_txt_filename_all, "w")
     
     f.write("FORCES 20 - 1 \n")
-    f.write(" date \t  mean force20 FF1 \t  std force20 FF1 \t  mean force20 RDG1 \t  std force20 RDG1 \t  pvalue force20 (FF1 vs RDG1) \n")
+    f.write(" date \t  mean force20 FF1 \t  std force20 FF1 \t  mean force20 RDG1 \t  std force20 RDG1 \t  pvalue force20 (FF1 vs RDG1) \t  pvalue all dates \n")
     for i in range(len(mean_force20_FF1_dict)):
         date = dates[i]
         f.write(
@@ -446,11 +456,12 @@ def export_forces_as_txt():
             + str(std_force20_RDG1_dict[date])
             + "\t"
             + str(force20_pvalue_dict_1[date])
+            + "\t"
+            + str(force20_pvalue_all_dates_1)
             + "\n"
         )    
-
     f.write("FORCES 20 - 2 \n")
-    f.write(" date \t  mean force20 FF2 \t  std force20 FF2 \t  mean force20 RDG2 \t  std force20 RDG2 \t  pvalue force20 (FF2 vs RDG2) \n")
+    f.write(" date \t  mean force20 FF2 \t  std force20 FF2 \t  mean force20 RDG2 \t  std force20 RDG2 \t  pvalue force20 (FF2 vs RDG2) \t p-value all date \n")
     for i in range(len(mean_force20_FF2_dict)):
         date = dates[i]
         f.write(
@@ -465,11 +476,13 @@ def export_forces_as_txt():
             + str(std_force20_RDG2_dict[date])
             + "\t"
             + str(force20_pvalue_dict_2[date])
+            + "\t"
+            + str(force20_pvalue_all_dates_2)
             + "\n"
         )    
 
     f.write("FORCES 20 - 1+2 \n")
-    f.write(" date \t  mean force20 FF \t  std force20 FF \t  mean force20 RDG \t  std force20 RDG \t  pvalue force20 (FF vs RDG) \n")
+    f.write(" date \t  mean force20 FF \t  std force20 FF \t  mean force20 RDG \t  std force20 RDG \t  pvalue force20 (FF vs RDG) \t p-value all date\n")
     for i in range(len(mean_force20_FF_dict)):
         date = dates[i]
         f.write(
@@ -484,12 +497,14 @@ def export_forces_as_txt():
             + str(std_force20_RDG_dict[date])
             + "\t"
             + str(force20_pvalue_dict_12[date])
+            + "\t"
+            + str(force20_pvalue_all_dates_12)
             + "\n"
         )      
 
 
     f.write("FORCES 80 - 1 \n")
-    f.write(" date \t  mean force80 FF1 \t  std force80 FF1 \t  mean force80 RDG1 \t  std force80 RDG1 \t  pvalue force80 (FF1 vs RDG1) \n")
+    f.write(" date \t  mean force80 FF1 \t  std force80 FF1 \t  mean force80 RDG1 \t  std force80 RDG1 \t  pvalue force80 (FF1 vs RDG1) \t p-value all dates \n")
     for i in range(len(mean_force80_FF1_dict)):
         date = dates[i]
         f.write(
@@ -504,11 +519,13 @@ def export_forces_as_txt():
             + str(std_force80_RDG1_dict[date])
             + "\t"
             + str(force80_pvalue_dict_1[date])
+            + "\t"
+            + str(force80_pvalue_all_dates_1)
             + "\n"
         )    
 
     f.write("FORCES 80 - 2 \n")
-    f.write(" date \t  mean force80 FF2 \t  std force80 FF2 \t  mean force80 RDG2 \t  std force80 RDG2 \t  pvalue force80 (FF2 vs RDG2) \n")
+    f.write(" date \t  mean force80 FF2 \t  std force80 FF2 \t  mean force80 RDG2 \t  std force80 RDG2 \t  pvalue force80 (FF2 vs RDG2) \t p-value all dates \n")
     for i in range(len(mean_force80_FF2_dict)):
         date = dates[i]
         f.write(
@@ -523,11 +540,13 @@ def export_forces_as_txt():
             + str(std_force80_RDG2_dict[date])
             + "\t"
             + str(force80_pvalue_dict_2[date])
+            + "\t"
+            + str(force80_pvalue_all_dates_2)
             + "\n"
         )    
 
     f.write("FORCES 80 - 1+2 \n")
-    f.write(" date \t  mean force80 FF \t  std force80 FF \t  mean force80 RDG \t  std force80 RDG \t  pvalue force80 (FF vs RDG) \n")
+    f.write(" date \t  mean force80 FF \t  std force80 FF \t  mean force80 RDG \t  std force80 RDG \t  pvalue force80 (FF vs RDG) \t p-values all dates \n")
     for i in range(len(mean_force80_FF_dict)):
         date = dates[i]
         f.write(
@@ -542,8 +561,11 @@ def export_forces_as_txt():
             + str(std_force80_RDG_dict[date])
             + "\t"
             + str(force80_pvalue_dict_12[date])
+            + "\t"
+            + str(force80_pvalue_all_dates_12)
             + "\n"
         )      
+
     f.close()
 
 
