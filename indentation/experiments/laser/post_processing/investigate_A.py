@@ -326,9 +326,9 @@ def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, Um
         mean_d_min_FF_dict[date], std_d_min_FF_dict[date], mean_A_FF_dict[date], std_A_FF_dict[date] = mean_d_min_FF_date, std_d_min_FF_date, mean_A_FF_date, std_A_FF_date
         mean_d_min_RDG_dict[date], std_d_min_RDG_dict[date], mean_A_RDG_dict[date], std_A_RDG_dict[date] = mean_d_min_RDG_date, std_d_min_RDG_date, mean_A_RDG_date, std_A_RDG_date
     
-    Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
-    Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
-    Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1, Umax_pvalue_all_dates_1, def_pvalue_all_dates_1, thickness_pvalue_all_dates_1, delta_d_pvalue_all_dates_1, delta_d_star_pvalue_all_dates_1, d_min_pvalue_all_dates_1, A_pvalue_all_dates_1 = compute_pvalue_between_meatpieces('FF1', 'RDG1', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2, Umax_pvalue_all_dates_2, def_pvalue_all_dates_2, thickness_pvalue_all_dates_2, delta_d_pvalue_all_dates_2, delta_d_star_pvalue_all_dates_2, d_min_pvalue_all_dates_2, A_pvalue_all_dates_2 = compute_pvalue_between_meatpieces('FF2', 'RDG2', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12, Umax_pvalue_all_dates_12, def_pvalue_all_dates_12, thickness_pvalue_all_dates_12, delta_d_pvalue_all_dates_12, delta_d_star_pvalue_all_dates_12, d_min_pvalue_all_dates_12, A_pvalue_all_dates_12 = compute_pvalue_between_meatpieces('FF', 'RDG', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
     
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\laser\processed_data'
     complete_pkl_filename = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std_pvalue.pkl"
@@ -346,9 +346,9 @@ def compute_and_export_indicators_with_maturation_as_pkl(ids_list, date_dict, Um
              mean_Umax_RDG1_dict, std_Umax_RDG1_dict, mean_def_RDG1_dict, std_def_RDG1_dict, mean_thickness_RDG1_dict, std_thickness_RDG1_dict,
              mean_Umax_RDG_dict,   std_Umax_RDG_dict, mean_def_RDG_dict, std_def_RDG_dict, mean_thickness_RDG_dict, std_thickness_RDG_dict,
              mean_Umax_RDG2_dict, std_Umax_RDG2_dict, mean_def_RDG2_dict, std_def_RDG2_dict, mean_thickness_RDG2_dict, std_thickness_RDG2_dict,
-             Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1,
-             Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2 ,
-             Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12
+             Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1, Umax_pvalue_all_dates_1, def_pvalue_all_dates_1, thickness_pvalue_all_dates_1, delta_d_pvalue_all_dates_1, delta_d_star_pvalue_all_dates_1, d_min_pvalue_all_dates_1, A_pvalue_all_dates_1,
+             Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2, Umax_pvalue_all_dates_2, def_pvalue_all_dates_2, thickness_pvalue_all_dates_2, delta_d_pvalue_all_dates_2, delta_d_star_pvalue_all_dates_2, d_min_pvalue_all_dates_2, A_pvalue_all_dates_2,
+             Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12, Umax_pvalue_all_dates_12, def_pvalue_all_dates_12, thickness_pvalue_all_dates_12, delta_d_pvalue_all_dates_12, delta_d_star_pvalue_all_dates_12, d_min_pvalue_all_dates_12, A_pvalue_all_dates_12
     
              ],
             f,
@@ -383,10 +383,10 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
              mean_Umax_RDG1_dict, std_Umax_RDG1_dict, mean_def_RDG1_dict, std_def_RDG1_dict, mean_thickness_RDG1_dict, std_thickness_RDG1_dict,
              mean_Umax_RDG_dict,   std_Umax_RDG_dict, mean_def_RDG_dict, std_def_RDG_dict, mean_thickness_RDG_dict, std_thickness_RDG_dict,
              mean_Umax_RDG2_dict, std_Umax_RDG2_dict, mean_def_RDG2_dict, std_def_RDG2_dict, mean_thickness_RDG2_dict, std_thickness_RDG2_dict,
-             Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1,
-             Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2 ,
-             Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12
-             ] = pickle.load(f)
+             Umax_pvalue_dict_1, def_pvalue_dict_1, thickness_pvalue_dict_1, delta_d_pvalue_dict_1, delta_d_star_pvalue_dict_1, d_min_pvalue_dict_1, A_pvalue_dict_1, Umax_pvalue_all_dates_1, def_pvalue_all_dates_1, thickness_pvalue_all_dates_1, delta_d_pvalue_all_dates_1, delta_d_star_pvalue_all_dates_1, d_min_pvalue_all_dates_1, A_pvalue_all_dates_1,
+             Umax_pvalue_dict_2, def_pvalue_dict_2, thickness_pvalue_dict_2, delta_d_pvalue_dict_2, delta_d_star_pvalue_dict_2, d_min_pvalue_dict_2, A_pvalue_dict_2, Umax_pvalue_all_dates_2, def_pvalue_all_dates_2, thickness_pvalue_all_dates_2, delta_d_pvalue_all_dates_2, delta_d_star_pvalue_all_dates_2, d_min_pvalue_all_dates_2, A_pvalue_all_dates_2,
+             Umax_pvalue_dict_12, def_pvalue_dict_12, thickness_pvalue_dict_12, delta_d_pvalue_dict_12, delta_d_star_pvalue_dict_12, d_min_pvalue_dict_12, A_pvalue_dict_12, Umax_pvalue_all_dates_12, def_pvalue_all_dates_12, thickness_pvalue_all_dates_12, delta_d_pvalue_all_dates_12, delta_d_star_pvalue_all_dates_12, d_min_pvalue_all_dates_12, A_pvalue_all_dates_12
+            ] = pickle.load(f)
     
     complete_txt_filename_FF1 = path_to_processed_data + "/0_locations_deltad_threshold" + str(deltad_threshold) + "strain_treshold" + str(strain_threshold) + "_indicators_mean_std_FF1.txt"
     f = open(complete_txt_filename_FF1, "w")
@@ -911,7 +911,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
     f = open(complete_txt_filename_all, "w")
     
     f.write("def - 1 \n")
-    f.write(" date \t  mean def FF1 \t  std def FF1 \t  mean def RDG1 \t  std def RDG1 \t  pvalue def (FF1 vs RDG1) \n")
+    f.write(" date \t  mean def FF1 \t  std def FF1 \t  mean def RDG1 \t  std def RDG1 \t  pvalue def (FF1 vs RDG1) \t p-value all dates \n")
     for i in range(len(mean_delta_d_FF1_dict)):
         date = dates_laser[i]
         f.write(
@@ -928,11 +928,13 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_def_RDG1_dict[date])
             + "\t"
             + str(def_pvalue_dict_1[int(date[0:6])])
+            + "\t"
+            + str(def_pvalue_all_dates_1)
             + "\n"
         )    
 
     f.write("def - 2 \n")
-    f.write(" date \t  mean def FF2 \t  std def FF2 \t  mean def RDG2 \t  std def RDG2 \t  pvalue def (FF2 vs RDG2) \n")
+    f.write(" date \t  mean def FF2 \t  std def FF2 \t  mean def RDG2 \t  std def RDG2 \t  pvalue def (FF2 vs RDG2) \t p-value all dates \n")
     for i in range(len(mean_delta_d_FF2_dict)):
         date = dates_laser[i]
         f.write(
@@ -949,11 +951,13 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_def_RDG2_dict[date])
             + "\t"
             + str(def_pvalue_dict_2[int(date[0:6])])
+            + "\t"
+            + str(def_pvalue_all_dates_2)
             + "\n"
         ) 
         
     f.write("def - 1+2 \n")
-    f.write(" date \t  mean def FF \t  std def FF \t  mean def RDG \t  std def RDG \t  pvalue def (FF vs RDG) \n")
+    f.write(" date \t  mean def FF \t  std def FF \t  mean def RDG \t  std def RDG \t  pvalue def (FF vs RDG) \t p-value all dates \n")
     for i in range(len(mean_delta_d_FF_dict)):
         date = dates_laser[i]
         f.write(
@@ -970,6 +974,8 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_def_RDG_dict[date])
             + "\t"
             + str(def_pvalue_dict_12[int(date[0:6])])
+            + "\t"
+            + str(def_pvalue_all_dates_12)
             + "\n"
         )         
     f.close()
@@ -1021,7 +1027,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
         ) 
         
     f.write("thickness - 1+2 \n")
-    f.write(" date \t  mean thickness FF \t  std thickness FF \t  mean thickness RDG \t  std thickness RDG \t  pvalue thickness (FF vs RDG) \n")
+    f.write(" date \t  mean thickness FF \t  std thickness FF \t  mean thickness RDG \t  std thickness RDG \t  pvalue thickness (FF vs RDG) \t p-value all date \n")
     for i in range(len(mean_delta_d_FF_dict)):
         date = dates_laser[i]
         f.write(
@@ -1038,6 +1044,8 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_thickness_RDG_dict[date])
             + "\t"
             + str(thickness_pvalue_dict_12[int(date[0:6])])
+            + "\t"
+            + str(thickness_pvalue_all_dates_12)
             + "\n"
         )         
     f.close()
@@ -1088,7 +1096,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
         ) 
         
     f.write("delta_d - 1+2 \n")
-    f.write(" date \t  mean delta_d FF \t  std delta_d FF \t  mean delta_d RDG \t  std delta_d RDG \t  pvalue delta_d (FF vs RDG) \n")
+    f.write(" date \t  mean delta_d FF \t  std delta_d FF \t  mean delta_d RDG \t  std delta_d RDG \t  pvalue delta_d (FF vs RDG) \t -pvalue all date \n")
     for i in range(len(mean_delta_d_FF_dict)):
         date = dates_laser[i]
         f.write(
@@ -1105,6 +1113,8 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_delta_d_RDG_dict[date])
             + "\t"
             + str(delta_d_pvalue_dict_12[int(date[0:6])])
+            + "\t"
+            + str(delta_d_pvalue_all_dates_12)
             + "\n"
         )         
     f.close()
@@ -1155,7 +1165,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
         ) 
         
     f.write("delta_d_star - 1+2 \n")
-    f.write(" date \t  mean delta_d_star FF \t  std delta_d_star FF \t  mean delta_d_star RDG \t  std delta_d_star RDG \t  pvalue delta_d_star (FF vs RDG) \n")
+    f.write(" date \t  mean delta_d_star FF \t  std delta_d_star FF \t  mean delta_d_star RDG \t  std delta_d_star RDG \t  pvalue delta_d_star (FF vs RDG) \t p-value all date \n")
     for i in range(len(mean_delta_d_FF_dict)):
         date = dates_laser[i]
         f.write(
@@ -1172,6 +1182,8 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_delta_d_star_RDG_dict[date])
             + "\t"
             + str(delta_d_star_pvalue_dict_12[int(date[0:6])])
+            + "\t"
+            + str(delta_d_star_pvalue_all_dates_12)
             + "\n"
         )         
     f.close()
@@ -1222,7 +1234,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
         ) 
         
     f.write("d_min - 1+2 \n")
-    f.write(" date \t  mean d_min FF \t  std d_min FF \t  mean d_min RDG \t  std d_min RDG \t  pvalue d_min (FF vs RDG) \n")
+    f.write(" date \t  mean d_min FF \t  std d_min FF \t  mean d_min RDG \t  std d_min RDG \t  pvalue d_min (FF vs RDG) \t p-value all dates \n")
     for i in range(len(mean_delta_d_FF_dict)):
         date = dates_laser[i]
         f.write(
@@ -1239,6 +1251,8 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_d_min_RDG_dict[date])
             + "\t"
             + str(d_min_pvalue_dict_12[int(date[0:6])])
+            + "\t"
+            + str(d_min_pvalue_all_dates_12)
             + "\n"
         )         
     f.close()
@@ -1289,7 +1303,7 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
         ) 
         
     f.write("A - 1+2 \n")
-    f.write(" date \t  mean A FF \t  std A FF \t  mean A RDG \t  std A RDG \t  pvalue A (FF vs RDG) \n")
+    f.write(" date \t  mean A FF \t  std A FF \t  mean A RDG \t  std A RDG \t  pvalue A (FF vs RDG) \t p-value all dates \n")
     for i in range(len(mean_delta_d_FF_dict)):
         date = dates_laser[i]
         f.write(
@@ -1306,6 +1320,8 @@ def export_indocators_as_txt(deltad_threshold, strain_threshold):
             + str(std_A_RDG_dict[date])
             + "\t"
             + str(A_pvalue_dict_12[int(date[0:6])])
+            + "\t"
+            + str(A_pvalue_all_dates_12)
             + "\n"
         )         
     f.close()
@@ -2868,6 +2884,23 @@ def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dic
     d_min_pvalue_dict = {}
     A_pvalue_dict = {}
 
+
+    Umax_1_all_dates = []
+    def_1_all_dates = []
+    thickness_1_all_dates = []
+    delta_d_1_all_dates = []
+    delta_d_star_1_all_dates = []
+    d_min_1_all_dates = []
+    A_1_all_dates = []
+
+    Umax_2_all_dates = []
+    def_2_all_dates = []
+    thickness_2_all_dates = []
+    delta_d_2_all_dates = []
+    delta_d_star_2_all_dates = []
+    d_min_2_all_dates = []
+    A_2_all_dates = []
+
     for date in dates:
         date = int(date)
         ids_at_date_and_meatpiece1, Umax_dict_at_date_and_meatpiece1, def_dict_at_date_and_meatpiece1, thickness_dict_at_date_and_meatpiece1, delta_d_dict_at_date_and_meatpiece1, delta_d_star_dict_at_date_and_meatpiece1, d_min_dict_at_date_and_meatpiece1, A_dict_at_date_and_meatpiece1   = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
@@ -2907,9 +2940,32 @@ def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dic
         d_min_meatpiece2 = list(d_min_dict_at_date_and_meatpiece2.values())
         p_value_d_min = stats.ttest_ind(d_min_meatpiece1, d_min_meatpiece2, equal_var=False).pvalue
         d_min_pvalue_dict[date] = p_value_d_min
+        
+        Umax_1_all_dates += Umax_meatpiece1 
+        def_1_all_dates += def_meatpiece1 
+        thickness_1_all_dates += thickness_meatpiece1 
+        delta_d_1_all_dates += delta_d_meatpiece1 
+        delta_d_star_1_all_dates += delta_d_star_meatpiece1 
+        d_min_1_all_dates += d_min_meatpiece1 
+        A_1_all_dates += A_meatpiece1 
 
-    return Umax_pvalue_dict, def_pvalue_dict, thickness_pvalue_dict, delta_d_pvalue_dict, delta_d_star_pvalue_dict, d_min_pvalue_dict, A_pvalue_dict
+        Umax_2_all_dates += Umax_meatpiece2 
+        def_2_all_dates += def_meatpiece2 
+        thickness_2_all_dates += thickness_meatpiece2 
+        delta_d_2_all_dates += delta_d_meatpiece2 
+        delta_d_star_2_all_dates += delta_d_star_meatpiece2 
+        d_min_2_all_dates += d_min_meatpiece2 
+        A_2_all_dates += A_meatpiece2 
+        
+    Umax_pvalue_all_dates = stats.ttest_ind(Umax_1_all_dates, Umax_2_all_dates, equal_var=False).pvalue
+    def_pvalue_all_dates =  stats.ttest_ind(def_1_all_dates, def_2_all_dates, equal_var=False).pvalue
+    thickness_pvalue_all_dates = stats.ttest_ind(thickness_1_all_dates, thickness_2_all_dates, equal_var=False).pvalue
+    delta_d_pvalue_all_dates = stats.ttest_ind(delta_d_1_all_dates, delta_d_2_all_dates, equal_var=False).pvalue
+    delta_d_star_pvalue_all_dates = stats.ttest_ind(delta_d_star_1_all_dates, delta_d_star_2_all_dates, equal_var=False).pvalue
+    d_min_pvalue_all_dates = stats.ttest_ind(d_min_1_all_dates, d_min_2_all_dates, equal_var=False).pvalue
+    A_pvalue_all_dates = stats.ttest_ind(A_1_all_dates, A_2_all_dates, equal_var=False).pvalue
 
+    return Umax_pvalue_dict, def_pvalue_dict, thickness_pvalue_dict, delta_d_pvalue_dict, delta_d_star_pvalue_dict, d_min_pvalue_dict, A_pvalue_dict, Umax_pvalue_all_dates, def_pvalue_all_dates, thickness_pvalue_all_dates, delta_d_pvalue_all_dates, delta_d_star_pvalue_all_dates, d_min_pvalue_all_dates, A_pvalue_all_dates
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
@@ -2926,7 +2982,7 @@ if __name__ == "__main__":
     ids_where_not_failed, date_dict_not_failed, Umax_dict_not_failed, def_dict_not_failed, thickness_dict_not_failed, delta_d_dict_not_failed, delta_d_star_dict_not_failed, d_min_dict_not_failed, A_dict_not_failed  = remove_failed_A(ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict,A_dict, failed_dict)
     ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, deltad_dict, deltadstar_dict, dmin_dict, A_dict, failed_dict)
     # print(ids_where_not_failed_and_not_small_deltad)
-    compute_and_export_indicators_with_maturation_as_pkl(ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad, failed_dict, deltad_threshold, strain_threshold)
+    # compute_and_export_indicators_with_maturation_as_pkl(ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad, failed_dict, deltad_threshold, strain_threshold)
     export_indocators_as_txt(deltad_threshold, strain_threshold)
     # plot_recovery_indicators_with_maturation(deltad_threshold, strain_threshold) 
 
