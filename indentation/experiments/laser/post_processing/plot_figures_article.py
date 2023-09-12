@@ -10,6 +10,7 @@ import utils
 import os
 from indentation.experiments.laser.figures.utils import CreateFigure, Fonts, SaveFigure
 from indentation.experiments.laser.post_processing.read_file import Files
+from indentation.experiments.laser.post_processing.investigate_A import extract_data_at_given_date_and_meatpiece
 from indentation.experiments.laser.post_processing.identify_movement import Recovery
 from sklearn.linear_model import LinearRegression
 import seaborn as sns 
@@ -283,6 +284,45 @@ def plot_A_vs_texturometer_forces(deltad_threshold, strain_threshold, createfigu
     plt.close(fig_A_vs_force20)
 
         
+def plot_A_all_dates(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict):
+    data_values_FF = []
+    data_values_RDG = []
+    p_value = 0.009130028
+    dates = list(set(date_dict.values()))
+
+    for date in dates:
+        date = int(date)
+        ids_at_date_and_meatpiece1, Umax_dict_at_date_and_meatpiece1, def_dict_at_date_and_meatpiece1, thickness_dict_at_date_and_meatpiece1, delta_d_dict_at_date_and_meatpiece1, delta_d_star_dict_at_date_and_meatpiece1, d_min_dict_at_date_and_meatpiece1, A_dict_at_date_and_meatpiece1   = extract_data_at_given_date_and_meatpiece(date, 'FF', ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+        ids_at_date_and_meatpiece2, Umax_dict_at_date_and_meatpiece2 ,def_dict_at_date_and_meatpiece2, thickness_dict_at_date_and_meatpiece2, delta_d_dict_at_date_and_meatpiece2, delta_d_star_dict_at_date_and_meatpiece2, d_min_dict_at_date_and_meatpiece2, A_dict_at_date_and_meatpiece2   = extract_data_at_given_date_and_meatpiece(date, 'RDG', ids_list, date_dict,  Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+
+        data_values_FF += list(A_dict_at_date_and_meatpiece1.values())
+        data_values_RDG += list(A_dict_at_date_and_meatpiece2.values())
+    
+    # data_values_FF = (data_values_FF - min(data_values_FF)) / (max(data_values_FF) - min(data_values_FF))
+    # data_values_RDG = (data_values_RDG - min(data_values_RDG)) / (max(data_values_RDG) - min(data_values_RDG))
+    fig = createfigure.rectangle_figure(pixels=180)
+    ax = fig.gca()
+    color_rocket = sns.color_palette("rocket")
+    color_FF = color_rocket[3]
+    color_RDG = color_rocket[1]
+    top_pos = max(data_values_RDG)
+    x_values_FF = [1] * len(data_values_FF)
+    x_values_RDG = [2] * len(data_values_RDG)
+    ax.plot(x_values_FF, data_values_FF, 'o', color=color_FF, alpha=0.4, lw=0)
+    ax.plot(x_values_RDG, data_values_RDG, 'o', color=color_RDG, alpha=0.4, lw=0)
+    # ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1])
+    # ax.set_yticklabels([0, 0.2, 0.4, 0.6, 0.8, 1], font=fonts.serif(), fontsize=24)
+    ax.set_xticks([1, 2])
+    ax.set_xticklabels(['FF', 'RDG'], font=fonts.serif(), fontsize=24)
+    ax.set_xlim([0.5, 2.5])
+    # ax.set_ylim([-0.1, 1.1])
+    ax.tick_params(axis='y', labelsize=20)
+
+    ax.set_ylabel('a [-]', font=fonts.serif(), fontsize=24)
+    ax.annotate(r"$p_{value} = $" + str(np.round(p_value, 5)), (1.2, top_pos*0.9), font=fonts.serif(), fontsize=24)   
+    savefigure.save_as_png(fig, "p_value_" + "a")
+
+        
         
 if __name__ == "__main__":
     createfigure = CreateFigure()
@@ -292,7 +332,8 @@ if __name__ == "__main__":
     strain_threshold = 0.39
     current_path = utils.get_current_path()
     nb_of_time_increments_to_plot = 10
-    
+    ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict,A_dict, failed_dict = utils.extract_A_data_from_pkl()
+
     locations = {"230331_FF": [0, 20],
                  "230331_FF2_2C": [0, 20],
                  "230331_RDG": [2, 20],
@@ -312,4 +353,5 @@ if __name__ == "__main__":
                  "230515_P002": [-12, 0],
                  "230515_P011": [-15, -2]}
     # plot_recovery(locations,  createfigure, savefigure, fonts)
-    plot_A_vs_texturometer_forces(deltad_threshold, strain_threshold, createfigure, savefigure, fonts)
+    # plot_A_vs_texturometer_forces(deltad_threshold, strain_threshold, createfigure, savefigure, fonts)
+    plot_A_all_dates(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)

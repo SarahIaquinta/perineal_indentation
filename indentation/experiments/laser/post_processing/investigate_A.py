@@ -137,7 +137,7 @@ def remove_failed_A_and_small_deltad(deltad_threshold, strain_threshold, filenam
     A_dict_not_failed_and_not_small_deltad = {id: float(A_dict_not_failed[id]) for id in ids_where_not_failed_and_not_small_deltad}
     return ids_where_not_failed_and_not_small_deltad, date_dict_not_failed_and_not_small_deltad, Umax_dict_not_failed_and_not_small_deltad, def_dict_not_failed_and_not_small_deltad, thickness_dict_not_failed_and_not_small_deltad, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad
 
-def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict):
+def extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict):
     """
     Extract the data that was measured at a given date and on a given meatpiece
     
@@ -227,7 +227,7 @@ def compute_mean_and_std_at_given_date_and_meatpiece(date, meatpiece, deltad_thr
             
     """     
     ids_where_not_failed_and_not_small_deltad, _, Umax_dict_at_date_and_meatpiece, def_dict_at_date_and_meatpiece, thickness_dict_at_date_and_meatpiece, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad = remove_failed_A_and_small_deltad(deltad_threshold,strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict, failed_A_acqusitions)
-    ids_at_date_and_meatpiece, Umax_dict_at_date_and_meatpiece, def_dict_at_date_and_meatpiece, thickness_dict_at_date_and_meatpiece, delta_d_dict_at_date_and_meatpiece, delta_d_star_dict_at_date_and_meatpiece, d_min_dict_at_date_and_meatpiece, A_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_where_not_failed_and_not_small_deltad, Umax_dict_at_date_and_meatpiece, def_dict_at_date_and_meatpiece, thickness_dict_at_date_and_meatpiece, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad)
+    ids_at_date_and_meatpiece, Umax_dict_at_date_and_meatpiece, def_dict_at_date_and_meatpiece, thickness_dict_at_date_and_meatpiece, delta_d_dict_at_date_and_meatpiece, delta_d_star_dict_at_date_and_meatpiece, d_min_dict_at_date_and_meatpiece, A_dict_at_date_and_meatpiece = extract_data_at_given_date_and_meatpiece(date, meatpiece, ids_where_not_failed_and_not_small_deltad, date_dict, Umax_dict_at_date_and_meatpiece, def_dict_at_date_and_meatpiece, thickness_dict_at_date_and_meatpiece, delta_d_dict_not_failed_and_not_small_deltad, delta_d_star_dict_not_failed_and_not_small_deltad, d_min_dict_not_failed_and_not_small_deltad, A_dict_not_failed_and_not_small_deltad)
     mean_Umax, std_Umax, mean_def, std_def, mean_thickness, std_thickness, mean_delta_d, std_delta_d, mean_delta_d_star, std_delta_d_star, mean_d_min, std_d_min, mean_A, std_A = nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan
     if len(ids_at_date_and_meatpiece) >0:
         mean_Umax = statistics.mean(list(Umax_dict_at_date_and_meatpiece.values()))
@@ -2903,8 +2903,8 @@ def compute_pvalue_between_meatpieces(meatpiece1, meatpiece2, ids_list, date_dic
 
     for date in dates:
         date = int(date)
-        ids_at_date_and_meatpiece1, Umax_dict_at_date_and_meatpiece1, def_dict_at_date_and_meatpiece1, thickness_dict_at_date_and_meatpiece1, delta_d_dict_at_date_and_meatpiece1, delta_d_star_dict_at_date_and_meatpiece1, d_min_dict_at_date_and_meatpiece1, A_dict_at_date_and_meatpiece1   = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
-        ids_at_date_and_meatpiece2, Umax_dict_at_date_and_meatpiece2, def_dict_at_date_and_meatpiece2, thickness_dict_at_date_and_meatpiece2, delta_d_dict_at_date_and_meatpiece2, delta_d_star_dict_at_date_and_meatpiece2, d_min_dict_at_date_and_meatpiece2, A_dict_at_date_and_meatpiece2   = extract_data_at_given_date_and_meatpiece(date, meatpiece2, ids_list, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+        ids_at_date_and_meatpiece1, Umax_dict_at_date_and_meatpiece1, def_dict_at_date_and_meatpiece1, thickness_dict_at_date_and_meatpiece1, delta_d_dict_at_date_and_meatpiece1, delta_d_star_dict_at_date_and_meatpiece1, d_min_dict_at_date_and_meatpiece1, A_dict_at_date_and_meatpiece1   = extract_data_at_given_date_and_meatpiece(date, meatpiece1, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+        ids_at_date_and_meatpiece2, Umax_dict_at_date_and_meatpiece2, def_dict_at_date_and_meatpiece2, thickness_dict_at_date_and_meatpiece2, delta_d_dict_at_date_and_meatpiece2, delta_d_star_dict_at_date_and_meatpiece2, d_min_dict_at_date_and_meatpiece2, A_dict_at_date_and_meatpiece2   = extract_data_at_given_date_and_meatpiece(date, meatpiece2, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
         
         A_meatpiece1 = list(A_dict_at_date_and_meatpiece1.values())
         A_meatpiece2 = list(A_dict_at_date_and_meatpiece2.values())

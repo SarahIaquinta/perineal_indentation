@@ -45,8 +45,10 @@ def compute_stress_vector_relaxation(tau, datafile, sheet, step):
     Pi_list = np.zeros_like(S_H_list)
     Q_list[0], S_list[0], S_H_list[0], Pi_list[0] = 1, 1, 0, 1
     for i in i_list[1:]:
+        time = normalized_time[i]
         S_H_i = S_H_list[0]
         Q_i = np.exp(-delta_t/tau)*Q_list[i-1]
+        # Q_i = np.exp(-time/tau)
         S_i = Q_i + S_H_i
         S_H_list[i] = S_H_i 
         Q_list[i] = Q_i 

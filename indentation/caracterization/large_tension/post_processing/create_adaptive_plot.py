@@ -60,6 +60,19 @@ def adaptive_plot(datafile, sheet, step):
         q_list_relaxation, s_list_relaxation, s_h_list_relaxation, model_stress_relaxation = compute_stress_vector_relaxation_constant_tau(tau2, damage, datafile, sheet, step, initial_stress_values_relaxation)
         model_stress_load_relaxation = np.concatenate((model_stress_load, model_stress_relaxation), axis=None)
         return model_stress_load_relaxation
+    
+    def compute_pi_vector_load_relaxation_adaptive_constant_tau(c1, beta, tau1, damage):
+        initial_elongation = elongation_init_step_dict_load[step]
+        initial_stress_load = exp_stress_load[0]
+        s_h_load_init = 2*c1*(1-(initial_elongation**(-4)))
+        q_init = initial_stress_load/initial_elongation - s_h_load_init
+        initial_stress_values_load = q_init, initial_stress_load/initial_elongation, s_h_load_init, initial_stress_load
+        # exp_stress_relaxation = stress_list_during_steps_dict_relaxation[step]
+        q_list_load, s_list_load, s_h_list_load, model_stress_load = compute_stress_vector_load(c1, beta, tau1, damage, datafile, sheet, step, initial_stress_values_load)
+        initial_stress_values_relaxation = q_list_load[-1], s_list_load[-1], s_h_list_load[-1], model_stress_load[-1]
+        q_list_relaxation, s_list_relaxation, s_h_list_relaxation, model_stress_relaxation = compute_stress_vector_relaxation_constant_tau(tau1, damage, datafile, sheet, step, initial_stress_values_relaxation)
+        model_stress_load_relaxation = np.concatenate((model_stress_load, model_stress_relaxation), axis=None)
+        return model_stress_load_relaxation
 
     # def compute_pi_vector_load_adaptive(c1, beta, tau):
     #     initial_elongation = elongation_init_step_dict_load[step]
@@ -75,7 +88,7 @@ def adaptive_plot(datafile, sheet, step):
     #     return model_stress_load
     
     fig, ax = plt.subplots()
-    line, = ax.plot(time, compute_pi_vector_load_relaxation_adaptive(c1_init, beta_init, tau1_init, tau2_init, damage_init), '-b', lw=2)
+    line, = ax.plot(time, compute_pi_vector_load_relaxation_adaptive(c1_init, beta_init, tau1_init, tau1_init, damage_init), '-b', lw=2)
     # adjust the main plot to make room for the sliders
     fig.subplots_adjust(left=0.4, bottom=0.25)
     
@@ -122,15 +135,15 @@ def adaptive_plot(datafile, sheet, step):
     )
 
     # Make a vertically oriented slider to control the amplitude
-    axtau2 = fig.add_axes([0.25, 0.25, 0.0225, 0.63])
-    tau2_slider = Slider(
-        ax=axtau2,
-        label="tauR",
-        valmin=1,
-        valmax=100,
-        valinit=tau2_init,
-        orientation="vertical"
-    )
+    # axtau2 = fig.add_axes([0.25, 0.25, 0.0225, 0.63])
+    # tau2_slider = Slider(
+    #     ax=axtau2,
+    #     label="tauR",
+    #     valmin=1,
+    #     valmax=100,
+    #     valinit=tau2_init,
+    #     orientation="vertical"
+    # )
 
     # Make a vertically oriented slider to control the amplitude
     axdamage = fig.add_axes([0.325, 0.25, 0.0225, 0.63])
@@ -146,14 +159,14 @@ def adaptive_plot(datafile, sheet, step):
 
     # The function to be called anytime a slider's value changes
     def update(val):
-        line.set_ydata(compute_pi_vector_load_relaxation_adaptive(c1_slider.val, beta_slider.val, tau1_slider.val, tau2_slider.val, damage_slider.val))
+        line.set_ydata(compute_pi_vector_load_relaxation_adaptive_constant_tau(c1_slider.val, beta_slider.val, tau1_slider.val, damage_slider.val))
         fig.canvas.draw_idle()
         
     # register the update function with each slider
     c1_slider.on_changed(update)
     beta_slider.on_changed(update)
     tau1_slider.on_changed(update)
-    tau2_slider.on_changed(update)
+    # tau2_slider.on_changed(update)
     damage_slider.on_changed(update)
     
     # Create a `matplotlib.widgets.Button` to reset the sliders to initial values.
@@ -164,7 +177,7 @@ def adaptive_plot(datafile, sheet, step):
         c1_slider.reset()
         beta_slider.reset()
         tau1_slider.reset()
-        tau2_slider.reset()
+        # tau2_slider.reset()
         damage_slider.reset()
     button.on_clicked(reset)
     
@@ -185,7 +198,7 @@ def compute_stress_vector_load(c1, beta, tau, damage, datafile, sheet, step, pre
     for i in i_list[1:]:
         lambda_i = elongation_list[i]
         time_i = time[i]
-        S_H_i = 2*c1*(1-(lambda_i**(-4)))
+        S_H_i = 2*c1*(1-(lambda_i**(-4)))*(1-damage)
         Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
         # Q_i = beta*(S_H_i - S_H_list[i-1]) + np.exp(-delta_t/tau)*Q_list[i-1]
         S_i = Q_i + S_H_i
