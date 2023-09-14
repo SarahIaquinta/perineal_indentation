@@ -199,7 +199,9 @@ def compute_stress_vector_load(c1, beta, tau, damage, datafile, sheet, step, pre
         lambda_i = elongation_list[i]
         time_i = time[i]
         S_H_i = 2*c1*(1-(lambda_i**(-4)))*(1-damage)
-        Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
+        # Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
+        Q_i = Q_list[i-1] + beta*(S_H_i - S_H_list[i-1])*np.exp(-delta_t/tau)
+
         # Q_i = beta*(S_H_i - S_H_list[i-1]) + np.exp(-delta_t/tau)*Q_list[i-1]
         S_i = Q_i + S_H_i
         S_H_list[i] = S_H_i 
@@ -219,11 +221,15 @@ def compute_stress_vector_relaxation_constant_tau(tau, damage, datafile, sheet, 
     S_list = np.zeros_like(S_H_list)
     Pi_list = np.zeros_like(S_H_list)
     Q_list[0], S_list[0], S_H_list[0], Pi_list[0] = load_step_values
+    t1 = time[0]
+    Q1 = Q_list[0]
     for i in i_list[1:]:
         elongation = elongation_list[i]
-        time_i = time[i]
+        t = time[i]
         S_H_i = S_H_list[0]
-        Q_i = np.exp(-delta_t/tau)*Q_list[i-1]
+        # Q_i = np.exp(-delta_t/tau)*Q_list[i-1]
+        Q_i = np.exp((t1-t)/tau)*Q1
+
         S_i = Q_i + S_H_i
         S_H_list[i] = S_H_i 
         Q_list[i] = Q_i 

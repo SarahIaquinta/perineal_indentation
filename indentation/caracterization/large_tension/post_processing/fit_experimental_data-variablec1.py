@@ -22,9 +22,8 @@ import itertools
 
 
 def compute_stress_vector_step_variable_c1_load(parameters, datafile, sheet, step, previous_step_values):
-    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
-    elongation_list, time, experimental_stress = elongation_list_during_steps_dict_load[step], time_list_during_steps_dict_load[step], stress_list_during_steps_dict_load[step]
-    # time, elongation_list, stress = read_sheet_in_datafile(datafile, sheet)
+    _, _, _, _, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, _, _, _, _, _, _, _ = extract_step_data(datafile, sheet)
+    elongation_list, time, _ = elongation_list_during_steps_dict_load[step], time_list_during_steps_dict_load[step], stress_list_during_steps_dict_load[step]
     elongation_list = elongation_list[:]
     time = time[:]
     delta_t_list = np.diff(time)
@@ -39,8 +38,10 @@ def compute_stress_vector_step_variable_c1_load(parameters, datafile, sheet, ste
     for i in i_list[1:]:
         lambda_i = elongation_list[i]
         S_H_i = 2*c1*(1-(lambda_i**(-4)))
-        Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
-        # Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*(S_H_i - S_H_list[i-1])
+        ## Calcul de Q_i avec la formule de l'article :
+        # Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
+        ## Calcul de Q_i par integration simple :
+        Q_i = Q_list[i-1] + beta*(S_H_i - S_H_list[i-1])*np.exp(-delta_t/tau)
         S_i = Q_i + S_H_i
         S_H_list[i] = S_H_i 
         Q_list[i] = Q_i 
@@ -50,7 +51,7 @@ def compute_stress_vector_step_variable_c1_load(parameters, datafile, sheet, ste
     Pi_list = np.multiply(elongation_list, S_list)
     return Q_list, S_list, S_H_list, Pi_list
 
-def compute_stress_vector_step_variable_c1_relaxation(tau, datafile, sheet, step, load_step_values):
+def compute_stress_vector_step_relaxation(tau, datafile, sheet, step, load_step_values):
     _, _, _, _, _, _, _, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
     elongation_list, time, experimental_stress = elongation_list_during_steps_dict_relaxation[step], time_list_during_steps_dict_relaxation[step], stress_list_during_steps_dict_relaxation[step]
     # time, elongation_list, stress = read_sheet_in_datafile(datafile, sheet)
@@ -62,10 +63,12 @@ def compute_stress_vector_step_variable_c1_relaxation(tau, datafile, sheet, step
     Pi_list = np.zeros_like(S_H_list)
     Q_list[0], S_list[0], S_H_list[0], Pi_list[0] = load_step_values
     t1 = time[0]
+    Q1 = Q_list[0]
     for i in i_list[1:]:
         t = time[i]
         S_H_i = S_H_list[0]
-        Q_i = np.exp(-delta_t/tau)*Q_list[i-1]
+        Q_i = np.exp((t1-t)/tau)*Q1
+        # Q_i = np.exp(-delta_t/tau)*Q_list[i-1]
         # Q_i = (S_list[0] -  S_H_list[0])*np.exp((t1-t)/tau)
         S_i = Q_i+ S_H_i
         S_H_list[i] = S_H_i 
@@ -76,54 +79,31 @@ def compute_stress_vector_step_variable_c1_relaxation(tau, datafile, sheet, step
     Pi_list = np.multiply(elongation_list, S_list)
     return Q_list, S_list, S_H_list, Pi_list
 
-    
-
-# def find_parameters_variable_c1_load(datafile, sheet, step, previous_step_values, previous_step_optimized_parameters, minimization_method):
-#     index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
-#     elongation_list, time, experimental_stress = elongation_list_during_steps_dict_load[step], time_list_during_steps_dict_load[step], stress_list_during_steps_dict_load[step]
-
-#     def minimization_function(parameters):
-#         Q_list, S_list, S_H_list, Pi_list = compute_stress_vector_step_variable_c1_load(parameters, datafile, sheet, step, previous_step_values)
-#         least_square = mean_squared_error(experimental_stress[:], Pi_list)
-#         return least_square
-
-#     res = minimize(minimization_function, x0=previous_step_optimized_parameters, method=minimization_method, bounds=[(0, 100), (1, 100), (0.1, 100)], tol=1e-2,
-#             options={'disp': False}) 
-#     # print(res.message)
-#     parameters = res.x
-#     optimized_c1, optimized_beta, optimized_tau = parameters[0], parameters[1], parameters[2]
-#     return optimized_c1, optimized_beta, optimized_tau, parameters
-
-
-
 def find_parameters_variablec1_variable_beta_load_and_relaxation(datafile, sheet, step, previous_step_values, previous_step_optimized_parameters, minimization_method):
-    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
-    elongation_list_load, time_load, experimental_stress_load = elongation_list_during_steps_dict_load[step], time_list_during_steps_dict_load[step], stress_list_during_steps_dict_load[step]
-    elongation_list_relaxation, time_relaxation, experimental_stress_relaxation = elongation_list_during_steps_dict_relaxation[step], time_list_during_steps_dict_relaxation[step], stress_list_during_steps_dict_relaxation[step]
+    _, _, _, _, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
+    _, _, experimental_stress_load = elongation_list_during_steps_dict_load[step], time_list_during_steps_dict_load[step], stress_list_during_steps_dict_load[step]
+    _, _, experimental_stress_relaxation = elongation_list_during_steps_dict_relaxation[step], time_list_during_steps_dict_relaxation[step], stress_list_during_steps_dict_relaxation[step]
 
     def minimization_function(parameters):
         Q_list_load, S_list_load, S_H_list_load, Pi_list_load = compute_stress_vector_step_variable_c1_load(parameters, datafile, sheet, step, previous_step_values)
         # least_square_load = mean_squared_error(experimental_stress_load, Pi_list_load)
         load_step_values = Q_list_load[-1], S_list_load[-1], S_H_list_load[-1], Pi_list_load[-1]
         c1, beta, tau = parameters
-        Q_list_relaxation, S_list_relaxation, S_H_list_relaxation, Pi_list_relaxation = compute_stress_vector_step_variable_c1_relaxation(tau, datafile, sheet, step, load_step_values)
+        _, _, _, Pi_list_relaxation = compute_stress_vector_step_relaxation(tau, datafile, sheet, step, load_step_values)
         experimental_stress_load_and_relaxation = np.concatenate((experimental_stress_load, experimental_stress_relaxation), axis=None)
         Pi_list_load_and_relaxation = np.concatenate((Pi_list_load, Pi_list_relaxation), axis=None)
-        # least_square_load_relaxation = mean_squared_error(experimental_stress_load_and_relaxation, Pi_list_load_and_relaxation)
-        least_square_load_relaxation = np.linalg.norm((experimental_stress_load_and_relaxation - Pi_list_load_and_relaxation), ord=4)
-        least_square = least_square_load_relaxation#least_square_load + least_square_relaxation
+        least_square_load_relaxation = np.linalg.norm((experimental_stress_load_and_relaxation - Pi_list_load_and_relaxation), ord=2)
+        least_square = least_square_load_relaxation
         return least_square
 
     res = minimize(minimization_function, x0=previous_step_optimized_parameters, method=minimization_method, bounds=[(0, 100), (1, 100), (0.1, 100)],
                options={'disp': False}) 
-    # print(res.message)
     parameters = res.x
     optimized_c1, optimized_beta, optimized_tau = parameters[0], parameters[1], parameters[2]
     return optimized_c1, optimized_beta, optimized_tau, parameters
 
 
-
-def find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method_load):
+def find_parameters_all_steps_variable_c1_variable_beta(datafile, sheet, minimization_method_load):
     c1_dict_load = {}
     beta_dict_load = {}
     tau_dict_load = {}
@@ -132,7 +112,7 @@ def find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method_l
     beta_dict_relaxation = {}
     tau_dict_relaxation = {}
     fitted_stress_dict_relaxation = {}
-    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
+    _, index_final_step_dict_load, _, _, _, _, _, _, _, _, _, _, _, _ = extract_step_data(datafile, sheet)
     step_numbers = index_final_step_dict_load.keys()
     previous_step_values = 0, 0, 0, 0
     
@@ -152,7 +132,7 @@ def find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method_l
     c1_dict_relaxation[0] = optimized_c1_step_0
     beta_dict_relaxation[0] = optimized_beta_step_0
     tau_dict_relaxation[0] = tau_relaxation
-    Q_list, S_list, S_H_list, Pi_list = compute_stress_vector_step_variable_c1_relaxation(tau_relaxation,  datafile, sheet, 0, load_step_values)
+    Q_list, S_list, S_H_list, Pi_list = compute_stress_vector_step_relaxation(tau_relaxation,  datafile, sheet, 0, load_step_values)
     fitted_stress_dict_relaxation[0] = Pi_list
     previous_step_values = Q_list[-1], S_list[-1], S_H_list[-1], Pi_list[-1]
     previous_step_optimized_parameters_load = [optimized_c1_step_0, optimized_beta_step_0, tau_relaxation]
@@ -173,7 +153,7 @@ def find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method_l
         c1_dict_relaxation[p] = optimized_c1_load
         beta_dict_relaxation[p] = optimized_beta_load
         tau_dict_relaxation[p] = tau_relaxation
-        Q_list, S_list, S_H_list, Pi_list = compute_stress_vector_step_variable_c1_relaxation(tau_relaxation,  datafile, sheet, p, load_step_values)
+        Q_list, S_list, S_H_list, Pi_list = compute_stress_vector_step_relaxation(tau_relaxation,  datafile, sheet, p, load_step_values)
         fitted_stress_dict_relaxation[p] = Pi_list
         previous_step_values = Q_list[-1], S_list[-1], S_H_list[-1], Pi_list[-1]
         previous_step_optimized_parameters_relaxation = [tau_relaxation]
@@ -182,7 +162,7 @@ def find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method_l
 
 
 def compute_and_export_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method):
-    c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation = find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method)
+    c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation = find_parameters_all_steps_variable_c1_variable_beta(datafile, sheet, minimization_method)
     pkl_filename = datafile[0:6] + "_" + sheet + "_" + minimization_method + "_variable_c1_variable_beta_load_and_relaxation.pkl"
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
@@ -192,8 +172,8 @@ def compute_and_export_results_variable_c1_variable_beta_load_and_relaxation(dat
 
 
 def plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method_load):
-    index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)    
-    c1_dict_load, beta_dict_load, tau_dict_load, fitted_stress_dict_load, c1_dict_relaxation, beta_dict_relaxation, tau_dict_relaxation, fitted_stress_dict_relaxation = find_parameters_all_steps_variable_c1(datafile, sheet, minimization_method_load)
+    _, index_final_step_dict_load, _, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, _, _, _, _, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)    
+    c1_dict_load, beta_dict_load, tau_dict_load, fitted_stress_dict_load, _, beta_dict_relaxation, tau_dict_relaxation, fitted_stress_dict_relaxation = find_parameters_all_steps_variable_c1_variable_beta(datafile, sheet, minimization_method_load)
     
     def plot_experimental_vs_fitted_data(datafile, sheet, minimization_method_load):
         # fig_elongation_vs_time = createfigure.rectangle_figure(pixels=180)
@@ -250,6 +230,7 @@ def plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, 
         
         # savefigure.save_as_png(fig_elongation_vs_time, date + "_" + sheet + "_elongation_vs_time_exp_vs_model_load_relaxation_L_" + minimization_method_load + "_variablec1_variable_beta_load_and_relaxation")
         savefigure.save_as_png(fig_stress_vs_time, date + "_" + sheet + "_stress_vs_time_exp_vs_model_load_relaxation_L_" + minimization_method_load + "_variablec1_variable_beta_load_and_relaxation")
+        savefigure.save_as_svg(fig_stress_vs_time, date + "_" + sheet + "_stress_vs_time_exp_vs_model_load_relaxation_L_" + minimization_method_load + "_variablec1_variable_beta_load_and_relaxation")
         savefigure.save_as_png(fig_stress_vs_elongation, date + "_" + sheet + "_stress_vs_elongation_exp_vs_model_load_relaxation_L_" + minimization_method_load + "_variablec1_variable_beta_load_and_relaxation")
         
      
@@ -337,6 +318,7 @@ def plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, 
     plot_experimental_vs_fitted_data(datafile, sheet, minimization_method_load)
     plot_fitted_parameters(datafile, sheet, minimization_method_load)
     
+
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
@@ -352,32 +334,8 @@ if __name__ == "__main__":
     
     minimization_method_load_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
     sheets_list_with_data_temp = ["C1PA"]
-    # export_results_as_txt(files_zwick, minimization_method_load_list[0]_list[0])
-    regions = ['P', 'S', 'D', 'T']
-    # for pig in pig_numbers:
-    #     plot_indicators_and_stress_per_pig(pig, files_zwick, 'CG', 'TNC')
-    # for region in regions:
-    #     plot_indicators_and_stress_per_region(region, files_zwick, 'CG', 'TNC')
+
     for sheet in sheets_list_with_data_temp:
-    # # plot_experimental_data_with_steps(datafile, sheet1)
-    #     # index_init_step_dict, index_final_step_dict, elongation_init_step_dict, elongation_final_step_dict = store_peaks_information(datafile, sheet1)
-    #     # elongation_list_during_steps_dict, time_list_during_steps_dict, stress_list_during_steps_dict = store_responses_of_steps(datafile, sheet1)
-    #     # print(sheet, "DOING")
-    #     # try:
-    #     #     store_and_export_step_data(datafile, sheet)
-    #     # except:
-    #     #     print("FAILED", sheet)
-    #     # print(sheet, "DONE")
-    #     # index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)
-    # # c1_dict_load, beta_dict_load, tau_dict_load, fitted_stress_dict_load = find_parameters_all_steps(datafile, sheet1)
-        # for minimization_method_loa  in list(itertools.product(minimization_method_load_list_list)):
         for minimization_method in minimization_method_load_list:
-            # compute_and_export_results_load_and_relaxation(datafile, sheet, minimization_method)
             plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method)
-            # try:
-            #     print('load' , minimization_method_load, 'DONE')
-            #     print('relaxation' , 'DONE')
-            # except:
-            #     print('load' , minimization_method_load, 'FAILED')
-            #     print('relaxation' , 'FAILED')
     print('hello')
