@@ -7,7 +7,7 @@ import seaborn as sns
 from indentation.caracterization.large_tension.post_processing.read_file import read_sheet_in_datafile, find_peaks
 from indentation.caracterization.large_tension.post_processing.identify_steps import store_and_export_step_data
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
-from indentation.caracterization.large_tension.post_processing.fit_experimental_data import extract_step_data
+from indentation.caracterization.large_tension.post_processing.fit_experimental_data import extract_step_data, get_sheets_for_given_pig, get_pig_numbers
 
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
@@ -161,7 +161,7 @@ def find_parameters_load_and_relaxation(c1, datafile, sheet, step, previous_step
 
 
 
-def find_parameters_all_steps_load_and_relaxation(datafile, sheet, minimization_method):
+def find_parameters_all_steps_fixedc1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method):
     c1_dict = {}
     beta_dict = {}
     tau_dict = {}
@@ -208,7 +208,7 @@ def find_parameters_all_steps_load_and_relaxation(datafile, sheet, minimization_
 
 
 def compute_and_export_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method):
-    c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation = find_parameters_all_steps_load_and_relaxation(datafile, sheet, minimization_method)
+    c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation = find_parameters_all_steps_fixedc1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method)
     pkl_filename = datafile[0:6] + "_" + sheet + "_" + minimization_method + "_variable_c1_variable_beta_load_and_relaxation.pkl"
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
@@ -219,7 +219,13 @@ def compute_and_export_results_variable_c1_variable_beta_load_and_relaxation(dat
 
 def plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method_load):
     _, index_final_step_dict_load, _, elongation_final_step_dict_load, elongation_list_during_steps_dict_load, time_list_during_steps_dict_load, stress_list_during_steps_dict_load, _, _, _, _, elongation_list_during_steps_dict_relaxation, time_list_during_steps_dict_relaxation, stress_list_during_steps_dict_relaxation = extract_step_data(datafile, sheet)    
-    c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation = find_parameters_all_steps_load_and_relaxation(datafile, sheet, minimization_method_load)
+    # c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation = find_parameters_all_steps_fixedc1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method_load)
+    pkl_filename = datafile[0:6] + "_" + sheet + "_" + minimization_method + "_variable_c1_variable_beta_load_and_relaxation.pkl"
+    path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
+    complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
+    with open(complete_pkl_filename, "rb") as f:
+        [c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation] = pickle.load(f)
+
     
     def plot_experimental_vs_fitted_data(datafile, sheet, minimization_method_load):
         # fig_elongation_vs_time = createfigure.rectangle_figure(pixels=180)
@@ -364,6 +370,83 @@ def plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, 
     plot_experimental_vs_fitted_data(datafile, sheet, minimization_method_load)
     plot_fitted_parameters(datafile, sheet, minimization_method_load)
     
+    
+
+       
+def plot_indicators_and_stress_per_pig(pig_number, files, minimization_method):
+    palette = sns.color_palette("Set2")
+    datafile_list = files_zwick.import_files(experiment_date)
+    datafile = datafile_list[0]
+    corresponding_sheets_pig = get_sheets_for_given_pig(pig_number, files)
+    path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
+    color_dict_region = {"P":palette[3], "T":palette[2], "D":palette[4], "S":palette[1]}
+    fig_stress_vs_time = createfigure.rectangle_figure(pixels=180)
+    ax_stress_vs_time = fig_stress_vs_time.gca()
+    fig_c1_vs_elongation = createfigure.rectangle_figure(pixels=180)
+    ax_c1_vs_elongation = fig_c1_vs_elongation.gca()
+    fig_tau_vs_elongation = createfigure.rectangle_figure(pixels=180)
+    ax_tau_vs_elongation = fig_tau_vs_elongation.gca()
+    fig_beta_vs_elongation = createfigure.rectangle_figure(pixels=180)
+    ax_beta_vs_elongation = fig_beta_vs_elongation.gca()
+    
+    ax_stress_vs_time.plot([0], [0], '-', color=palette[3], label="P")
+    ax_stress_vs_time.plot([0], [0], '-', color=palette[2], label="T")
+    ax_stress_vs_time.plot([0], [0], '-', color=palette[4], label="D")
+    ax_stress_vs_time.plot([0], [0], '-', color=palette[1], label="S")
+    
+    for sheet in corresponding_sheets_pig:
+        region = sheet[-2]
+        label = sheet[-2:]
+        color = color_dict_region[region]
+        
+        pkl_filename = datafile[0:6] + "_" + sheet + "_" + minimization_method + "_fixed_c1_variable_beta_load_and_relaxation.pkl"
+        complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
+        with open(complete_pkl_filename, "rb") as f:
+            [c1_dict, beta_dict, tau_dict, fitted_stress_dict_load, fitted_stress_dict_relaxation] = pickle.load(f)
+
+        
+        _, _, elongation_init_step_dict_load, _, _, time_list_during_steps_dict_load, stress_dict_load_exp, _, _, _, _, _, time_list_during_steps_dict_relaxation, stress_dict_relax_exp = extract_step_data(datafile, sheet)    
+        for i in range(len(time_list_during_steps_dict_load)):
+            ax_stress_vs_time.plot(list(time_list_during_steps_dict_load.values())[i][0:len(time_list_during_steps_dict_load):100], list(stress_dict_load_exp.values())[i][0:len(time_list_during_steps_dict_load):100], 'o', markeredgecolor=color, ms=5, markerfacecolor='none')
+            ax_stress_vs_time.plot(list(time_list_during_steps_dict_load.values())[i], list(fitted_stress_dict_load.values())[i], '-', color=color, lw=1)
+            ax_stress_vs_time.plot(list(time_list_during_steps_dict_relaxation.values())[i][0:len(time_list_during_steps_dict_load):100], list(stress_dict_relax_exp.values())[i][0:len(time_list_during_steps_dict_load):100], 'o', markeredgecolor=color, ms=5, markerfacecolor='none')
+            ax_stress_vs_time.plot(list(time_list_during_steps_dict_relaxation.values())[i], list(fitted_stress_dict_relaxation.values())[i], '-', color=color, lw=1)
+        
+        
+        steps = c1_dict.keys()
+        elongations = list(elongation_init_step_dict_load.values())
+        ax_c1_vs_elongation.plot(elongations, list(c1_dict.values()), 'o-', color=color, ms=5, lw=1, label=label)
+        ax_tau_vs_elongation.plot(elongations, list(tau_dict.values()), 'o-', color=color, ms=5, lw=1, label=label)
+        ax_beta_vs_elongation.plot(elongations, list(beta_dict.values()), 'o-', color=color, ms=5, lw=1, label=label)
+        
+    
+    ax_stress_vs_time.set_xlabel("time [s]", font=fonts.serif(), fontsize=26)
+    ax_stress_vs_time.set_ylabel(r"$\Pi_x^{exp}$ [kPa]", font=fonts.serif(), fontsize=26)
+
+    ax_c1_vs_elongation.set_xlabel(r"$\lambda_x$ [-]", font=fonts.serif(), fontsize=26)
+    ax_tau_vs_elongation.set_xlabel(r"$\lambda_x$ [-]", font=fonts.serif(), fontsize=26)
+    ax_beta_vs_elongation.set_xlabel(r"$\lambda_x$ [-]", font=fonts.serif(), fontsize=26)
+    ax_c1_vs_elongation.set_ylabel(r"$c_1$ [kPa]", font=fonts.serif(), fontsize=26)
+    ax_tau_vs_elongation.set_ylabel(r"$\tau$ [s]", font=fonts.serif(), fontsize=26)
+    ax_beta_vs_elongation.set_ylabel(r"$\beta$ [?]", font=fonts.serif(), fontsize=26)
+    
+    ax_stress_vs_time.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
+    ax_c1_vs_elongation.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
+    ax_tau_vs_elongation.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
+    ax_beta_vs_elongation.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
+       
+    savefigure.save_as_png(fig_stress_vs_time, datafile[0:6] + "_" +  "pig" + str(pig_number) + "_stress_vs_time_L_" + minimization_method + "fixedc1_variable_beta_load_and_relaxation")
+    savefigure.save_as_png(fig_c1_vs_elongation, datafile[0:6] + "_" +  "pig" + str(pig_number) + "_c1_vs_elongation_L_" + minimization_method + "fixedc1_variable_beta_load_and_relaxation")
+    savefigure.save_as_png(fig_tau_vs_elongation, datafile[0:6] + "_" +  "pig" + str(pig_number) + "_tau_vs_elongation_L_" + minimization_method + "fixedc1_variable_beta_load_and_relaxation")
+    savefigure.save_as_png(fig_beta_vs_elongation, datafile[0:6] + "_" +  "pig" + str(pig_number) + "_beta_vs_elongation_L_" + minimization_method + "fixedc1_variable_beta_load_and_relaxation")
+
+    plt.close(fig_stress_vs_time)
+    plt.close(fig_c1_vs_elongation)
+    plt.close(fig_tau_vs_elongation)
+    plt.close(fig_beta_vs_elongation)
+
+
+    
 
 if __name__ == "__main__":
     createfigure = CreateFigure()
@@ -378,10 +461,24 @@ if __name__ == "__main__":
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     
-    minimization_method_load_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
-    sheets_list_with_data_temp = ["C1PA"]
-
-    for sheet in sheets_list_with_data_temp:
+    minimization_method_load_list = ['CG']#'Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
+    # sheets_list_with_data_temp = ["C1PA"]
+    pig_numbers = get_pig_numbers(files_zwick, experiment_date)
+    regions = ['P', 'S', 'D', 'T']
+    
+    for sheet in sheets_list_with_data:
         for minimization_method in minimization_method_load_list:
-            plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method)
+            try:
+                plot_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method)
+            except:
+                None# try:
+            #     # compute_and_export_results_variable_c1_variable_beta_load_and_relaxation(datafile, sheet, minimization_method)
+                
+            # except:
+            #     None
+    # for pig in pig_numbers:
+    #     try:
+    #         plot_indicators_and_stress_per_pig(pig, files_zwick, 'CG')
+    #     except:
+    #         None
     print('hello')

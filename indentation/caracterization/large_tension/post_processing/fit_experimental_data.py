@@ -913,7 +913,7 @@ def export_results_as_txt(files, minimization_method_load, minimization_method_r
             
     f.close()
 
-def get_pig_numbers(files):
+def get_pig_numbers(files, experiment_date):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
     f = open(complete_txt_filename, "w")
@@ -1119,15 +1119,15 @@ if __name__ == "__main__":
     
     minimization_method_load_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
     minimization_method_relaxation_list =  ['TNC']#['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
-    sheets_list_with_data_temp = ["C1PA"]
+    # sheets_list_with_data_temp = ["C1PA"]
     # export_results_as_txt(files_zwick, minimization_method_load_list[0], minimization_method_relaxation_list[0])
     pig_numbers = get_pig_numbers(files_zwick)
     regions = ['P', 'S', 'D', 'T']
-    # for pig in pig_numbers:
-    #     plot_indicators_and_stress_per_pig(pig, files_zwick, 'CG', 'TNC')
-    # for region in regions:
-    #     plot_indicators_and_stress_per_region(region, files_zwick, 'CG', 'TNC')
-    for sheet in sheets_list_with_data_temp:
+    for pig in pig_numbers:
+        plot_indicators_and_stress_per_pig(pig, files_zwick, 'CG', 'TNC')
+    for region in regions:
+        plot_indicators_and_stress_per_region(region, files_zwick, 'CG', 'TNC')
+    # for sheet in sheets_list_with_data_temp:
     # # plot_experimental_data_with_steps(datafile, sheet1)
     #     # index_init_step_dict, index_final_step_dict, elongation_init_step_dict, elongation_final_step_dict = store_peaks_information(datafile, sheet1)
     #     # elongation_list_during_steps_dict, time_list_during_steps_dict, stress_list_during_steps_dict = store_responses_of_steps(datafile, sheet1)

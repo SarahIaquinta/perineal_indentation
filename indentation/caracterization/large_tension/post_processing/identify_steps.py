@@ -154,5 +154,9 @@ if __name__ == "__main__":
     sheet1 = sheets_list_with_data[0]
     # index_init_step_dict_load, index_final_step_dict_load, elongation_init_step_dict_load, elongation_final_step_dict_load, index_init_step_dict_relaxation, index_final_step_dict_relaxation, elongation_init_step_dict_relaxation, elongation_final_step_dict_relaxation = store_peaks_information(datafile, sheet1)
     # elongation_list_during_steps_dict, time_list_during_steps_dict, stress_list_during_steps_dict = store_responses_of_steps(datafile, sheet1)
-    store_and_export_step_data(datafile, sheet1)
+    for sheet in sheets_list_with_data:
+        try:
+            store_and_export_step_data(datafile, sheet)
+        except:
+            None
     print('hello')
