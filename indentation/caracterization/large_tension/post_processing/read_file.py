@@ -45,7 +45,7 @@ def read_sheet_in_datafile(datafile, sheet):
 
 def find_peaks(datafile, sheet):
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
-    elongation_step_values = np.arange(1.1, 2.2, 0.1)
+    elongation_step_values = np.arange(1.2, 2.2, 0.1)
     end_load_peak_indices = []
     elongation_end_load_peak = []
     times_end_load_peak = []
@@ -57,7 +57,7 @@ def find_peaks(datafile, sheet):
     stress_beginning_load_peak = [0]
     
     for elongation_step in elongation_step_values:
-        first_elongation_step_index = np.where(elongation == utils.find_nearest(elongation, 0.999*elongation_step))[0][0]
+        first_elongation_step_index = np.where(elongation == utils.find_nearest(elongation, 0.99*elongation_step))[0][0]
         time_at_first_elongation_step = time[first_elongation_step_index]
         stress_at_first_elongation_step = stress[first_elongation_step_index]
         end_load_peak_indices.append(first_elongation_step_index)
@@ -133,15 +133,15 @@ if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()
-    experiment_date = '230727'
+    experiment_date = '231012'
     files_zwick = Files_Zwick('large_tension_data.xlsx')
     datafile_list = files_zwick.import_files(experiment_date)
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     sheet1 = sheets_list_with_data[0]
     # time, elongation, stress = read_sheet_in_datafile(datafile, sheet1)
-    plot_experimental_data(datafile, sheet1)
-    # for sheet in sheets_list_with_data:
-    #     plot_experimental_data(datafile, sheet)
+    # plot_experimental_data(datafile, sheet1)
+    for sheet in sheets_list_with_data:
+        plot_experimental_data(datafile, sheet)
     # find_peaks(datafile, sheet1)
     print('hello')

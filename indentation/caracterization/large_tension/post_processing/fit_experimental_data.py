@@ -930,7 +930,7 @@ def get_pig_numbers(files, experiment_date):
     corresponding_sheets = [str(i) for i in a]
     return corresponding_sheets
 
-def get_sheets_for_given_pig(pig_number, files):
+def get_sheets_for_given_pig(pig_number, files, experiment_date):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
     f = open(complete_txt_filename, "w")
@@ -945,7 +945,7 @@ def get_sheets_for_given_pig(pig_number, files):
     corresponding_sheets = [idx for idx in sheet_list if idx[1:-2] == str(pig_number)]
     return corresponding_sheets
 
-def get_sheets_for_given_region(region, files):
+def get_sheets_for_given_region(region, files, experiment_date):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
     f = open(complete_txt_filename, "w")

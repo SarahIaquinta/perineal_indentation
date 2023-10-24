@@ -89,11 +89,12 @@ def find_nearest(array, value):
     array = np.asarray(array)
     # diff_indices = np.zeros_like(array)
     diff_list = np.zeros_like(array)
+
     for i in range(len(diff_list)):
         if ~np.isnan(array[i]):
-            diff = np.abs(array[i] - value)
-            # diff_index = i
+            diff = abs(array[i] - value)
             diff_list[i] = diff
+            # diff_index = i
             # diff_indices[i] = diff_index
         else:
             # diff_indices[i] = nan
