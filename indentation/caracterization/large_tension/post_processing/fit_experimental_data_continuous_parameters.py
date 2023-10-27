@@ -493,7 +493,7 @@ def export_results_as_txt(files, minimization_method_load, minimization_method_r
             
     f.close()
 
-def get_pig_numbers(files):
+def get_pig_numbers(files, experiment_date):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
     f = open(complete_txt_filename, "w")
@@ -510,33 +510,33 @@ def get_pig_numbers(files):
     corresponding_sheets = [str(i) for i in a]
     return corresponding_sheets
 
-def get_sheets_for_given_pig(pig_number, files):
+def get_sheets_for_given_pig(pig_number, files, experiment_date):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
     f = open(complete_txt_filename, "w")
     datafile_list = files.import_files(experiment_date)
     datafile = datafile_list[0]
     _, sheet_list = files.get_sheets_from_datafile(datafile)
-    sheet_list.remove('C2PA')
-    sheet_list.remove('C2PB')
-    sheet_list.remove('C5TA')
-    sheet_list.remove('C15TA')
-    sheet_list.remove('C1TB')
+    # sheet_list.remove('C2PA')
+    # sheet_list.remove('C2PB')
+    # sheet_list.remove('C5TA')
+    # sheet_list.remove('C15TA')
+    # sheet_list.remove('C1TB')
     corresponding_sheets = [idx for idx in sheet_list if idx[1:-2] == str(pig_number)]
     return corresponding_sheets
 
-def get_sheets_for_given_region(region, files):
+def get_sheets_for_given_region(region, files, experiment_date):
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
     f = open(complete_txt_filename, "w")
     datafile_list = files.import_files(experiment_date)
     datafile = datafile_list[0]
     _, sheet_list = files.get_sheets_from_datafile(datafile)
-    sheet_list.remove('C2PA')
-    sheet_list.remove('C2PB')
-    sheet_list.remove('C5TA')
-    sheet_list.remove('C15TA')
-    sheet_list.remove('C1TB')
+    # sheet_list.remove('C2PA')
+    # sheet_list.remove('C2PB')
+    # sheet_list.remove('C5TA')
+    # sheet_list.remove('C15TA')
+    # sheet_list.remove('C1TB')
     corresponding_sheets = [idx for idx in sheet_list if idx[-2] == str(region)]
     return corresponding_sheets
 
