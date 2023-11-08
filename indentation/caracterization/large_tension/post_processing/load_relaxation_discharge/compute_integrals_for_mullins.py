@@ -13,17 +13,9 @@ from scipy.signal import argrelextrema
 from scipy.signal import lfilter, savgol_filter
 import pickle 
 from scipy import integrate
-
-def extract_data_per_steps(datafile, sheet):
-    pkl_filename = datafile[0:6] + "_" + sheet + "step_data.pkl"
-    path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
-    with open(complete_pkl_filename, "rb") as f:
-        [load_phase_time_dict, relaxation_phase_time_dict, discharge_phase_time_dict, load_phase_stress_dict, relaxation_phase_stress_dict, discharge_phase_stress_dict, load_phase_elongation_dict, relaxation_phase_elongation_dict, discharge_phase_elongation_dict] = pickle.load(f)
-    return load_phase_time_dict, relaxation_phase_time_dict, discharge_phase_time_dict, load_phase_stress_dict, relaxation_phase_stress_dict, discharge_phase_stress_dict, load_phase_elongation_dict, relaxation_phase_elongation_dict, discharge_phase_elongation_dict
-    
+  
 def compute_integrals_load_mullins(datafile, sheet):
-    load_phase_time_dict, relaxation_phase_time_dict, discharge_phase_time_dict, load_phase_stress_dict, relaxation_phase_stress_dict, discharge_phase_stress_dict, load_phase_elongation_dict, relaxation_phase_elongation_dict, discharge_phase_elongation_dict = extract_data_per_steps(datafile, sheet)
+    load_phase_time_dict, relaxation_phase_time_dict, discharge_phase_time_dict, load_phase_stress_dict, relaxation_phase_stress_dict, discharge_phase_stress_dict, load_phase_elongation_dict, relaxation_phase_elongation_dict, discharge_phase_elongation_dict = large_tension_utils.extract_data_per_steps(datafile, sheet)
     integral_charge_step_1_dict = {}
     integral_charge_step_2_dict = {}
     difference_integral_charge_step_1_and_2_dict = {}
