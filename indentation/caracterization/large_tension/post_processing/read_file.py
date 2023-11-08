@@ -1,5 +1,5 @@
 import numpy as np
-import utils
+import indentation.caracterization.large_tension.post_processing.utils as large_tension_utils
 import os
 from indentation.caracterization.large_tension.figures.utils import CreateFigure, Fonts, SaveFigure
 import pandas as pd
@@ -30,7 +30,7 @@ def read_sheet_in_datafile(datafile, sheet):
 
     """
     date = datafile[0:6]
-    path_to_datafile = utils.reach_data_path(date) / datafile
+    path_to_datafile = large_tension_utils.reach_data_path(date) / datafile
     data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=3, names=["s", "elongation", "MPa" ], usecols="A:C", decimal=',') 
     time = data_in_sheet.s
     elongation = data_in_sheet.elongation
@@ -57,7 +57,7 @@ def find_peaks(datafile, sheet):
     stress_beginning_load_peak = [0]
     
     for elongation_step in elongation_step_values:
-        first_elongation_step_index = np.where(elongation == utils.find_nearest(elongation, 0.99*elongation_step))[0][0]
+        first_elongation_step_index = np.where(elongation == large_tension_utils.find_nearest(elongation, 0.99*elongation_step))[0][0]
         time_at_first_elongation_step = time[first_elongation_step_index]
         stress_at_first_elongation_step = stress[first_elongation_step_index]
         end_load_peak_indices.append(first_elongation_step_index)
@@ -69,7 +69,7 @@ def find_peaks(datafile, sheet):
     for i in range(len(end_load_peak_indices)):
         time_end_peak = times_end_load_peak[i]
         time_at_beginning_load_peak = time_end_peak + duration_step/2
-        beginning_load_peak_index = np.where(time == utils.find_nearest(time, 0.999*time_at_beginning_load_peak))[0][0]
+        beginning_load_peak_index = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_at_beginning_load_peak))[0][0]
         stress_beginning = stress[beginning_load_peak_index]
         time_beginning = time[beginning_load_peak_index]
         elongation_beginning = elongation[beginning_load_peak_index]
