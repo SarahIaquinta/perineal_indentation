@@ -7,7 +7,7 @@ a .csv file, and then plots the force vs disp, force vs time and disp vs time cu
 """
 
 import numpy as np
-import utils
+import indentation.experiments.zwick.post_processing.utils as zwick_utils
 import os
 from indentation.experiments.zwick.figures.utils import CreateFigure, Fonts, SaveFigure
 import pandas as pd
@@ -67,7 +67,7 @@ class Files_Zwick:
                 list of .xls files starting by "type_of_essay"
 
         """
-        path_to_data_folder = utils.reach_data_path(date)
+        path_to_data_folder = zwick_utils.reach_data_path(date)
         entries = os.listdir(path_to_data_folder)
         type_of_essay_to_test = date + '_' + self.type_of_essay
         len_type_of_essay = len(type_of_essay_to_test)
@@ -79,7 +79,7 @@ class Files_Zwick:
         return datafile_list
     
     def import_metadatafile(self, date):
-        path_to_data_folder = utils.reach_data_path(date)
+        path_to_data_folder = zwick_utils.reach_data_path(date)
         entries = os.listdir(path_to_data_folder)
         type_of_essay_to_test = date + '_recap_' + self.type_of_essay
         len_type_of_essay = len(type_of_essay_to_test)
@@ -106,7 +106,7 @@ class Files_Zwick:
 
         """
         date = datafile[0:6]
-        path_to_datafile = utils.reach_data_path(date)
+        path_to_datafile = zwick_utils.reach_data_path(date)
         datafile_as_pds = pd.ExcelFile(path_to_datafile/datafile)
         sheets_list = datafile_as_pds.sheet_names
         sheets_list_with_data = [i for i in sheets_list if i.startswith(date) or i.startswith('RDG') or i.startswith('FF') or i.startswith('C')]
@@ -134,7 +134,7 @@ class Files_Zwick:
 
         """
         date = datafile[0:6]
-        path_to_datafile = utils.reach_data_path(date) / datafile
+        path_to_datafile = zwick_utils.reach_data_path(date) / datafile
         data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:C", decimal=',') 
         time_with_offset = data_in_sheet.s
         force_with_offset = data_in_sheet.N
@@ -154,7 +154,7 @@ class Files_Zwick:
 
     def get_umax_and_strain(self, datafile, sheet):
         date = datafile[0:6]
-        path_to_datafile = utils.reach_data_path(date) / datafile
+        path_to_datafile = zwick_utils.reach_data_path(date) / datafile
         data_in_sheet = pd.read_excel(path_to_datafile, sheet_name=sheet, header=2, names=["s", "N", "mm" ], usecols="A:D", decimal=',') 
         time_with_offset = data_in_sheet.s
         force_with_offset = data_in_sheet.N
@@ -169,7 +169,7 @@ class Files_Zwick:
 
     def read_metadatas_zwick(self, metadatafile):
         date = metadatafile[0:6]
-        path_to_metadatafile = utils.reach_data_path(date) / metadatafile
+        path_to_metadatafile = zwick_utils.reach_data_path(date) / metadatafile
         metadatas = pd.read_excel(path_to_metadatafile, sheet_name='zwick', header=1, names=["Id", "imposed_disp", "speed_mm_min" ], usecols="A:C", decimal=',') 
         ids = metadatas.Id
         imposed_disp = metadatas.imposed_disp

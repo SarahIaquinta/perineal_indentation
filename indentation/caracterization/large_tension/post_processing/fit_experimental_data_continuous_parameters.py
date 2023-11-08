@@ -1,11 +1,11 @@
 import numpy as np
-import utils
+# import indentation.caracterization.large_tension.post_processing.utils as large_tension_utils
 import os
 from indentation.caracterization.large_tension.figures.utils import CreateFigure, Fonts, SaveFigure
 import pandas as pd
 import seaborn as sns
 from indentation.caracterization.large_tension.post_processing.read_file import read_sheet_in_datafile, find_peaks
-from indentation.caracterization.large_tension.post_processing.identify_steps import store_and_export_step_data
+# from indentation.caracterization.large_tension.post_processing.identify_steps import store_and_export_step_data
 from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
@@ -526,9 +526,6 @@ def get_sheets_for_given_pig(pig_number, files, experiment_date):
     return corresponding_sheets
 
 def get_sheets_for_given_region(region, files, experiment_date):
-    path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
-    complete_txt_filename = path_to_processed_data + "/large_tension_caracterization.txt"
-    f = open(complete_txt_filename, "w")
     datafile_list = files.import_files(experiment_date)
     datafile = datafile_list[0]
     _, sheet_list = files.get_sheets_from_datafile(datafile)

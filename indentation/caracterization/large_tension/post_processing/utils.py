@@ -9,6 +9,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from math import nan
 from pathlib import Path
+import pickle
 
 
 def get_current_path(): 

@@ -50,7 +50,7 @@ def find_peaks_handmade(datafile, sheet):
         time_beginning_cycle_value = time_beginning_cycle_values[i]
         time_end_cycle_value = time_beginning_cycle_values[i+1]
         index_beginning_cycle = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_beginning_cycle_value))[0][0]
-        index_end_cycle = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_end_cycle_value))[0][0]
+        index_end_cycle = np.where(time == large_tension_utils.find_nearest(time,0.999*time_end_cycle_value))[0][0]
         time_values_during_cycle = time[index_beginning_cycle:index_end_cycle+1]
         stress_values_during_cycle = stress[index_beginning_cycle:index_end_cycle+1]
         
@@ -190,27 +190,27 @@ def gather_data_per_steps(datafile, sheet):
         # load phase
         beginning_load_phase_step_i_index = beginning_load_phase_indices_list[i]
         end_load_phase_step_i_index = end_load_phase_indices_list[i]
-        time_during_load_phase_step_i = time[beginning_load_phase_step_i_index:end_load_phase_step_i_index]
-        elongation_during_load_phase_step_i = elongation[beginning_load_phase_step_i_index:end_load_phase_step_i_index]
-        stress_during_load_phase_step_i = stress[beginning_load_phase_step_i_index:end_load_phase_step_i_index]
+        time_during_load_phase_step_i = time[beginning_load_phase_step_i_index:end_load_phase_step_i_index+1]
+        elongation_during_load_phase_step_i = elongation[beginning_load_phase_step_i_index:end_load_phase_step_i_index+1]
+        stress_during_load_phase_step_i = stress[beginning_load_phase_step_i_index:end_load_phase_step_i_index+1]
         load_phase_time_dict[step] = time_during_load_phase_step_i
         load_phase_elongation_dict[step] = elongation_during_load_phase_step_i
         load_phase_stress_dict[step] = stress_during_load_phase_step_i
         # relaxation phase
         beginning_relaxation_phase_step_i_index = beginning_relaxation_phase_indices_list[i]
         end_relaxation_phase_step_i_index = end_relaxation_phase_indices_list[i]
-        time_during_relaxation_phase_step_i = time[beginning_relaxation_phase_step_i_index:end_relaxation_phase_step_i_index]
-        elongation_during_relaxation_phase_step_i = elongation[beginning_relaxation_phase_step_i_index:end_relaxation_phase_step_i_index]
-        stress_during_relaxation_phase_step_i = stress[beginning_relaxation_phase_step_i_index:end_relaxation_phase_step_i_index]
+        time_during_relaxation_phase_step_i = time[beginning_relaxation_phase_step_i_index:end_relaxation_phase_step_i_index+1]
+        elongation_during_relaxation_phase_step_i = elongation[beginning_relaxation_phase_step_i_index:end_relaxation_phase_step_i_index+1]
+        stress_during_relaxation_phase_step_i = stress[beginning_relaxation_phase_step_i_index:end_relaxation_phase_step_i_index+1]
         relaxation_phase_time_dict[step] = time_during_relaxation_phase_step_i
         relaxation_phase_elongation_dict[step] = elongation_during_relaxation_phase_step_i
         relaxation_phase_stress_dict[step] = stress_during_relaxation_phase_step_i
         # discharge phase
         beginning_discharge_phase_step_i_index = beginning_discharge_phase_indices_list[i]
         end_discharge_phase_step_i_index = end_discharge_phase_indices_list[i]
-        time_during_discharge_phase_step_i = time[beginning_discharge_phase_step_i_index:end_discharge_phase_step_i_index]
-        elongation_during_discharge_phase_step_i = elongation[beginning_discharge_phase_step_i_index:end_discharge_phase_step_i_index]
-        stress_during_discharge_phase_step_i = stress[beginning_discharge_phase_step_i_index:end_discharge_phase_step_i_index]
+        time_during_discharge_phase_step_i = time[beginning_discharge_phase_step_i_index:end_discharge_phase_step_i_index+1]
+        elongation_during_discharge_phase_step_i = elongation[beginning_discharge_phase_step_i_index:end_discharge_phase_step_i_index+1]
+        stress_during_discharge_phase_step_i = stress[beginning_discharge_phase_step_i_index:end_discharge_phase_step_i_index+1]
         discharge_phase_time_dict[step] = time_during_discharge_phase_step_i
         discharge_phase_elongation_dict[step] = elongation_during_discharge_phase_step_i
         discharge_phase_stress_dict[step] = stress_during_discharge_phase_step_i
@@ -335,7 +335,7 @@ if __name__ == "__main__":
     # time, elongation, stress = read_sheet_in_datafile(datafile, sheet1)
     # plot_experimental_data(datafile, sheet1)
     for sheet in sheets_list_with_data:
-        # plot_experimental_data(datafile, sheet)
-        export_data_per_steps(datafile, sheet)
+        plot_experimental_data(datafile, sheet)
+        # export_data_per_steps(datafile, sheet)
     # find_peaks(datafile, sheet1)
     print('hello')
