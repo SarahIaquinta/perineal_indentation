@@ -44,15 +44,31 @@ def read_sheet_in_datafile(datafile, sheet):
     stress = savgol_filter(stress, 101, 2)
     rescaled_stress = np.array([s*1000 - stress[0]*1000 for s in stress[non_negative_or_null_elongations]])
     rescaled_time = time[non_negative_or_null_elongations] - time[non_negative_or_null_elongations][0]
-    n=3
-    b= [1.0 / n] * n
-    a=1
+    # TODO conclude on the use of  filter or not
+    # n=3
+    # b= [1.0 / n] * n
+    # a=1
     # rescaled_elongation = savgol_filter(rescaled_elongation, 101, n)
     # time = np.array([t - time[1] for t in time])
     return rescaled_time, rescaled_elongation, rescaled_stress
 
-
 def find_extrema(Y):
+    """
+    Finds the extrema (minima and maxima) values in a vector
+    
+    Parameters:
+        ----------
+        X: vector
+            vector of which the extrema values are to be found
+
+    Returns:
+        -------
+        local_maxima: list
+            list of the indices of the maximal values
+        local_minima: list
+            list of the indices of the minimal values
+
+    """
     local_maxima = []
     local_minima = []
 
