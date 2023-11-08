@@ -52,7 +52,7 @@ def read_sheet_in_datafile(datafile, sheet):
     # time = np.array([t - time[1] for t in time])
     return rescaled_time, rescaled_elongation, rescaled_stress
 
-def find_extrema(Y):
+def find_extrema_in_vector(Y):
     """
     Finds the extrema (minima and maxima) values in a vector
     
@@ -136,9 +136,9 @@ def find_peaks_handmade(datafile, sheet):
 
 
         # find local extrema in each phase
-        local_maxima_indices_load_phase, local_minima_indices_load_phase = find_extrema(stress_values_during_load_phase)
-        local_maxima_indices_relaxation_phase, local_minima_indices_relaxation_phase = find_extrema(stress_values_during_relaxation_phase)
-        local_maxima_indices_discharge_phase, local_minima_indices_discharge_phase = find_extrema(stress_values_during_discharge_phase)
+        local_maxima_indices_load_phase, local_minima_indices_load_phase = find_extrema_in_vector(stress_values_during_load_phase)
+        local_maxima_indices_relaxation_phase, local_minima_indices_relaxation_phase = find_extrema_in_vector(stress_values_during_relaxation_phase)
+        local_maxima_indices_discharge_phase, local_minima_indices_discharge_phase = find_extrema_in_vector(stress_values_during_discharge_phase)
         
 
         # take only extrema of interest for each phase
@@ -203,7 +203,7 @@ def find_peaks_handmade(datafile, sheet):
         i+=1
         
         # print('end time', time_end_discharge_phase)
-    # local_maxima_indices, local_minima_indices = find_extrema(elongation)
+    # local_maxima_indices, local_minima_indices = find_extrema_in_vector(elongation)
 
     for k in range(len(beginning_load_phase_indices_list)-1):
         end_discharge_phase_indices_list[k] = beginning_load_phase_indices_list[k+1]
