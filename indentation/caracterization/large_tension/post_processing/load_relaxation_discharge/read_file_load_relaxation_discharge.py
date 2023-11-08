@@ -52,7 +52,7 @@ def read_sheet_in_datafile(datafile, sheet):
     # time = np.array([t - time[1] for t in time])
     return rescaled_time, rescaled_elongation, rescaled_stress
 
-def find_extrema_in_vector(Y):
+def find_extrema_in_vector(vector):
     """
     Finds the extrema (minima and maxima) values in a vector
     
@@ -72,10 +72,10 @@ def find_extrema_in_vector(Y):
     local_maxima = []
     local_minima = []
 
-    for i in range(1, len(Y) - 1):
-        if Y[i - 1] < Y[i] and Y[i + 1] < Y[i]:
+    for i in range(1, len(vector) - 1):
+        if vector[i - 1] < vector[i] and vector[i + 1] < vector[i]:
             local_maxima.append(i)
-        elif Y[i - 1] > Y[i] and Y[i + 1] > Y[i]:
+        elif vector[i - 1] > vector[i] and vector[i + 1] > vector[i]:
             local_minima.append(i)
 
     return local_maxima, local_minima
