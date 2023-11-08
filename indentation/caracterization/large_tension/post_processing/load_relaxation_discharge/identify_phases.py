@@ -11,6 +11,20 @@ from scipy.signal import argrelextrema
 import pickle
 from scipy.signal import lfilter, savgol_filter
 
+time_beginning_cycle_values_dict = {
+    "C1PA" : [0, 23.294, 45.529, 67.853, 90.353],
+    "C1SA" : [0, 23.185, 45.4, 67.5, 90, 112.4, 134.4, 156.7, 179, 201.4, 223.9, 246.1, 268.3, 291],
+    "C1TA" : [0, 23.6, 46.3, 68.2, 90.5, 113, 135, 157.5, 180, 201.835, 224.354, 247.1, 269],
+    "C2SA" : [0, 23.672, 45.7, 68, 90, 112.5, 135, 157, 180, 202, 224.1, 246.3, 268.6, 291.3],
+    "C2TA" : [0, 23.185, 45.4, 67.5, 90, 112.4, 134.4, 156.7, 179, 201.4, 223.9, 246.1, 268.3, 291],
+    "C3TA" : [0, 23.4, 45.6, 67.8, 90, 112, 134, 156.8, 179, 202, 223, 245.6, 268, 290],
+    "C1PB" : [0, 23.4, 45.6, 67.8, 90, 112, 134, 156.8, 179, 202, 223, 245.6, 268, 290],
+    "C2PA" : [0, 23.4, 45.6, 67.8, 90, 112, 134, 156.8, 179, 202, 223, 245.6, 268, 290],
+    "C3PA" : [0, 23.6, 45.6, 67.8, 90.2, 112.5, 134.8, 157, 179.4, 201.8, 224],
+    "C3SA" : [0, 23.4, 45.6, 67.8, 90, 112, 134, 156.8, 179, 202, 223, 245.6, 268, 290]
+}
+
+
 
 def find_peaks_handmade(datafile, sheet):
     time, elongation, stress = read_sheet_in_datafile(datafile, sheet)
@@ -22,22 +36,24 @@ def find_peaks_handmade(datafile, sheet):
     beginning_discharge_phase_indices_list = []
     end_discharge_phase_indices_list = []
 
-    time_beginning_cycle_value = 0
-    time_end_cycle0_value = time_beginning_cycle_value + 6.7+15+1.7
-    time_beginning_cycle_values = [0, time_end_cycle0_value] + [time_end_cycle0_value + k*21.725 for k in range(1, 15)]
+    time_beginning_cycle_values = time_beginning_cycle_values_dict[sheet]
     i=0
     plt.figure()
+    plt.plot(time, elongation, '-k')
+    
     while i < len(time_beginning_cycle_values)-1:
     # for i in range(len(time_beginning_cycle_values)-1):
         # time_beginning_cycle_value = time_beginning_cycle_values[i-1]
         # cycle_duration = time_end_cycle_value - time_beginning_cycle_value
+        
         # isolate cycle data
         time_beginning_cycle_value = time_beginning_cycle_values[i]
         time_end_cycle_value = time_beginning_cycle_values[i+1]
         index_beginning_cycle = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_beginning_cycle_value))[0][0]
         index_end_cycle = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_end_cycle_value))[0][0]
-        time_values_during_cycle = time[index_beginning_cycle:index_end_cycle]
-        stress_values_during_cycle = stress[index_beginning_cycle:index_end_cycle]
+        time_values_during_cycle = time[index_beginning_cycle:index_end_cycle+1]
+        stress_values_during_cycle = stress[index_beginning_cycle:index_end_cycle+1]
+        
         plt.plot(time_values_during_cycle, stress_values_during_cycle, '-k', lw=2, alpha=0.4)
         # isolate load phase data only
         duration_load_step = 6.7
@@ -45,22 +61,22 @@ def find_peaks_handmade(datafile, sheet):
             duration_load_step = 1.5*6.7/2
         time_end_load_phase = time_beginning_cycle_value + duration_load_step
         index_end_load_phase = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_end_load_phase))[0][0]
-        time_values_during_load_phase = time[index_beginning_cycle:index_end_load_phase]
-        stress_values_during_load_phase = stress[index_beginning_cycle:index_end_load_phase]
+        time_values_during_load_phase = time[index_beginning_cycle:index_end_load_phase+1]
+        stress_values_during_load_phase = stress[index_beginning_cycle:index_end_load_phase+1]
         plt.plot(time_values_during_load_phase, stress_values_during_load_phase, '-r', lw=3, alpha=0.8)
 
         # isolate relaxation phase data only
         time_end_relaxation_phase = time_end_load_phase + 15 
         index_end_relaxation_phase = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_end_relaxation_phase))[0][0]
-        time_values_during_relaxation_phase = time[index_end_load_phase:index_end_relaxation_phase]
-        stress_values_during_relaxation_phase = stress[index_end_load_phase:index_end_relaxation_phase] 
+        time_values_during_relaxation_phase = time[index_end_load_phase:index_end_relaxation_phase+1]
+        stress_values_during_relaxation_phase = stress[index_end_load_phase:index_end_relaxation_phase+1] 
         plt.plot(time_values_during_relaxation_phase, stress_values_during_relaxation_phase, '-b', lw=3, alpha=0.8)
 
         # isolate discharge phase data only    
         time_end_discharge_phase   = time_end_relaxation_phase + 1.7
         index_end_discharge_phase = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_end_discharge_phase))[0][0]
-        time_values_during_discharge_phase = time[index_end_relaxation_phase:index_end_discharge_phase]
-        stress_values_during_discharge_phase = stress[index_end_relaxation_phase:index_end_discharge_phase] 
+        time_values_during_discharge_phase = time[index_end_relaxation_phase:index_end_discharge_phase+1]
+        stress_values_during_discharge_phase = stress[index_end_relaxation_phase:index_end_discharge_phase+1] 
         plt.plot(time_values_during_discharge_phase, stress_values_during_discharge_phase, '-g', lw=3, alpha=0.8)
 
 
@@ -148,6 +164,8 @@ def find_peaks_handmade(datafile, sheet):
     #     discharge_phase_indices_list.append(end_discharge_phase_indices_list[k]) 
         
     return beginning_load_phase_indices_list, end_load_phase_indices_list, beginning_relaxation_phase_indices_list, end_relaxation_phase_indices_list, beginning_discharge_phase_indices_list, end_discharge_phase_indices_list
+
+
 
 
 
@@ -317,7 +335,7 @@ if __name__ == "__main__":
     # time, elongation, stress = read_sheet_in_datafile(datafile, sheet1)
     # plot_experimental_data(datafile, sheet1)
     for sheet in sheets_list_with_data:
-        plot_experimental_data(datafile, sheet)
-        # export_data_per_steps(datafile, sheet)
+        # plot_experimental_data(datafile, sheet)
+        export_data_per_steps(datafile, sheet)
     # find_peaks(datafile, sheet1)
     print('hello')
