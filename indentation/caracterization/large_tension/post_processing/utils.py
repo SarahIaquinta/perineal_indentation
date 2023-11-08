@@ -101,3 +101,32 @@ def find_nearest(array, value):
             diff_list[i] = nan
     idx = np.nanargmin(diff_list)
     return array[idx]
+
+
+def find_extrema_in_vector(vector):
+    """
+    Finds the extrema (minima and maxima) values in a vector
+    
+    Parameters:
+        ----------
+        vector: vector
+            vector of which the extrema values are to be found
+
+    Returns:
+        -------
+        local_maxima: list
+            list of the indices of the maximal values
+        local_minima: list
+            list of the indices of the minimal values
+
+    """
+    local_maxima = []
+    local_minima = []
+
+    for i in range(1, len(vector) - 1):
+        if vector[i - 1] < vector[i] and vector[i + 1] < vector[i]:
+            local_maxima.append(i)
+        elif vector[i - 1] > vector[i] and vector[i + 1] > vector[i]:
+            local_minima.append(i)
+
+    return local_maxima, local_minima
