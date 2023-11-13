@@ -90,7 +90,7 @@ def plot_recovery(locations,  createfigure, savefigure, fonts):
     ax.set_xticklabels([0, 10, 20, 30], font=fonts.serif(), fontsize=24)
     ax.set_yticks([-6.2, -6, -5.8, -5.6, -5.4, -5.2])
     ax.set_yticklabels([-6.2, -6, -5.8, -5.6, -5.4, -5.2], font=fonts.serif(), fontsize=24)
-    ax.set_xlabel(r"temps [s]", font=fonts.serif(), fontsize=26)
+    ax.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     # ax_log.set_xlabel(r"$log(time) $ [-]", font=fonts.serif(), fontsize=26)
     ax.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
     ax_log.set_ylabel(r"$z$ [mm]", font=fonts.serif(), fontsize=26)
@@ -352,6 +352,6 @@ if __name__ == "__main__":
                  "230411_RDG2D": [-10, 10],
                  "230515_P002": [-12, 0],
                  "230515_P011": [-15, -2]}
-    # plot_recovery(locations,  createfigure, savefigure, fonts)
+    plot_recovery(locations,  createfigure, savefigure, fonts)
     # plot_A_vs_texturometer_forces(deltad_threshold, strain_threshold, createfigure, savefigure, fonts)
-    plot_A_all_dates(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)
+    # plot_A_all_dates(deltad_threshold, strain_threshold, ids_list, date_dict, Umax_dict, def_dict, thickness_dict, delta_d_dict, delta_d_star_dict, d_min_dict, A_dict)

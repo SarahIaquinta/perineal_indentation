@@ -113,14 +113,14 @@ def plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure
     ax_force_vs_time.set_xticklabels([0, 1, 5, 10, 15], font=fonts.serif(), fontsize=24)
     ax_force_vs_time.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1, 1.2])
     ax_force_vs_time.set_yticklabels([0, 0.2, 0.4, 0.6, 0.8, 1, 1.2], font=fonts.serif(), fontsize=24)
-    ax_force_vs_time.set_xlabel(r"temps [s]", font=fonts.serif(), fontsize=26)
+    ax_force_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_force_vs_time.set_ylabel(r"force [N]", font=fonts.serif(), fontsize=26)
 
     ax_disp_vs_time.set_xticks([0, 5, 10])
     ax_disp_vs_time.set_xticklabels([0, 5, 10], font=fonts.serif(), fontsize=24)
     ax_disp_vs_time.set_yticks([0, 1, 2, 3, 4, 5])
     ax_disp_vs_time.set_yticklabels([0, 1, 2, 3, 4, 5], font=fonts.serif(), fontsize=24)
-    ax_disp_vs_time.set_xlabel(r"temps [s]", font=fonts.serif(), fontsize=26)
+    ax_disp_vs_time.set_xlabel(r"time [s]", font=fonts.serif(), fontsize=26)
     ax_disp_vs_time.set_ylabel(r"U [mm]", font=fonts.serif(), fontsize=26)
 
     savefigure.save_as_png(fig_force_vs_time, "article_force_vs_time_with_indicators")
@@ -418,33 +418,34 @@ if __name__ == "__main__":
 
     experiment_dates = ['230718', '230331', '230407', '230411', '230403']
     files_zwick = Files_Zwick(types_of_essay[0])
-    datafile_list = []
-    for i in range(len(experiment_dates)):
-        datafile_list += files_zwick.import_files(experiment_dates[i])
+    # datafile_list = []
+    # for i in range(len(experiment_dates)):
+    #     datafile_list += files_zwick.import_files(experiment_dates[i])
 
-    # plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure, fonts)
-    # plot_indentation_relaxation_indicator_vs_texturometer_forces_beta('relaxation_slope')
-    # plot_indentation_relaxation_indicator_vs_texturometer_forces_alpha('i_time_time')
-    indicator_list = ['relaxation_slope',
-                'delta_f',
-                'delta_f_star',
-                'i_disp_time',
-                'i_time_time' ]
-    p_values_dict = {'relaxation_slope': 0.010372793,
-                    'delta_f':0.00040406,
-                    'delta_f_star' : 0.000165363,
-                    'i_disp_time' : 0.004569648 ,
-                    'i_time_time' : 0.001967185,
-                                        }
+    # # plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure, fonts)
+    # # plot_indentation_relaxation_indicator_vs_texturometer_forces_beta('relaxation_slope')
+    # # plot_indentation_relaxation_indicator_vs_texturometer_forces_alpha('i_time_time')
+    # indicator_list = ['relaxation_slope',
+    #             'delta_f',
+    #             'delta_f_star',
+    #             'i_disp_time',
+    #             'i_time_time' ]
+    # p_values_dict = {'relaxation_slope': 0.010372793,
+    #                 'delta_f':0.00040406,
+    #                 'delta_f_star' : 0.000165363,
+    #                 'i_disp_time' : 0.004569648 ,
+    #                 'i_time_time' : 0.001967185,
+    #                                     }
     
-    path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
-    complete_pkl_filename = path_to_processed_data + "/indicators_indentation_relaxation.pkl"
-    with open(complete_pkl_filename, "rb") as f:
-        [ids_list, date_dict, meat_piece_dict, relaxation_slope_dict, delta_f_dict, delta_f_star_dict, i_disp_time_dict, i_time_time_dict] = pickle.load(f)
+    # path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\experiments\zwick\processed_data'
+    # complete_pkl_filename = path_to_processed_data + "/indicators_indentation_relaxation.pkl"
+    # with open(complete_pkl_filename, "rb") as f:
+    #     [ids_list, date_dict, meat_piece_dict, relaxation_slope_dict, delta_f_dict, delta_f_star_dict, i_disp_time_dict, i_time_time_dict] = pickle.load(f)
 
 
-    plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, relaxation_slope_dict, experiment_dates, p_values_dict, 'relaxation_slope')
-    plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, delta_f_dict, experiment_dates, p_values_dict, 'delta_f')
-    plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, delta_f_star_dict, experiment_dates, p_values_dict, 'delta_f_star')
-    plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, i_disp_time_dict, experiment_dates, p_values_dict, 'i_disp_time')
-    plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, i_time_time_dict, experiment_dates, p_values_dict, 'i_time_time')
+    # plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, relaxation_slope_dict, experiment_dates, p_values_dict, 'relaxation_slope')
+    # plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, delta_f_dict, experiment_dates, p_values_dict, 'delta_f')
+    # plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, delta_f_star_dict, experiment_dates, p_values_dict, 'delta_f_star')
+    # plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, i_disp_time_dict, experiment_dates, p_values_dict, 'i_disp_time')
+    # plot_indicators_all_dates(ids_list, meat_piece_dict, date_dict, i_time_time_dict, experiment_dates, p_values_dict, 'i_time_time')
+    plot_indicators_indentation_relaxation(files_zwick, createfigure, savefigure, fonts)

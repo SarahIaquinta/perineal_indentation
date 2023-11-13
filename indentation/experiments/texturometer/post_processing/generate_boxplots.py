@@ -23,29 +23,32 @@ label_dict = {"F80":r"$F_{80\%}$ [N]",
               'beta' : r"$\beta$ [$Ns^{-1}$]",
               'delta_f' : r"$\Delta F$ [$N$]",
               'delta_f_star' : r"$\Delta F^*$ [-]",
-              'alpha_time': r"$\alpha $ [$Ns^{-1}$]"                   
+              'alpha_time': r"$\alpha $ [$Ns^{-1}$]",
+              'def':r"$\Delta U / e$"                   
               }
 
-y_ticks_dict = {"F80":[40, 60, 80, 100, 120], 
+y_ticks_dict = {"F80":[20, 40, 60, 80, 100, 120], 
                 "F20":[0, 5, 10, 15],
-                "A":  [0, 0.25, 0.5, 0.75], 
-                "delta_d":[0.8, 1.2, 1.6, 2],
+                "A":  [0, 0.25, 0.5, 0.75, 1], 
+                "delta_d":[0.4, 0.8, 1.2, 1.6, 2],
                 "delta_d_star":[ 0.25, 0.5, 0.75, 1, 1.25, 1.5],
                 'beta' : [-0.7, -0.6, -0.5, -0.4],
                 'delta_f' : [0.5, 0.6, 0.7, 0.8],
                 'delta_f_star' : [0.5, 0.6, 0.7, 0.8],
-                'alpha_time': [0, 0.2, 0.4, 0.6, 0.8, 1]                   
+                'alpha_time': [0, 0.2, 0.4, 0.6, 0.8, 1],
+                'def':[0.15, 0.2, 0.25, 0.3, 0.35, 0.4 ]                   
               }
 
-h_dict = {"F80":1, 
-                "F20":0.2,
-                "A":  0.025, 
-                "delta_d":0.1,
-                "delta_d_star":0.1,
-                'beta' : -0.1,
-                'delta_f' : 0.02,
-                'delta_f_star' : 0.005,
-                'alpha_time': 0.01                   
+h_dict = {"F80":2, 
+          "F20":0.5,
+          "A":  0.025, 
+          "delta_d":0.1,
+          "delta_d_star":0.1,
+          'beta' : -0.001,
+          'delta_f' : 0.02,
+          'delta_f_star' : 0.005,
+          'alpha_time': 0.01,
+          'def':0.005                  
               }
 
 def color(p_value):
@@ -82,15 +85,16 @@ def plot_boxplot_with_pvalue_texturometer(indicator):
 
     # sns.boxplot(x="Meatpiece", y=indicator, data=tips, palette="PRGn")
     # statistical annotation
+    y_ticks = y_ticks_dict[indicator]
     if is_significative(p_value):
         x1, x2 = 0, 1   # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
         y, h, col = max(df['RDG'].max(), df['FF'].max()) + h_dict[indicator], h_dict[indicator], color(p_value)
         ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
-        ax.text((x1+x2)*.5, y+h, '*', ha='center', va='bottom', color='k', font=fonts.serif(), fontsize=20)
+        ax.text((x1+x2)*.5, y+h, '*', ha='center', va='bottom', color='k', bbox = {'facecolor': 'w', 'pad':0, 'edgecolor':'none'}, zorder=0, font=fonts.serif(), fontsize=20)
+        ax.set_ylim(y_ticks[0], y_ticks[-1]+5*h_dict[indicator])
     ax.set_ylabel(label_dict[indicator], font=fonts.serif(), fontsize=26)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["sirloin",   "cottage ring"], font=fonts.serif(), fontsize=24)
-    y_ticks = y_ticks_dict[indicator]
+    ax.set_xticklabels(["sirloin",   "round"], font=fonts.serif(), fontsize=24)
     # y_ticks_reduced = [int(y_ticks[i]) for i in range(0, len(y_ticks), 2) ]
     ax.set_yticks(y_ticks)
 
@@ -122,15 +126,16 @@ def plot_boxplot_with_pvalue_laser(indicator):
 
     # sns.boxplot(x="Meatpiece", y=indicator, data=tips, palette="PRGn")
     # statistical annotation
+    y_ticks = y_ticks_dict[indicator]
     if is_significative(p_value):
         x1, x2 = 0, 1   # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
         y, h, col = max(df['RDG'].max(), df['FF'].max()) + h_dict[indicator], h_dict[indicator], color(p_value)
         ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
-        ax.text((x1+x2)*.5, y+h, '*', ha='center', va='bottom', color='k', font=fonts.serif(), fontsize=20)
+        ax.text((x1+x2)*.5, y+h, '*', ha='center', va='bottom', color='k', bbox = {'facecolor': 'w', 'pad':0, 'edgecolor':'none'}, zorder=0, font=fonts.serif(), fontsize=20)
+        ax.set_ylim(y_ticks[0], y_ticks[-1]+5*h_dict[indicator])
     ax.set_ylabel(label_dict[indicator], font=fonts.serif(), fontsize=26)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["sirloin",   "cottage ring"], font=fonts.serif(), fontsize=24)
-    y_ticks = y_ticks_dict[indicator]
+    ax.set_xticklabels(["sirloin",   "round"], font=fonts.serif(), fontsize=24)
     # y_ticks_reduced = [np.round(y, 1) for y in y_ticks]
     ax.set_yticks(y_ticks)
 
@@ -146,7 +151,7 @@ def plot_boxplot_with_pvalue_zwick(indicator):
     # ax = plt.gca()
     # fig, ax = plt.subplots()
     path_to_dataset = utils.get_path_to_processed_data() / "indicators_230407.xlsx"
-    tips = pd.read_excel(path_to_dataset, sheet_name='zwick', header=0, names=["Meatpiece", "delta_f", "delta_f_star", "alpha_time", "beta"], usecols="A:E", decimal=',') 
+    tips = pd.read_excel(path_to_dataset, sheet_name='zwick', header=0, names=["Meatpiece", "delta_f", "delta_f_star", "alpha_time", "beta", "Umax", "def"], usecols="A:G", decimal=',') 
 
     # tips = sns.load_dataset(path_to_dataset)
     df = tips.pivot(columns='Meatpiece', values=indicator)
@@ -161,19 +166,19 @@ def plot_boxplot_with_pvalue_zwick(indicator):
 
     # sns.boxplot(x="Meatpiece", y=indicator, data=tips, palette="PRGn")
     # statistical annotation
+    y_ticks = y_ticks_dict[indicator]
     if is_significative(p_value):
         x1, x2 = 0, 1   # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
         y, h, col = max(df['RDG'].max(), df['FF'].max()) + h_dict[indicator], h_dict[indicator], color(p_value)
         ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
-        ax.text((x1+x2)*.5, y+h, '*', ha='center', va='bottom', color='k', font=fonts.serif(), fontsize=20)
+        ax.text((x1+x2)*.5, y+h, '*', ha='center', va='bottom', color='k', bbox = {'facecolor': 'w', 'pad':0, 'edgecolor':'none'}, zorder=0, font=fonts.serif(), fontsize=20)
+        ax.set_ylim(y_ticks[0], y_ticks[-1]+5*h_dict[indicator])
     ax.set_ylabel(label_dict[indicator], font=fonts.serif(), fontsize=26)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["sirloin",   "cottage ring"], font=fonts.serif(), fontsize=24)
-    y_ticks = y_ticks_dict[indicator]
+    ax.set_xticklabels(["sirloin",   "round"], font=fonts.serif(), fontsize=24)
     # y_ticks_reduced = [np.round(y, 1) for y in y_ticks]
     ax.set_yticks(y_ticks)
     ax.set_yticklabels(y_ticks, font=fonts.serif(), fontsize=24)
-
     # plt.close(fig)
     savefigure.save_as_png(fig, "article_boxplot_"+indicator)
     
@@ -196,5 +201,6 @@ if __name__ == "__main__":
     plot_boxplot_with_pvalue_zwick("delta_f_star")
     plot_boxplot_with_pvalue_zwick("alpha_time")
     plot_boxplot_with_pvalue_zwick("beta")
+    plot_boxplot_with_pvalue_zwick("def")
 
     print('hello')

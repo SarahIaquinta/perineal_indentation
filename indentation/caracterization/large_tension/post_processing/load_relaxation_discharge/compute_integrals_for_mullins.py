@@ -208,8 +208,132 @@ def plot_integral_differences_comparison_between_pigs(region, files):
     plt.close(fig_integral_vs_step)
     savefigure.save_as_png(fig_integral_vs_step, date + "_integral_stress_vs_step_comparison_pigs_tissue_" + region)
         
+        
+def compute_stress_loss_during_relaxation(datafile, sheet):
+    _, _, _, _, relaxation_phase_stress_dict, _, _, _, _ = large_tension_utils.extract_data_per_steps(datafile, sheet)
+    stress_loss_relaxation_dict = {}
+    normalized_stress_loss_relaxation_dict = {}
+    
+    for i in range(len(relaxation_phase_stress_dict)-1):
+        step = int(i+1)
+        beginning_stress = relaxation_phase_stress_dict[step][0]
+        end_stress = relaxation_phase_stress_dict[step][-1]
+        stress_loss = beginning_stress - end_stress
+        stress_loss_relaxation_dict[step] = stress_loss
+        normalized_stress_loss_relaxation_dict[step] = stress_loss/beginning_stress
+
+    return stress_loss_relaxation_dict, normalized_stress_loss_relaxation_dict
+
+def plot_stress_loss_during_relaxation(datafile, sheet):
+    stress_loss_relaxation_dict, normalized_stress_loss_relaxation_dict = compute_stress_loss_during_relaxation(datafile, sheet)
+    fig = createfigure.rectangle_figure(pixels=180)
+    fig_normalized = createfigure.rectangle_figure(pixels=180)
+    kwargs = {"color":'k', "linewidth": 1, "alpha":1}
+    color_dict_region={"P": 'm', "S": 'r', "D": 'b', "T": 'g'}
+    labels_dict={"P": "peau", "S": "muscle", "D":"d-muscle", "T": "connective tissue"}
+    ax = fig.gca()
+    ax_normalized = fig_normalized.gca()
+    date = datafile[0:6]
+    number_of_steps = min(9, len(stress_loss_relaxation_dict))
+
+    step_list = [int(k) for k in range(1, number_of_steps+1)]
+    stress_loss_list = [stress_loss_relaxation_dict[step] for step in step_list]
+    normalized_stress_loss_list = [normalized_stress_loss_relaxation_dict[step] for step in step_list]
+    region = sheet[-2]
+    ax.plot(step_list, stress_loss_list, '-*', color=color_dict_region[region], label = sheet)
+    ax_normalized.plot(step_list, normalized_stress_loss_list, '-*', color=color_dict_region[region], label = sheet)
+    ax.set_ylabel(r"relaxation stress loss [kPa]", font=fonts.serif(), fontsize=18)
+    ax_normalized.set_ylabel(r"normalized relaxation stress loss [-]", font=fonts.serif(), fontsize=18)
+    
+
+    ax.set_xlabel(r"step", font=fonts.serif(), fontsize=26)
+    ax_normalized.set_xlabel(r"step", font=fonts.serif(), fontsize=26)
+    
+
+    ax.grid(linestyle=':')
+    ax.legend(prop=fonts.serif_1(), loc='upper left', framealpha=0.7,frameon=False)
+
+    ax_normalized.grid(linestyle=':')
+    ax_normalized.legend(prop=fonts.serif_1(), loc='upper left', framealpha=0.7,frameon=False)
+     
+    plt.close(fig)
+    savefigure.save_as_png(fig, date + "stress_loss_" + sheet) 
+    plt.close(fig_normalized)
+    savefigure.save_as_png(fig_normalized, date + "normalized_stress_loss_" + sheet) 
 
 
+def plot_stress_loss_relaxation_comparison_between_tissue(pig_number, files):
+    datafile_list = files.import_files(experiment_date)
+    datafile = datafile_list[0]
+    fig_normalized = createfigure.rectangle_figure(pixels=180)
+    kwargs = {"color":'k', "linewidth": 1, "alpha":1}
+    color_dict_region={"P": 'm', "S": 'r', "D": 'b', "T": 'g'}
+    labels_dict={"P": "peau", "S": "muscle", "D":"d-muscle", "T": "connective tissue"}
+    date = datafile[0:6]
+    corresponding_sheets_pig = get_sheets_for_given_pig(pig_number, files, experiment_date)
+    ax_normalized_stress_relaxation = fig_normalized.gca()
+    
+    for sheet in corresponding_sheets_pig:
+        region = sheet[-2]
+        color_region = color_dict_region[region]
+        label_region = labels_dict[region]
+        # try:
+        stress_loss_relaxation_dict, normalized_stress_loss_relaxation_dict = compute_stress_loss_during_relaxation(datafile, sheet)
+        number_of_steps = min(9, len(stress_loss_relaxation_dict))
+        step_list = [int(k) for k in range(1, number_of_steps+1)]
+        # step_list = difference_integral_charge_step_1_and_2_dict.keys()
+        normalized_stress_loss_list = [normalized_stress_loss_relaxation_dict[step] for step in step_list]
+        ax_normalized_stress_relaxation.plot(step_list, normalized_stress_loss_list, '-*', color=color_region, label = label_region)
+        # except:
+        #     None
+    
+    ax_normalized_stress_relaxation.set_ylabel(r"relaxation stress loss [kPa]", font=fonts.serif(), fontsize=18)
+    
+
+    ax_normalized_stress_relaxation.set_xlabel(r"step", font=fonts.serif(), fontsize=26)
+    
+
+    ax_normalized_stress_relaxation.grid(linestyle=':')
+    
+    ax_normalized_stress_relaxation.legend(prop=fonts.serif_1(), loc='upper left', framealpha=0.7,frameon=False)
+    plt.close(fig_normalized)
+    savefigure.save_as_png(fig_normalized, date + "_loss_relaxation_stress_vs_step_comparison_tissues_pig" + pig_number)
+ 
+ 
+
+def plot_stress_loss_relaxation_comparison_between_pigs(region, files):
+    datafile_list = files.import_files(experiment_date)
+    datafile = datafile_list[0]
+    fig_normalized = createfigure.rectangle_figure(pixels=180)
+    kwargs = {"color":'k', "linewidth": 1, "alpha":1}
+    color_dict_region={"P": 'm', "S": 'r', "D": 'b', "T": 'g'}
+    labels_dict={"P": "peau", "S": "muscle", "D":"d-muscle", "T": "connective tissue"}
+    date = datafile[0:6]
+    ax_normalized_stress_relaxation = fig_normalized.gca()
+    corresponding_sheets_region = get_sheets_for_given_region(region, files, experiment_date)
+
+    for sheet in corresponding_sheets_region:
+        region = sheet[-2]
+        pig_number = sheet[1:-2] + sheet[-1]
+        label_pig = "pig " + pig_number
+        
+        stress_loss_relaxation_dict, normalized_stress_loss_relaxation_dict = compute_stress_loss_during_relaxation(datafile, sheet)
+        number_of_steps = min(9, len(stress_loss_relaxation_dict))
+        step_list = [int(k) for k in range(1, number_of_steps+1)]
+        normalized_stress_loss_list = [normalized_stress_loss_relaxation_dict[step] for step in step_list]
+        ax_normalized_stress_relaxation.plot(step_list, normalized_stress_loss_list, '-*', label = label_pig)
+    
+    ax_normalized_stress_relaxation.set_ylabel(r"relaxation stress loss [kPa]", font=fonts.serif(), fontsize=18)  
+
+    ax_normalized_stress_relaxation.set_xlabel(r"step", font=fonts.serif(), fontsize=26)
+
+    ax_normalized_stress_relaxation.grid(linestyle=':')
+    
+    ax_normalized_stress_relaxation.legend(prop=fonts.serif_1(), loc='upper left', framealpha=0.7,frameon=False)
+    plt.close(fig_normalized)
+    savefigure.save_as_png(fig_normalized, date + "_loss_relaxation_stress_vs_step_comparison_pig_region" + region)
+ 
+ 
 if __name__ == "__main__":
     createfigure = CreateFigure()
     fonts = Fonts()
@@ -223,18 +347,19 @@ if __name__ == "__main__":
     pig_numbers = ['1', '2', '3']
     regions = ['P', 'S', 'T']
     print('started')
-    for pig_number in pig_numbers:
-        plot_integral_differences_comparison_between_tissue(pig_number, files_zwick)
+    # for pig_number in pig_numbers:
+    #     plot_integral_differences_comparison_between_tissue(pig_number, files_zwick)
+        # plot_stress_loss_relaxation_comparison_between_tissue(pig_number, files_zwick)
     for region  in regions:
-        plot_integral_differences_comparison_between_pigs(region, files_zwick)
+    #     plot_integral_differences_comparison_between_pigs(region, files_zwick)
+        plot_stress_loss_relaxation_comparison_between_pigs(region, files_zwick)
     # time, elongation, stress = read_sheet_in_datafile(datafile, sheet1)
     # plot_experimental_data(datafile, sheet1)
-    for sheet in sheets_list_with_data:
+    # for sheet in sheets_list_with_data:
+    #     plot_stress_loss_during_relaxation(datafile, sheet)
     # #     try:
         # plot_experimental_data_with_integrals(datafile, sheet)
-        print(sheet)
+        # print(sheet)
             # plot_integrals_values(datafile, sheet)
     #     except:
-    #         None
-    # # find_peaks(datafile, sheet1)
-    print('hello')
+    #  

@@ -1113,15 +1113,15 @@ if __name__ == "__main__":
                     'i_disp_time',
                     'i_time_time' ]
     # ids_at_date_and_meatpiece, data_dict_at_date_and_meatpiece  = extract_data_at_given_date_and_meatpiece('230718', 'FF', ids_list, meat_piece_dict, date_dict, relaxation_slope_dict)
-    compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, relaxation_slope_dict, 'relaxation_slope')
-    compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_dict, 'delta_f')
-    compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_star_dict, 'delta_f_star')
-    compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_time_dict, 'i_disp_time')
-    compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_time_dict, 'i_time_time')
+    # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, relaxation_slope_dict, 'relaxation_slope')
+    # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_dict, 'delta_f')
+    # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, delta_f_star_dict, 'delta_f_star')
+    # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_disp_time_dict, 'i_disp_time')
+    # compute_and_export_mean_std_data_with_maturation_as_pkl(ids_list, date_dict, i_time_time_dict, 'i_time_time')
     for indicator in indicator_list:
-        export_data_as_txt(indicator)
+        # export_data_as_txt(indicator)
         # plot_data_with_maturation(indicator)
-        # plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
+        plot_indentation_relaxation_indicator_vs_texturometer_forces(indicator)
     # export_all_indicators()
     # for datafile in datafile_list:
     #     sheet_list = files_zwick.find_only_correct_sheets_in_datafile(datafile)
