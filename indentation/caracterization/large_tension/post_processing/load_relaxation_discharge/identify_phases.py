@@ -60,6 +60,9 @@ def find_peaks_handmade(datafile, sheet):
         if i != 0:
             duration_load_step = 1.5*6.7/2
         time_end_load_phase = time_beginning_cycle_value + duration_load_step
+        if i == 0:
+            if sheet == "C2TA":
+                time_end_load_phase = 6.388
         index_end_load_phase = np.where(time == large_tension_utils.find_nearest(time, 0.999*time_end_load_phase))[0][0]
         time_values_during_load_phase = time[index_beginning_cycle:index_end_load_phase+1]
         stress_values_during_load_phase = stress[index_beginning_cycle:index_end_load_phase+1]
@@ -154,7 +157,6 @@ def find_peaks_handmade(datafile, sheet):
         end_discharge_phase_indices_list[k] = beginning_load_phase_indices_list[k+1]
         
     # extrema_indices_list = beginning_load_phase_indices_list + end_load_phase_indices_list + beginning_relaxation_phase_indices_list + end_relaxation_phase_indices_list + beginning_discharge_phase_indices_list + end_discharge_phase_indices_list
-    load_phase_indices_list, relaxation_phase_indices_list, discharge_phase_indices_list = [], [], []
     # for k in range(len(beginning_load_phase_indices_list)):
     #     load_phase_indices_list.append(beginning_load_phase_indices_list[k]) 
     #     load_phase_indices_list.append(end_load_phase_indices_list[k]) 
@@ -330,12 +332,12 @@ if __name__ == "__main__":
     datafile_list = files_zwick.import_files(experiment_date)
     datafile = datafile_list[0]
     datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
-    sheet1 = sheets_list_with_data[0]
+    sheet1 = 'C2TA'#sheets_list_with_data[0]
     print('started')
     # time, elongation, stress = read_sheet_in_datafile(datafile, sheet1)
     # plot_experimental_data(datafile, sheet1)
     for sheet in sheets_list_with_data:
+        export_data_per_steps(datafile, sheet)
         plot_experimental_data(datafile, sheet)
-        # export_data_per_steps(datafile, sheet)
     # find_peaks(datafile, sheet1)
     print('hello')

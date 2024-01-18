@@ -10,6 +10,31 @@ from scipy.signal import argrelextrema
 import pickle
 from scipy.signal import lfilter, savgol_filter
 
+thickness_dict = {
+    "C3PA" : 2.3,
+    "C3TA" : 6,
+    "C3SA" : 7,
+    "C2TA" : 3,
+    "C1TA" : 4
+}
+
+def thickness(sheet):
+    available_thickness_sheets = list(thickness_dict.keys())
+    if sheet in available_thickness_sheets :
+        thickness = thickness_dict[sheet]
+    else:
+        region = sheet[-2]
+        available_sheets_region = [s for s in available_thickness_sheets if s[-2] == region]
+        available_thickness_region = [thickness_dict[s] for s in available_sheets_region]
+        thickness = np.mean(available_thickness_region)
+    return thickness
+
+width = 40 #mm
+
+def section(sheet):
+    thickness = thickness[sheet]
+    section = thickness * width
+    return section #mm²
 
 def read_sheet_in_datafile(datafile, sheet):
     """
@@ -42,6 +67,7 @@ def read_sheet_in_datafile(datafile, sheet):
     non_negative_or_null_elongations = np.where(elongation > 0.001)[0]
     rescaled_elongation = np.array([e/100 + 1 for e in elongation[non_negative_or_null_elongations]])
     rescaled_elongation = np.array([e - rescaled_elongation[0] +1 for e in rescaled_elongation])
+    stress = [s*2.3/thickness(sheet) for s in stress] #correction épaisseur
     stress = savgol_filter(stress, 101, 2)
     rescaled_stress = np.array([s*1000 - stress[0]*1000 for s in stress[non_negative_or_null_elongations]])
     rescaled_time = time[non_negative_or_null_elongations] - time[non_negative_or_null_elongations][0]
@@ -55,6 +81,8 @@ def read_sheet_in_datafile(datafile, sheet):
 
 
 if __name__ == "__main__":
+    sheet1 = "C1PA"
+    thickness(sheet1)
     createfigure = CreateFigure()
     fonts = Fonts()
     savefigure = SaveFigure()

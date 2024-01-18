@@ -10,6 +10,8 @@ from pathlib import Path
 import pickle
 import pandas as pd
 import indentation.model.comsol.sensitivity_analysis.extract_data_from_raw_files as exd
+import indentation.model.comsol.sensitivity_analysis.extract_data_from_raw_files_retour_force as exd_rf
+
 import pickle
 import numpy as np
 import openturns as ot
@@ -131,6 +133,57 @@ def extract_disp_from_pkl():
     with open(complete_pkl_filename, "rb") as f:
         [time_list, disp_dict] = pickle.load(f)
     return time_list, disp_dict 
+
+
+def export_inputs_as_pkl_retour_force():
+    ids_list, elongation_dict, damage_dict = exd_rf.get_inputs()
+    complete_pkl_filename = get_path_to_processed_data() / "inputs_rf.pkl"
+    with open(complete_pkl_filename, "wb") as f:
+        pickle.dump(
+            [ids_list, elongation_dict, damage_dict],
+            f,
+        )
+        
+def export_force_as_pkl_retour_force():
+    time_dict, force_dict = exd_rf.get_force()
+    complete_pkl_filename = get_path_to_processed_data() / "force_rf.pkl"
+    with open(complete_pkl_filename, "wb") as f:
+        pickle.dump(
+            [time_dict, force_dict],
+            f,
+        )
+
+def export_disp_as_pkl_retour_force():
+    time_dict, disp_dict = exd_rf.get_disp()
+    complete_pkl_filename = get_path_to_processed_data() / "disp_rf.pkl"
+    with open(complete_pkl_filename, "wb") as f:
+        pickle.dump(
+            [time_dict, disp_dict],
+            f,
+        )
+
+def extract_inputs_from_pkl_retour_force():
+    complete_pkl_filename = get_path_to_processed_data() / "inputs_rf.pkl"
+    with open(complete_pkl_filename, "rb") as f:
+        [ids_list, elongation_dict, damage_dict] = pickle.load(f)
+    return ids_list, elongation_dict, damage_dict
+
+def extract_force_from_pkl_retour_force():
+    complete_pkl_filename = get_path_to_processed_data() / "force_rf.pkl"
+    with open(complete_pkl_filename, "rb") as f:
+        [time_dict, force_dict] = pickle.load(f)
+    return time_dict, force_dict
+       
+def extract_disp_from_pkl_retour_force():
+    complete_pkl_filename = get_path_to_processed_data() / "disp_rf.pkl"
+    with open(complete_pkl_filename, "rb") as f:
+        [time_dict, disp_dict] = pickle.load(f)
+    return time_dict, disp_dict 
+
+
+
+
+
 
 def export_gridsearch(scaler, grid, complete_filename):
     """
