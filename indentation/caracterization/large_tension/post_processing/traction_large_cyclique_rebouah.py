@@ -8,7 +8,7 @@ Original file is located at
 
 Import des bibliothèques
 """
-
+import time
 import numpy as np
 import pandas as pd
 from scipy.signal import lfilter, savgol_filter
@@ -537,6 +537,40 @@ def make_adaptive_plot_stress_vs_elongation(datafile, sheet):
 
   plt.show()
 
+""" Comparaison modèle-exp avec un jeu de paramètres fixe"""
+def plot_exp_vs_model_params(datafile, sheet, params):
+  time, elongation, stress_exp = read_sheet_in_datafile(datafile, sheet)
+  stress_model = compute_analytical_stress(datafile, sheet, params)
+  
+  createfigure = CreateFigure()
+  fonts = Fonts()
+  savefigure = SaveFigure()
+  fig_stress_vs_time = createfigure.rectangle_figure(pixels=180)
+  ax_stress_vs_time = fig_stress_vs_time.gca()
+  
+  fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
+  ax_stress_vs_elongation = fig_stress_vs_elongation.gca()
+  
+  ax_stress_vs_time.plot(time, stress_exp, ':k', lw=3, label='exp')
+  ax_stress_vs_time.plot(time, stress_model, '-r', lw=3, label='num')
+  ax_stress_vs_time.set_title(sheet, font=fonts.serif(), fontsize=26)
+  ax_stress_vs_time.set_xlabel('time [s]', font=fonts.serif(), fontsize=26)
+  ax_stress_vs_time.set_ylabel('stress [kPa]', font=fonts.serif(), fontsize=26)
+  ax_stress_vs_time.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
+
+  ax_stress_vs_elongation.plot(elongation, stress_exp, ':k', lw=3, label='exp')
+  ax_stress_vs_elongation.plot(elongation, stress_model, '-r', lw=3, label='num')
+  ax_stress_vs_elongation.set_title(sheet, font=fonts.serif(), fontsize=26)
+  ax_stress_vs_elongation.set_xlabel('elongation [-]', font=fonts.serif(), fontsize=26)
+  ax_stress_vs_elongation.set_ylabel('stress [kPa]', font=fonts.serif(), fontsize=26)
+  ax_stress_vs_elongation.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
+
+  savefigure.save_as_png(fig_stress_vs_time, datafile[0:6] + "stress_time_exp_numRebouah_" + sheet + "_test")
+  savefigure.save_as_png(fig_stress_vs_elongation, datafile[0:6] + "stress_elongation_exp_numRebouah_" + sheet + "_test")
+
+  plt.close(fig_stress_vs_elongation)
+  plt.close(fig_stress_vs_time)
+
 
 """Find optimal parameters"""
 
@@ -595,9 +629,14 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
 if __name__ == "__main__":
   sheet = "C1SA"
   datafile = "231012_large_tension_data.xlsx"
+  c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
+  params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
+  start_time = time.time()
 
+  plot_exp_vs_model_params(datafile, sheet, params_test)
+  print("--- %s seconds ---" % (time.time() - start_time))
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2TA")
-  make_adaptive_plot_stress_vs_time(datafile, "C2TA")
+  # make_adaptive_plot_stress_vs_time(datafile, "C2TA")
   # minimization_method_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
   # for minimization_method in minimization_method_list:
   #   try:
