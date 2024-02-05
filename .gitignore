@@ -76,6 +76,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # IPython
 profile_default/
@@ -144,6 +145,8 @@ dmypy.json
 *.csv
 *.pkl
 *.txt
+*.xls
+*.xlsx
 
 # scripts
 *.m
