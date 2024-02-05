@@ -629,23 +629,23 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
 if __name__ == "__main__":
   sheet = "C1SA"
   datafile = "231012_large_tension_data.xlsx"
-  c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
-  params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
+  # c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
+  # params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
   start_time = time.time()
 
-  plot_exp_vs_model_params(datafile, sheet, params_test)
-  print("--- %s seconds ---" % (time.time() - start_time))
+  # plot_exp_vs_model_params(datafile, sheet, params_test)
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2TA")
   # make_adaptive_plot_stress_vs_time(datafile, "C2TA")
   # minimization_method_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
   # for minimization_method in minimization_method_list:
   #   try:
   #     print('started', minimization_method)
-  #     plot_comparison_stress_model_experiment(datafile, sheet, minimization_method)
+  plot_comparison_stress_model_experiment(datafile, sheet, 'TNC')
   #     print('done succeed', minimization_method)
   #   except:
   #     print('failed', minimization_method)
   #   #   None
+  print("--- %s seconds ---" % (time.time() - start_time))
       
 
 
