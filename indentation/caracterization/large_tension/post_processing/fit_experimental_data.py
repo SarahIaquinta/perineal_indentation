@@ -126,7 +126,7 @@ def compute_stress_vector_load(parameters, datafile, sheet, step, previous_step_
         lambda_i = elongation_list[i]
         S_H_i = 2*c1*(1-(lambda_i**(-4)))
         # Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*tau/delta_t*(1 - np.exp(-delta_t/tau))*(S_H_i - S_H_list[i-1])
-        Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*(S_H_i - S_H_list[i-1])        
+        Q_i = np.exp(-delta_t/tau)*Q_list[i-1] + beta*(S_H_i - S_H_list[i-1])
         S_i = Q_i + S_H_i
         S_H_list[i] = S_H_i 
         Q_list[i] = Q_i 

@@ -109,18 +109,33 @@ def compute_I1(elongation_x):
     return I1
 
 """Calcul de la partie visqueuse Q"""
-def compute_Q(current_time, beta, tau, datafile, sheet):
+def compute_Q_list(elongation_vec, beta, tau, c1, c2, c3, datafile, sheet):
   time, elongation, _ = read_sheet_in_datafile(datafile, sheet)
+  dt_list = np.diff(time)
+  # print(len(dt_list))
+  Qx_list = np.zeros_like(elongation_vec)
+  I1_list = [compute_I1(elongation_x) for elongation_x in elongation_vec]
+  S_H_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * elongation_vec[i]**2 for i in range(len(I1_list))]
+  for i in range(1, len(Qx_list)):
+    # Qz_list[i] = np.exp(-dt_list[i-1]/tau)*Qz_list[i-1] + beta*(S_list[i] - S_list[i-1])
+    Qx_list[i] = tau / (dt_list[0] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1])
+  return Qx_list
+
+def compute_Q(Q_list, current_elongation, datafile, sheet):
+  _, elongation, _ = read_sheet_in_datafile(datafile, sheet)
   # dt_list = np.diff(time)
   # Q_vec = np.zeros_like(elongation)
-  index_time_is_t = np.where(time == current_time)[0][0]
-  s_list = time[:index_time_is_t+1]
-  def find_elongation_at_time_s(s):
-    index_time_is_s = np.where(time == s)[0][0]
-    elongation_at_time_s = elongation[index_time_is_s]
-    return elongation_at_time_s
-  integrand_vec=[np.exp((s - current_time)/tau)/(find_elongation_at_time_s(s)**2) for s in s_list]
-  Q = 2 * beta/tau * np.trapz(integrand_vec, s_list)
+  # index_time_is_t = np.where(time == current_time)[0][0]
+  # s_list = time[:index_time_is_t+1:10]
+  def find_Q_at_elongation_s(current_elongation):
+    index_elongation_is_current_elongation = np.where(elongation == current_elongation)[0][0]
+    # elongation_at_time_s = elongation[index_time_is_s]
+    Q_at_elongation_s = Q_list[index_elongation_is_current_elongation]
+    return Q_at_elongation_s
+  return find_Q_at_elongation_s(current_elongation)
+  # integrand_vec=[np.exp((s - current_time)/tau)/(find_elongation_at_time_s(s)**2) for s in s_list]
+  # Q = 2 * beta/tau * np.trapz(integrand_vec, s_list)
+  # np.exp(-delta_t/tau)*Q_list[i-1] + beta*(S_H_i - S_H_list[i-1])
   # def func_integrand_Q(s, t):
   #   index_time_is_s = np.where(time == s)[0][0]
   #   elongation_at_time_s = elongation[index_time_is_s]
@@ -142,7 +157,8 @@ def compute_Q(current_time, beta, tau, datafile, sheet):
   #   return Q_current
   # Q = compute_Q_for_t(current_time) * 2*beta / tau
   # Q_vec = Q_vec* 2*beta / tau
-  return Q
+  # print(Q)
+  # return Q
     
 
 
@@ -180,13 +196,11 @@ def compute_elongation_x_e_current(elongation_x_e_previous, elongation_x_current
 #   stress = 2*f_evol * (c1 + 2*c2*(I1-3) + 3*c3*(I1-3)**2) * (elongation_x_model**2 - elongation_z_model**2) + 8*c4 * elongation_x_model * elongation_x_e_model
 #   return stress
 
-def compute_stress_visc(elongation_x_model, elongation_vec, c1, c2, c3, I1, f_evol, beta, tau):
-  time, _, _ = read_sheet_in_datafile(datafile, sheet)
-  index_elongation_is_elongation_x_model = np.where(elongation_vec == elongation_x_model)[0][0]
-  Q = compute_Q(time[index_elongation_is_elongation_x_model], beta, tau, datafile, sheet)
+def compute_stress_visc(elongation_x_model, Q_x, c1, c2, c3, I1, f_evol):
+  # Q = compute_Q(time[index_elongation_is_elongation_x_model], beta, tau, datafile, sheet)
   elongation_z_model = 1 / elongation_x_model
   # stress = 2*f_evol * (c1 + 2*c2*(I1-3) + 3*c3*(I1-3)**2) * (elongation_x_model**2 - elongation_z_model**2) + 8*c4 * elongation_x_model * elongation_x_e_model
-  stress = 2*f_evol * (c1 + 2*c2*(I1-3) + 3*c3*(I1-3)**2) * (elongation_x_model**2 - elongation_z_model**2) + Q
+  stress = 2*f_evol * (c1 + 2*c2*(I1-3) + 3*c3*(I1-3)**2) * (elongation_x_model**2 - elongation_z_model**2) + Q_x*(elongation_x_model**2) 
   return stress
 
 """Calcul de la contrainte analytique pendant l'essai"""
@@ -200,7 +214,6 @@ def compute_analytical_stress(datafile, sheet, params):
   # elongation_x_e_model_list = np.zeros_like(elongation_x_model_list)
   stress_model_list = np.zeros_like(stress_exp)
   time_model_list = time_exp
-  time_intervals_list = np.diff(time_model_list)
 
   I1_model_list = np.zeros_like(elongation_exp)
   I1_model_list[0] = 3
@@ -212,10 +225,13 @@ def compute_analytical_stress(datafile, sheet, params):
 
   # [c1, c2, c3, c4, eta_0, eta, alpha] = params[0]
   [c1, c2, c3, beta, tau, eta, alpha] = params[0]
+  Qx_list = compute_Q_list(elongation_exp, beta, tau, c1, c2, c3, datafile, sheet)
 
   # for i in range(1, len(elongation_x_model_list)):
   for i in range(1, len(elongation_exp)):
     elongation_x_model = elongation_exp[i]
+    # elongation_at_time_s = elongation[index_time_is_s]
+    Q = Qx_list[i]
     # elongation_x_model = elongation_x_model_list[i]
     I1 = compute_I1(elongation_x_model)
     I1_model_list[i] = I1
@@ -229,7 +245,7 @@ def compute_analytical_stress(datafile, sheet, params):
 
     # elongation_x_e_model_list[i] = elongation_x_e_current
     # stress = compute_stress(elongation_x_model, elongation_x_e_current, c1, c2, c3, c4, I1, f_evol)
-    stress = compute_stress_visc(elongation_x_model, elongation_exp, c1, c2, c3, I1, f_evol, beta, tau)
+    stress = compute_stress_visc(elongation_x_model, Q, c1, c2, c3, I1, f_evol)
     stress_model_list[i] = stress
   return stress_model_list
 
@@ -580,10 +596,10 @@ from scipy.optimize import curve_fit, minimize, rosen, rosen_der
 
 def find_optimal_parameters(datafile, sheet, minimization_method):
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
-  c1_init, c2_init, c3_init, c4_init, eta_0_init, eta_init, alpha_init = 10, 5, 0.5, 1, 0.5, 1, 0.5
-  initial_guess_values = [c1_init, c2_init, c3_init, c4_init, eta_0_init, eta_init, alpha_init]
-  bounds_values = [(1, 20), (1, 20), (0.1, 10), (1, 50), (0.1, 5), (1, 5), (0.1, 5)]
-  # c4 eta and alpha have to be positive
+  c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init = 10, 5, 0.5, 0.07, 1,  1, 0.5
+  initial_guess_values = [c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init]
+  bounds_values = [(1, 20), (1, 20), (0.1, 10), (1, 50), (1, 100), (1, 5), (0.1, 5)]
+  # beta eta and alpha have to be positive
   def minimization_function(params):
       stress_list_model = compute_analytical_stress(datafile, sheet, [params])
       stress_list_exp = stress_exp
@@ -591,7 +607,7 @@ def find_optimal_parameters(datafile, sheet, minimization_method):
       return least_square
 
   res = minimize(minimization_function, initial_guess_values, method=minimization_method, bounds=bounds_values,
-            options={'disp': False})
+            options={'disp': True})
   params_opti = res.x
   return params_opti
 
@@ -629,18 +645,18 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
 if __name__ == "__main__":
   sheet = "C1SA"
   datafile = "231012_large_tension_data.xlsx"
-  # c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
-  # params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
+  c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
+  params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
   start_time = time.time()
 
   # plot_exp_vs_model_params(datafile, sheet, params_test)
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2TA")
-  # make_adaptive_plot_stress_vs_time(datafile, "C2TA")
+  make_adaptive_plot_stress_vs_time(datafile, "C2TA")
   # minimization_method_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
   # for minimization_method in minimization_method_list:
   #   try:
   #     print('started', minimization_method)
-  plot_comparison_stress_model_experiment(datafile, sheet, 'TNC')
+  # plot_comparison_stress_model_experiment(datafile, sheet, 'TNC')
   #     print('done succeed', minimization_method)
   #   except:
   #     print('failed', minimization_method)
