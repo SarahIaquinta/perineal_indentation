@@ -17,6 +17,8 @@ from indentation.experiments.zwick.post_processing.read_file import Files_Zwick
 import indentation.caracterization.large_tension.post_processing.utils as large_tension_utils
 from indentation.caracterization.large_tension.figures.utils import CreateFigure, Fonts, SaveFigure
 from scipy import integrate
+import indentation.caracterization.large_tension.post_processing.fit_experimental_data_continuous_parameters as fit_cont
+
 from matplotlib.widgets import Slider, Button
 
 """Récupération des données expérimentales"""
@@ -109,17 +111,49 @@ def compute_I1(elongation_x):
     return I1
 
 """Calcul de la partie visqueuse Q"""
-def compute_Q_list(elongation_vec, beta, tau, c1, c2, c3, datafile, sheet):
-  time, elongation, _ = read_sheet_in_datafile(datafile, sheet)
-  dt_list = np.diff(time)
+def compute_Q_list(elongation_vec, beta, tau_0, a, c1, c2, c3, datafile, sheet):
+  load_phase_time_dict, relaxation_phase_time_dict, discharge_phase_time_dict, load_phase_stress_dict, relaxation_phase_stress_dict, discharge_phase_stress_dict, load_phase_elongation_dict, relaxation_phase_elongation_dict, discharge_phase_elongation_dict = large_tension_utils.extract_data_per_steps(datafile, sheet)
+  time_list, elongation_list, _ = read_sheet_in_datafile(datafile, sheet)
+  dt_list = np.diff(time_list)
   # print(len(dt_list))
   Qx_list = np.zeros_like(elongation_vec)
+  tau_list = np.zeros_like(elongation_vec)
+  index = 0
+  elongation_0 = 1
   I1_list = [compute_I1(elongation_x) for elongation_x in elongation_vec]
   S_H_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * elongation_vec[i]**2 for i in range(len(I1_list))]
+  number_of_steps = len(load_phase_elongation_dict)
+  for s in range(1, number_of_steps+1):
+    load_phase_time, relaxation_phase_time, discharge_phase_time, _, _, _, load_phase_elongation, _, discharge_phase_elongation = load_phase_time_dict[s], relaxation_phase_time_dict[s], discharge_phase_time_dict[s], load_phase_stress_dict[s], relaxation_phase_stress_dict[s], discharge_phase_stress_dict[s], load_phase_elongation_dict[s], relaxation_phase_elongation_dict[s], discharge_phase_elongation_dict[s]
+    step_len = len(load_phase_time) + len(relaxation_phase_time) + len(discharge_phase_time)
+    tau_list_step = np.zeros(step_len)
+    b = tau_0 - a*elongation_0
+    for i in range(len(load_phase_time)):
+      elongation_i = load_phase_elongation[i]
+      tau = a * elongation_i  + b
+      tau_list_step[i] = tau
+    tau_0 = tau
+    elongation_0 = elongation_i
+    for j in range(len(relaxation_phase_time)):
+      tau = tau_0
+      tau_list_step[j + len(load_phase_time)] = tau 
+    tau_0 = tau
+    b = a * elongation_0 + tau_0
+    for k in range(len(discharge_phase_time)):
+      elongation_k = discharge_phase_elongation[k]
+      tau = -a * elongation_k + b
+      tau_list_step[k + len(load_phase_time) + len(relaxation_phase_time)] = tau    
+    tau_0 = tau
+    elongation_0 = elongation_k
+    tau_list[index:index+step_len] = tau_list_step
+    index = index+step_len
+  tau_list[index:] = [tau] * (len(elongation_vec) - index)
+  print(tau_list)
   for i in range(1, len(Qx_list)):
     # Qz_list[i] = np.exp(-dt_list[i-1]/tau)*Qz_list[i-1] + beta*(S_list[i] - S_list[i-1])
-    # Qx_list[i] = tau / (dt_list[0] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1])
-    Qx_list[i] = tau / (dt_list[0] + tau) * ( dt_list[0]*beta*S_H_list[i] + Qx_list[i-1])
+    tau = tau_list[i]
+    Qx_list[i] = tau / (dt_list[i-1] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1])
+    # Qx_list[i] = tau / (dt_list[0] + tau) * ( dt_list[0]*beta*S_H_list[i] + Qx_list[i-1])
   return Qx_list
 
 def compute_Q(Q_list, current_elongation, datafile, sheet):
@@ -225,8 +259,8 @@ def compute_analytical_stress(datafile, sheet, params):
   stress_model_list[0] = 0
 
   # [c1, c2, c3, c4, eta_0, eta, alpha] = params[0]
-  [c1, c2, c3, beta, tau, eta, alpha] = params[0]
-  Qx_list = compute_Q_list(elongation_exp, beta, tau, c1, c2, c3, datafile, sheet)
+  [c1, c2, c3, beta, tau_0, a, eta, alpha] = params[0]
+  Qx_list = compute_Q_list(elongation_exp, beta, tau_0, a, c1, c2, c3, datafile, sheet)
 
   # for i in range(1, len(elongation_x_model_list)):
   for i in range(1, len(elongation_exp)):
@@ -258,10 +292,10 @@ from typing_extensions import ParamSpec
 def make_adaptive_plot_stress_vs_time(datafile, sheet):
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
   # c1_init, c2_init, c3_init, c4_init, eta_0_init, eta_init, alpha_init = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
-  c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
+  c1_init, c2_init, c3_init, beta_init, tau_init, a_init, eta_init, alpha_init = 4, 6.2, 0.3, 0.07, 1, 1,  1, 0.5
 
   fig, ax = plt.subplots()
-  line, = ax.plot(time_exp, compute_analytical_stress(datafile, sheet, [[c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init]]), '-b', lw=2)
+  line, = ax.plot(time_exp, compute_analytical_stress(datafile, sheet, [[c1_init, c2_init, c3_init, beta_init, tau_init, a_init, eta_init, alpha_init]]), '-b', lw=2)
   # line, = ax.plot(time_exp, compute_analytical_stress(datafile, sheet, [[c1_init, c2_init, c3_init, c4_init, eta_0_init, eta_init, alpha_init]]), '-b', lw=2)
   # line, = ax.plot(time_exp, compute_analytical_stress(datafile, sheet, [[c1_init, c2_init, c3_init, c4_init, eta_0_init, eta_init, alpha_init]]), '-b', lw=2)
   # adjust the main plot to make room for the sliders
@@ -353,6 +387,17 @@ def make_adaptive_plot_stress_vs_time(datafile, sheet):
       color='g'
   )
   
+  axa = fig.add_axes([0.3, 0.25, 0.0225, 0.63])
+  a_slider = Slider(
+      ax=axa,
+      label="a",
+      valmin=0.1,
+      valmax=20,
+      valinit=a_init,
+      orientation="vertical",
+      color='g'
+  )
+  
   # Make a vertically oriented slider to control eta
   axeta = fig.add_axes([0.325, 0.25, 0.0225, 0.63])
   eta_slider = Slider(
@@ -378,17 +423,17 @@ def make_adaptive_plot_stress_vs_time(datafile, sheet):
   )
 
 
-  def compute_adaptive_stress(c1, c2, c3, beta, tau, eta, alpha):
+  def compute_adaptive_stress(c1, c2, c3, beta, tau, a, eta, alpha):
   # def compute_adaptive_stress(c1, c2, c3, c4, eta_0, eta, alpha):
     # params = [[c1, c2, c3, c4, eta_0, eta, alpha]]
-    params = [[c1, c2, c3, beta, tau, eta, alpha]]
+    params = [[c1, c2, c3, beta, tau, a, eta, alpha]]
     stress_list = compute_analytical_stress(datafile, sheet, params)
     return stress_list
 
   # The function to be called anytime a slider's value changes
   def update(val):
       # line.set_ydata(compute_adaptive_stress(c1_slider.val, c2_slider.val, c3_slider.val, c4_slider.val, eta_0_slider.val, eta_slider.val, alpha_slider.val))
-      line.set_ydata(compute_adaptive_stress(c1_slider.val, c2_slider.val, c3_slider.val, beta_slider.val, tau_slider.val, eta_slider.val, alpha_slider.val))
+      line.set_ydata(compute_adaptive_stress(c1_slider.val, c2_slider.val, c3_slider.val, beta_slider.val, tau_slider.val, a_slider.val, eta_slider.val, alpha_slider.val))
       fig.canvas.draw_idle()
 
   # register the update function with each slider
@@ -399,6 +444,7 @@ def make_adaptive_plot_stress_vs_time(datafile, sheet):
   beta_slider.on_changed(update)
   # eta_0_slider.on_changed(update)
   tau_slider.on_changed(update)
+  a_slider.on_changed(update)
   eta_slider.on_changed(update)
   alpha_slider.on_changed(update)
 
@@ -416,6 +462,7 @@ def make_adaptive_plot_stress_vs_time(datafile, sheet):
     eta_slider.reset()
     # eta_0_slider.reset()
     tau_slider.reset()
+    a_slider.reset()
     alpha_slider.reset()
   button.on_clicked(reset)
 
@@ -597,9 +644,9 @@ from scipy.optimize import curve_fit, minimize, rosen, rosen_der
 
 def find_optimal_parameters(datafile, sheet, minimization_method):
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
-  c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init = 10, 5, 0.5, 0.07, 1,  1, 0.5
-  initial_guess_values = [c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init]
-  bounds_values = [(0.1, 30), (0.1, 30), (0.1, 10), (0.01, 50), (1, 100), (1, 5), (0.1, 5)]
+  c1_init, c2_init, c3_init, beta_init, tau_init, a_init, eta_init, alpha_init = 10, 5, 0.5, 0.07, 1,  1, 1, 0.5
+  initial_guess_values = [c1_init, c2_init, c3_init, beta_init, tau_init, a_init, eta_init, alpha_init]
+  bounds_values = [(0.1, 30), (0.1, 30), (0.1, 10), (0.01, 50), (1, 100), (0.01, 10), (1, 5), (0.1, 5)]
   # beta eta and alpha have to be positive
   def minimization_function(params):
       stress_list_model = compute_analytical_stress(datafile, sheet, [params])
@@ -650,7 +697,7 @@ if __name__ == "__main__":
   datafile = "231012_large_tension_data.xlsx"
   files_zwick = Files_Zwick('large_tension_data.xlsx')
 
-  c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
+  c1_test, c2_test, c3_test, beta_test, tau_test, a_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1, 1, 1, 0.5
   params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
   start_time = time.time()
   datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
@@ -668,7 +715,7 @@ if __name__ == "__main__":
         print("--- %s seconds ---" % (time.time() - start_time))
       except:
         print('failed', minimization_method)
-  #   #   None
+      None
       
 
 
