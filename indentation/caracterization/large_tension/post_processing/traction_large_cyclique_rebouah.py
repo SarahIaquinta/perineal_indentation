@@ -118,7 +118,8 @@ def compute_Q_list(elongation_vec, beta, tau, c1, c2, c3, datafile, sheet):
   S_H_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * elongation_vec[i]**2 for i in range(len(I1_list))]
   for i in range(1, len(Qx_list)):
     # Qz_list[i] = np.exp(-dt_list[i-1]/tau)*Qz_list[i-1] + beta*(S_list[i] - S_list[i-1])
-    Qx_list[i] = tau / (dt_list[0] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1])
+    # Qx_list[i] = tau / (dt_list[0] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1])
+    Qx_list[i] = tau / (dt_list[0] + tau) * ( dt_list[0]*beta*S_H_list[i] + Qx_list[i-1])
   return Qx_list
 
 def compute_Q(Q_list, current_elongation, datafile, sheet):
@@ -598,45 +599,47 @@ def find_optimal_parameters(datafile, sheet, minimization_method):
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
   c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init = 10, 5, 0.5, 0.07, 1,  1, 0.5
   initial_guess_values = [c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init]
-  bounds_values = [(1, 20), (1, 20), (0.1, 10), (1, 50), (1, 100), (1, 5), (0.1, 5)]
+  bounds_values = [(0.1, 30), (0.1, 30), (0.1, 10), (0.01, 50), (1, 100), (1, 5), (0.1, 5)]
   # beta eta and alpha have to be positive
   def minimization_function(params):
       stress_list_model = compute_analytical_stress(datafile, sheet, [params])
+      n = len(stress_list_model)
       stress_list_exp = stress_exp
-      least_square = mean_squared_error(stress_list_exp, stress_list_model)
+      least_square = mean_squared_error(stress_list_exp[0:int(n/2)], stress_list_model[0:int(n/2)])
       return least_square
 
   res = minimize(minimization_function, initial_guess_values, method=minimization_method, bounds=bounds_values,
-            options={'disp': True})
+            options={'disp': False})
   params_opti = res.x
   return params_opti
 
 """Compare optimized to experimental stress"""
 
-def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method):
+def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix):
   createfigure = CreateFigure()
   fonts = Fonts()
   savefigure = SaveFigure()
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
   params_opti = find_optimal_parameters(datafile, sheet, minimization_method)
   stress_list_model = compute_analytical_stress(datafile, sheet, [params_opti])
+  n = len(stress_list_model)
   fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
   ax_stress_vs_elongation = fig_stress_vs_elongation.gca()
-  ax_stress_vs_elongation.plot(elongation_exp, stress_exp, '-k', lw=1, label='exp')
-  ax_stress_vs_elongation.plot(elongation_exp, stress_list_model, '-r', lw=1, label='model')
+  ax_stress_vs_elongation.plot(elongation_exp[0:int(n/2)], stress_exp[0:int(n/2)], '-k', lw=1, label='exp')
+  ax_stress_vs_elongation.plot(elongation_exp[0:int(n/2)], stress_list_model[0:int(n/2)], '-r', lw=1, label='model')
   ax_stress_vs_elongation.set_xlabel(r"$\lambda_x$ [-]", font=fonts.serif(), fontsize=26)
   ax_stress_vs_elongation.set_ylabel(r"$\sigma_x^{exp}$ [kPa]", font=fonts.serif(), fontsize=26)
   ax_stress_vs_elongation.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
-  savefigure.save_as_png(fig_stress_vs_elongation, datafile[0:6] + "stress_elong_exp_numRebouah_" + sheet + "_" + minimization_method)
+  savefigure.save_as_png(fig_stress_vs_elongation, datafile[0:6] + "stress_elong_exp_numRebouah_" + sheet + "_" + minimization_method + "_" + suffix)
   
   fig_stress_vs_time = createfigure.rectangle_figure(pixels=180)
   ax_stress_vs_time = fig_stress_vs_time.gca()
-  ax_stress_vs_time.plot(time_exp, stress_exp, '-k', lw=1, label='exp')
-  ax_stress_vs_time.plot(time_exp, stress_list_model, '-r', lw=1, label='model')
+  ax_stress_vs_time.plot(time_exp[0:int(n/2)], stress_exp[0:int(n/2)], '-k', lw=1, label='exp')
+  ax_stress_vs_time.plot(time_exp[0:int(n/2)], stress_list_model[0:int(n/2)], '-r', lw=1, label='model')
   ax_stress_vs_time.set_xlabel("time [s]", font=fonts.serif(), fontsize=26)
   ax_stress_vs_time.set_ylabel(r"$\sigma_x^{exp}$ [kPa]", font=fonts.serif(), fontsize=26)
   ax_stress_vs_time.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
-  savefigure.save_as_png(fig_stress_vs_time, datafile[0:6] + "stress_time_exp_numRebouah_" + sheet + "_" + minimization_method)
+  savefigure.save_as_png(fig_stress_vs_time, datafile[0:6] + "stress_time_exp_numRebouah_" + sheet + "_" + minimization_method+ "_" + suffix)
 
   plt.close(fig_stress_vs_elongation)
   plt.close(fig_stress_vs_time)
@@ -645,23 +648,27 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
 if __name__ == "__main__":
   sheet = "C1SA"
   datafile = "231012_large_tension_data.xlsx"
+  files_zwick = Files_Zwick('large_tension_data.xlsx')
+
   c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
   params_test = [[c1_test, c2_test, c3_test, beta_test, tau_test, eta_test, alpha_test]]
   start_time = time.time()
-
+  datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
   # plot_exp_vs_model_params(datafile, sheet, params_test)
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2TA")
-  make_adaptive_plot_stress_vs_time(datafile, "C2TA")
-  # minimization_method_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
-  # for minimization_method in minimization_method_list:
-  #   try:
-  #     print('started', minimization_method)
-  # plot_comparison_stress_model_experiment(datafile, sheet, 'TNC')
-  #     print('done succeed', minimization_method)
-  #   except:
-  #     print('failed', minimization_method)
+  # make_adaptive_plot_stress_vs_time(datafile, "C2TA")
+  minimization_method_list = ['Powell']# ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
+  suffix = "0-300_Sh"
+  for minimization_method in minimization_method_list:
+    for sheet in sheets_list_with_data:
+      try:
+        print('started', minimization_method)
+        plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
+        print('done succeed', minimization_method)
+        print("--- %s seconds ---" % (time.time() - start_time))
+      except:
+        print('failed', minimization_method)
   #   #   None
-  print("--- %s seconds ---" % (time.time() - start_time))
       
 
 
