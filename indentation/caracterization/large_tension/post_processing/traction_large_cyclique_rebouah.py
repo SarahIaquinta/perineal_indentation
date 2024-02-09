@@ -18,9 +18,9 @@ import indentation.caracterization.large_tension.post_processing.utils as large_
 from indentation.caracterization.large_tension.figures.utils import CreateFigure, Fonts, SaveFigure
 from scipy import integrate
 import indentation.caracterization.large_tension.post_processing.fit_experimental_data_continuous_parameters as fit_cont
-
+import pickle
 from matplotlib.widgets import Slider, Button
-
+import numba as nb
 """Récupération des données expérimentales"""
 
 
@@ -239,7 +239,6 @@ def compute_stress_visc(elongation_x_model, Q_x, c1, c2, c3, I1, f_evol):
   return stress
 
 """Calcul de la contrainte analytique pendant l'essai"""
-
 def compute_analytical_stress(datafile, sheet, params):
   # Load experimental data
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
@@ -668,6 +667,7 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
   savefigure = SaveFigure()
   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
   params_opti = find_optimal_parameters(datafile, sheet, minimization_method)
+  large_tension_utils.export_optimization_params_as_pkl(datafile, sheet, params_opti, minimization_method, suffix)
   stress_list_model = compute_analytical_stress(datafile, sheet, [params_opti])
   n = len(stress_list_model)
   fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
@@ -687,10 +687,14 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
   ax_stress_vs_time.set_ylabel(r"$\sigma_x^{exp}$ [kPa]", font=fonts.serif(), fontsize=26)
   ax_stress_vs_time.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
   savefigure.save_as_png(fig_stress_vs_time, datafile[0:6] + "stress_time_exp_numRebouah_" + sheet + "_" + minimization_method+ "_" + suffix)
-
   plt.close(fig_stress_vs_elongation)
   plt.close(fig_stress_vs_time)
+  return params_opti
   
+
+
+
+
   
 if __name__ == "__main__":
   sheet = "C1SA"
@@ -705,12 +709,12 @@ if __name__ == "__main__":
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2TA")
   # make_adaptive_plot_stress_vs_time(datafile, "C2TA")
   minimization_method_list = ['Powell']# ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
-  suffix = "0-300_Sh"
+  suffix = "0-100_vartau"
   for minimization_method in minimization_method_list:
     for sheet in sheets_list_with_data:
       try:
         print('started', minimization_method)
-        plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
+        params_opti = plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
         print('done succeed', minimization_method)
         print("--- %s seconds ---" % (time.time() - start_time))
       except:
