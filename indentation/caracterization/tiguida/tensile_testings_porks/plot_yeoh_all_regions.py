@@ -11,11 +11,11 @@ plt.ion()
 
 
 # DIRECTORY OF THE FILES
-datas_cochon7 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc\data_traction\%07*-1%**.txt',recursive = True))
-datas_cochon4 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc\data_traction\%04*-1%**.txt',recursive = True))
-datas_cochon5 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc\data_traction\%05*-1%**.txt',recursive = True))
-datas_cochon8 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc\data_traction\%08*-1%**.txt',recursive = True))
-datas_cochon9 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\02_Caracterisation\Tiguida\Traction_porc\data_traction\%09*-1%**.txt',recursive = True))
+datas_cochon7 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\tiguida\tensile_testings_porks\data_traction\%07*-1%**.txt',recursive = True))
+datas_cochon4 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\tiguida\tensile_testings_porks\data_traction\%04*-1%**.txt',recursive = True))
+datas_cochon5 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\tiguida\tensile_testings_porks\data_traction\%05*-1%**.txt',recursive = True))
+datas_cochon8 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\tiguida\tensile_testings_porks\data_traction\%08*-1%**.txt',recursive = True))
+datas_cochon9 = sorted(glob.glob(r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\tiguida\tensile_testings_porks\data_traction\%09*-1%**.txt',recursive = True))
 all_datas = [datas_cochon4, datas_cochon5, datas_cochon7, datas_cochon8, datas_cochon9]
 cochon_ids = [4, 5, 7, 8, 9]
 nb_of_cochons = len(cochon_ids)
@@ -87,6 +87,11 @@ for c in range(len(all_datas)):
         ax.plot(strainu[0:(len(strainu)-1):1000], stressu[0:(len(strainu)-1):1000], 'o', mfc='none',color=col_cochon[i], alpha=0.95, label= prefix)
 
         ax.plot(strainu, yeoh(stretchu, *popt1), '-', color=col_cochon[i], alpha=0.95)
+        [c1, c2, c3] = popt1
+        
+        print(prefix)
+        print('c1:' + str(np.round(c1, 1)) + 'c2:' + str(np.round(c2, 1)) + 'c3:' + str(np.round(c3, 1)))
+        print('--')
         # ax.plot(strainu, mooney(stretchu, *popt2), ':', color=col[2], label='Mooney-Rivlin')
         # ax.plot(strainu, ogden(stretchu, *popt3), '-.', color=col[3], label='Ogden')
         # ax.plot(strainu, humphrey(stretchu, *popt4), linestyle=(0, (1, 10)), color=col[4], label='Humphrey')
