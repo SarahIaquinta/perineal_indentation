@@ -117,6 +117,8 @@ def plot_stress_vs_elongation_comparison_between_pigs(region, files):
     
     savefigure.save_as_png(fig_stress_vs_time, date + "_stress_vs_time_comparison_pigs_tissue_" + region)
     savefigure.save_as_png(fig_stress_vs_elongation, date + "_stress_vs_elongation_comparison_pigs_tissue_" + region)
+    savefigure.save_as_svg(fig_stress_vs_time, date + "_stress_vs_time_comparison_pigs_tissue_" + region)
+    savefigure.save_as_svg(fig_stress_vs_elongation, date + "_stress_vs_elongation_comparison_pigs_tissue_" + region)
     print(sheet, 'done')
     
  
@@ -172,19 +174,19 @@ if __name__ == "__main__":
     datafile = datafile_list[0]
     _, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
     print('started')
-    for sheet in sheets_list_with_data:
-        plot_stress_vs_elongation(sheet)
+    # for sheet in sheets_list_with_data:
+    #     plot_stress_vs_elongation(sheet)
         # plot_experimental_data_3D(datafile, sheet)
     
     
 
     pig_numbers = ['1', '2', '3']
-    regions = ['P', 'S', 'T']
+    regions = ['P']#, 'S', 'T']
     # for pig_number in pig_numbers:
     #     plot_stress_vs_elongation_comparison_between_tissue(pig_number, files_zwick)
 
-    # for region  in regions:
-    #     plot_stress_vs_elongation_comparison_between_pigs(region, files_zwick)
+    for region  in regions:
+        plot_stress_vs_elongation_comparison_between_pigs(region, files_zwick)
     #     plot_integral_differences_comparison_between_pigs(region, files_zwick)
     #     plot_stress_loss_relaxation_comparison_between_pigs(region, files_zwick)
     #     plot_slope_discharge_comparison_between_pigs(region, files_zwick)

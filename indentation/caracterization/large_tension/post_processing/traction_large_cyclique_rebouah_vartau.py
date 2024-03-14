@@ -297,7 +297,6 @@ def make_adaptive_plot_stress_vs_time(datafile, sheet):
       color='y'
   )
 
-
   # Make a vertically oriented slider to control c2
   axbeta = fig.add_axes([0.025, 0.25, 0.0225, 0.63])
   beta_slider = Slider(
@@ -742,26 +741,30 @@ if __name__ == "__main__":
   datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
   # plot_exp_vs_model_params(datafile, sheet, params_test)
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2PA")
-  make_adaptive_plot_stress_vs_time(datafile, "C2PA")
+  # make_adaptive_plot_stress_vs_time(datafile, "C2PA")
   minimization_method_list = ['Powell']# ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
   # sheets_list_with_data = ["C2PA"]
-  suffix = "0-100_vartau_3cycles"
+  # suffix = "0-100_vartau_3cycles"
   
-  # for minimization_method in minimization_method_list:
-  #   for sheet in sheets_list_with_data:
-  #     # try:
-  #     print('started', minimization_method)
-  #     plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
-  #     print('done succeed', minimization_method)
-  #     print("--- %s seconds ---" % (time.time() - start_time))
-  #   # except:
-  #     print('failed', minimization_method)
-      # None
+  suffix = "0-100_vartau"
+  sheets_list_with_data = ["C2PA"]
+  for minimization_method in minimization_method_list:
+    for sheet in sheets_list_with_data:
+      try:
+        print('started', minimization_method)
+        plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
+        print('done succeed', minimization_method)
+        print("--- %s seconds ---" % (time.time() - start_time))
+      except:
+        print('failed', minimization_method)
+      None
 #   sheet = "C3PA"
-  # params = large_tension_utils.extract_optimization_params_from_pkl(datafile, "C2PA", 'Powell', suffix)
-  # print(sheet)
-  # print ('c1, c2, c3, beta, tau0, tau1, tau2, tau3, eta, alpha')
-  # print(params)
+  params = large_tension_utils.extract_optimization_params_from_pkl(datafile, "C2PA", 'Powell', suffix)
+  print(sheet)
+  print ('c1, c2, c3, beta, tau0, tau1, tau2, tau3, eta, alpha')
+  print(params)
+  plot_exp_vs_model_params_opti(datafile, sheet, [params], 'Powell', suffix)
+
   # for minimization_method in minimization_method_list:
   #   for sheet in sheets_list_with_data:
   #     print('started', minimization_method)
