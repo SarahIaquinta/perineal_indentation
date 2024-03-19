@@ -240,7 +240,7 @@ def compute_analytical_stress(datafile, sheet, params):
 
     # elongation_x_e_model_list[i] = elongation_x_e_current
     # stress = compute_stress(elongation_x_model, elongation_x_e_current, c1, c2, c3, c4, I1, f_evol)
-    stress = compute_stress_visc(elongation_x_model, Q, c1, c2, c3, I1, f_evol)
+    stress = (1/elongation_x_model)*compute_stress_visc(elongation_x_model, Q, c1, c2, c3, I1, f_evol)
     stress_model_list[i] = stress
   return stress_model_list
 

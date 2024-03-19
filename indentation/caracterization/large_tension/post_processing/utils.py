@@ -133,14 +133,20 @@ def find_extrema_in_vector(vector):
     return local_maxima, local_minima
 
 def export_optimization_params_as_pkl(datafile, sheet, params_opti, minimization_method, suffix):
-    pkl_filename = datafile[0:6] + "_" + sheet + "_optimization_results_" + minimization_method + "_" + suffix + ".pkl"
+    if len(datafile)> 6:
+        pkl_filename = datafile[0:6] + "_" + sheet + "_optimization_results_" + minimization_method + "_" + suffix + ".pkl"
+    else:
+        pkl_filename = datafile + "_" + sheet + "_optimization_results_" + minimization_method + "_" + suffix + ".pkl"
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
     with open(complete_pkl_filename, "wb") as f:
         pickle.dump(params_opti, f)
 
 def extract_optimization_params_from_pkl(datafile, sheet, minimization_method, suffix):
-    pkl_filename = datafile[0:6] + "_" + sheet + "_optimization_results_" + minimization_method + "_" + suffix + ".pkl"
+    if len(datafile)> 6:
+        pkl_filename = datafile[0:6] + "_" + sheet + "_optimization_results_" + minimization_method + "_" + suffix + ".pkl"
+    else:
+        pkl_filename = datafile + "_" + sheet + "_optimization_results_" + minimization_method + "_" + suffix + ".pkl"
     path_to_processed_data = r'C:\Users\siaquinta\Documents\Projet Périnée\perineal_indentation\indentation\caracterization\large_tension\processed_data'
     complete_pkl_filename = path_to_processed_data + "/" + pkl_filename
     with open(complete_pkl_filename, "rb") as f:

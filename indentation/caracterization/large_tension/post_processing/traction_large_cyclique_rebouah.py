@@ -701,7 +701,7 @@ def find_optimal_parameters(datafile, sheet, minimization_method):
   # 1.3843566 ]
   # }
   # c1_init, c2_init, c3_init, beta_init, tau_init, a_init, eta_init, alpha_init = 53, 156, 40, 0.07, 1,  1, 1, 0.5
-  [c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init] = large_tension_utils.extract_optimization_params_from_pkl(datafile, sheet, 'Powell', "undamaged_tau_cst")
+  [c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init] = large_tension_utils.extract_optimization_params_from_pkl(datafile, sheet, 'Powell', "undamaged_tau_cst_pk2")
   a_init = 1
   initial_guess_values = [c1_init, c2_init, c3_init, beta_init, tau_init, a_init, eta_init, alpha_init]
   
@@ -768,12 +768,12 @@ if __name__ == "__main__":
   # make_adaptive_plot_stress_vs_elongation(datafile, "C2PA")
   # make_adaptive_plot_stress_vs_time(datafile, "C2PA")
   minimization_method_list = ['Powell']# ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
-  suffix = "undamaged_var_tau"
+  suffix = "undamaged_var_tau_pk2"
   sheet_list_article = ["C2PA", "C3PA", "C1PB"]
   for minimization_method in minimization_method_list:
     for sheet in sheet_list_article:
         # print('started', minimization_method, sheet)
-        # plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
+        plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
         # print('done succeed', minimization_method, sheet)
         # print("--- %s seconds ---" % (time.time() - start_time))
         params = large_tension_utils.extract_optimization_params_from_pkl(datafile, sheet, 'Powell', suffix)
