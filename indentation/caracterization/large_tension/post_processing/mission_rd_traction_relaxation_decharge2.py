@@ -8,6 +8,8 @@ Original file is located at
 
 Import des bibliothèques
 """
+
+from numba import prange
 import time
 import numpy as np
 import pandas as pd
@@ -70,18 +72,47 @@ def read_sheet_in_datafile(datafile, sheet):
     # time = np.array([t - time[1] for t in time])
     return rescaled_time, rescaled_elongation, rescaled_stress
 
+
+
 def extract_undamaged_data(datafile, sheet):
+    print('start')
     complete_time_list, complete_elongation_list, complete_stress_list = read_sheet_in_datafile(datafile, sheet)
-    dict_undamaged_elongation_limit = {"C1PB": 1.8, "C2PA": 2, "C3PA": 1.7, "C4V3E1":4}
-    # try :
-    undamaged_elongation_limit_sheet = dict_undamaged_elongation_limit[sheet]
-    index_max_elongation = np.where(complete_elongation_list == zwick_utils.find_nearest(complete_elongation_list, undamaged_elongation_limit_sheet))[0][0]
-    # except:
-        # index_max_elongation = len(complete_elongation_list)
-    undamaged_time_list, undamaged_elongation_list, undamaged_stress_list = complete_time_list[:index_max_elongation:20], complete_elongation_list[:index_max_elongation:20], complete_stress_list[:index_max_elongation:20]
+    dict_undamaged_elongation_limit = {"C1PB": 1.8, "C2PA": 2, "C3PA": 1.7, "C4V3E1":4, "C0V1E1":1.7}
+    try :
+        undamaged_elongation_limit_sheet = dict_undamaged_elongation_limit[sheet]
+        index_max_elongation = np.where(complete_elongation_list == zwick_utils.find_nearest(complete_elongation_list, undamaged_elongation_limit_sheet))[0][0]
+    except:
+        undamaged_elongation_limit_sheet = 1.7
+        index_max_elongation = np.where(complete_elongation_list == zwick_utils.find_nearest(complete_elongation_list, undamaged_elongation_limit_sheet))[0][0]
+
+        # index_max_elongation = int(len(complete_elongation_list)/2)
+    undamaged_time_list, undamaged_elongation_list, undamaged_stress_list = complete_time_list[:index_max_elongation], complete_elongation_list[:index_max_elongation], complete_stress_list[:index_max_elongation]
+    large_tension_utils.export_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet, undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list)
     return undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list
 
 
+def plot_undamaged_vs_total_data(datafile, sheet):
+    createfigure = CreateFigure()
+    fonts = Fonts()
+    savefigure = SaveFigure()
+    undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
+    fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
+    ax_stress_vs_elongation = fig_stress_vs_elongation.gca()
+    ax_stress_vs_elongation.plot(complete_elongation_list, complete_stress_list, ':k', lw=1)
+    ax_stress_vs_elongation.plot(undamaged_elongation_list, undamaged_stress_list, '-k', lw=2)
+    ax_stress_vs_elongation.set_xlabel(r"$\lambda_x$ [-]", font=fonts.serif(), fontsize=26)
+    ax_stress_vs_elongation.set_ylabel(r"$\sigma_x^{exp}$ [kPa]", font=fonts.serif(), fontsize=26)
+    savefigure.save_as_png(fig_stress_vs_elongation, datafile[0:6] + "raw_data_stress_elong_exp_undamaged_vs_complete_" + sheet)
+    
+    fig_stress_vs_time = createfigure.rectangle_figure(pixels=180)
+    ax_stress_vs_time = fig_stress_vs_time.gca()
+    ax_stress_vs_time.plot(complete_time_list, complete_stress_list, ':k', lw=1)
+    ax_stress_vs_time.plot(undamaged_time_list, undamaged_stress_list, '-k', lw=2)
+    ax_stress_vs_time.set_xlabel("time [s]", font=fonts.serif(), fontsize=26)
+    ax_stress_vs_time.set_ylabel(r"$\sigma_x^{exp}$ [kPa]", font=fonts.serif(), fontsize=26)
+    savefigure.save_as_png(fig_stress_vs_time, datafile[0:6] + "raw_data_stress_time_exp_undamaged_vs_complete_" + sheet)
+    plt.close(fig_stress_vs_elongation)
+    plt.close(fig_stress_vs_time)
 # rescaled_time, rescaled_elongation, rescaled_stress = read_sheet_in_datafile(datafile, sheet)
 
 """Observation graphique des données expérimentales"""
@@ -101,52 +132,50 @@ def compute_f_evol(eta, alpha, I1, I1_max):
 """Calcul de I1"""
 
 def compute_I1(elongation_x):
-    elongation_z = 1/elongation_x
-    I1 = 1 + elongation_x**2 + elongation_z**2
+    elongation_z = 1/(np.sqrt(elongation_x))
+    # elongation_y = elongation_z
+    I1 = elongation_x**2 + 2*(elongation_z**2)
     return I1
 
 """Calcul de la partie visqueuse Q"""
-def compute_Q_list(elongation_vec, beta, tau, c1, c2, c3, datafile, sheet):
-  # load_phase_time_dict, relaxation_phase_time_dict, discharge_phase_time_dict, load_phase_stress_dict, relaxation_phase_stress_dict, discharge_phase_stress_dict, load_phase_elongation_dict, relaxation_phase_elongation_dict, discharge_phase_elongation_dict = large_tension_utils.extract_data_per_steps(datafile, sheet)
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
 
-#   time_list, elongation_list, _ = read_sheet_in_datafile(datafile, sheet)
-  dt_list = np.diff(undamaged_time_list)
-  # print(len(dt_list))
-  Qx_list = np.zeros_like(elongation_vec)
-  I1_list = [compute_I1(elongation_x) for elongation_x in elongation_vec]
-  S_H_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * elongation_vec[i]**2 for i in range(len(I1_list))]
-  for i in range(1, len(Qx_list)):
-    Qx_list[i] = tau / (dt_list[i-1] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1])
-  return Qx_list
+# def compute_Q_list(elongation_vec, beta, tau, c1, c2, c3, datafile, sheet):
+#   undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
 
-def compute_Q(Q_list, current_elongation, datafile, sheet):
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
-  def find_Q_at_elongation_s(current_elongation):
-    index_elongation_is_current_elongation = np.where(undamaged_elongation_list == current_elongation)[0][0]
-    Q_at_elongation_s = Q_list[index_elongation_is_current_elongation]
-    return Q_at_elongation_s
-  return find_Q_at_elongation_s(current_elongation)
+#   dt_list = np.diff(undamaged_time_list)
+#   Qx_list = np.zeros_like(elongation_vec)
+#   I1_list = [compute_I1(elongation_x) for elongation_x in elongation_vec]
+#   S_H_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * (1-(1/elongation_vec[i]**3))*(elongation_vec[i]**2) for i in range(len(I1_list))]
+#   for i in range(1, len(Qx_list)):
+#     Qx_list[i] = tau / (dt_list[i-1] + tau) * ( beta*(S_H_list[i] - S_H_list[i-1]) + Qx_list[i-1]) 
+#   return Qx_list
+
+# def compute_Q(Q_list, current_elongation, datafile, sheet):
+#   undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
+#   def find_Q_at_elongation_s(current_elongation):
+#     index_elongation_is_current_elongation = np.where(undamaged_elongation_list == current_elongation)[0][0]
+#     Q_at_elongation_s = Q_list[index_elongation_is_current_elongation]
+#     return Q_at_elongation_s
+#   return find_Q_at_elongation_s(current_elongation)
 
 
 
 
 """Calcul de la forme analytique de la contrainte"""
 
-def compute_stress_visc(elongation_x_model, Q_x, c1, c2, c3, I1, f_evol):
-  elongation_z_model = 1 / elongation_x_model
-  stress = 2*f_evol * (c1 + 2*c2*(I1-3) + 3*c3*(I1-3)**2) * (elongation_x_model**2 - elongation_z_model**2) + Q_x*(elongation_x_model**2) 
-  return stress
+# def compute_stress_visc(elongation_x_model, Q_x, c1, c2, c3, I1, f_evol):
+#   stress = 2*f_evol * (c1 + 2*c2*(I1-3) + 3*c3*(I1-3)**2) * (1-1/(elongation_x_model**3))*(elongation_x_model**2) + Q_x*(elongation_x_model**2) 
+#   return stress
 
 """Calcul de la contrainte analytique pendant l'essai"""
 def compute_analytical_stress(datafile, sheet, params):
   # Load experimental data
 #   time_exp, elongation_exp, stress_exp = read_sheet_in_datafile(datafile, sheet)
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
+  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
   time_exp, elongation_exp, stress_exp = undamaged_time_list, undamaged_elongation_list, undamaged_stress_list
   # Initialisation
   stress_model_list = np.zeros_like(stress_exp)
-  time_model_list = time_exp
+#   time_model_list = time_exp
 
   I1_model_list = np.zeros_like(elongation_exp)
   I1_model_list[0] = 3
@@ -155,24 +184,43 @@ def compute_analytical_stress(datafile, sheet, params):
   stress_model_list[0] = 0
 
   [c1, c2, c3, beta, tau, eta, alpha] = params[0]
-  Qx_list = compute_Q_list(elongation_exp, beta, tau, c1, c2, c3, datafile, sheet)
+#   Qx_list = compute_Q_list(elongation_exp, beta, tau, c1, c2, c3, datafile, sheet)
+  dt_list = np.diff(undamaged_time_list)
+  Qx_list = np.zeros_like(elongation_exp)
+  Qy_list = np.zeros_like(elongation_exp)
+  I1_list = [compute_I1(elongation_x) for elongation_x in elongation_exp]
+  elongation_y_exp = [1/np.sqrt(elongation_x)for elongation_x in elongation_exp]
+#   S_H_x_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * 1 for i in range(len(I1_list))]
+  S_H_x_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * (1-(1/elongation_exp[i]**3))*(elongation_exp[i]**2) for i in range(len(I1_list))]
+  S_H_y_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * (2-(2/elongation_y_exp[i]**6))*(elongation_y_exp[i]**2) for i in range(len(I1_list))]
+#   S_H_y_list = [(c1 + 2*c2*(I1_list[i]-3) + 3*c3*(I1_list[i]-3)**2) * 1 for i in range(len(I1_list))]
+
 
   for i in range(1, len(elongation_exp)):
     elongation_x_model = elongation_exp[i]
-    Q = Qx_list[i]
-    I1 = compute_I1(elongation_x_model)
+    elongation_y_model = elongation_y_exp[i]
+    Qx_list[i] = tau / (dt_list[i-1] + tau) * ( beta*(S_H_x_list[i] - S_H_x_list[i-1]) + Qx_list[i-1])
+    Qy_list[i] = tau / (dt_list[i-1] + tau) * ( beta*(S_H_y_list[i] - S_H_y_list[i-1]) + Qy_list[i-1])
+    Qx = Qx_list[i]
+    Qy = Qy_list[i]
+    I1 = I1_list[i]
     I1_model_list[i] = I1
-    I1_max = np.max(I1_model_list)
+    I1_max = np.max(I1_model_list[0:i+1])
     f_evol = compute_f_evol(eta, alpha, I1, I1_max)
-    stress = (1/elongation_x_model)*compute_stress_visc(elongation_x_model, Q, c1, c2, c3, I1, f_evol)
+    cauchy_h_tilde_x = (c1 +2*c2*(I1-3)+3*c3*(I1-3)**2)*(1-(1/(elongation_x_model**3)))*(elongation_x_model**2)
+    # cauchy_h_tilde_x = (c1 +2*c2*(I1-3)+3*c3*(I1-3)**2)*(1)*(elongation_x_model**2)
+    cauchy_h_tilde_y = (c1 +2*c2*(I1-3)+3*c3*(I1-3)**2)*(2-(2/(elongation_y_model**6)))*(elongation_y_model**2)
+    # cauchy_h_tilde_y = (c1 +2*c2*(I1-3)+3*c3*(I1-3)**2)*(1)*(elongation_y_model**2)
+    cauchy_stress = 2*f_evol*(cauchy_h_tilde_x-cauchy_h_tilde_y) + Qx*(elongation_x_model**2) - Qy*(elongation_y_model**2)
+    pk1 = (1/(elongation_x_model)) * cauchy_stress
+    stress = pk1
     stress_model_list[i] = stress
   return stress_model_list
 
 """ Comparaison modèle-exp avec un jeu de paramètres fixe"""
 def plot_exp_vs_model_params_opti(datafile, sheet, params_opti, minimization_method, suffix):
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
+  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
   stress_model = compute_analytical_stress(datafile, sheet, params_opti)
-  sample_id_dict = {"C1PB":"1", "C2PA":"2", "C3PA":"3"}
   createfigure = CreateFigure()
   fonts = Fonts()
   savefigure = SaveFigure()
@@ -182,14 +230,14 @@ def plot_exp_vs_model_params_opti(datafile, sheet, params_opti, minimization_met
   fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
   ax_stress_vs_elongation = fig_stress_vs_elongation.gca()
   
-  ax_stress_vs_time.plot(undamaged_time_list, undamaged_stress_list, '-k', lw=1)
-  ax_stress_vs_time.plot(undamaged_time_list, stress_model, '-r', lw=1)
+  ax_stress_vs_time.plot(undamaged_time_list, undamaged_stress_list, '-k', label="model", lw=1)
+  ax_stress_vs_time.plot(undamaged_time_list, stress_model, '-r', label="model", lw=1)
   ax_stress_vs_time.set_xlabel('time [s]', font=fonts.serif(), fontsize=26)
   ax_stress_vs_time.set_ylabel('S [kPa]', font=fonts.serif(), fontsize=26)
   ax_stress_vs_time.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
 
-  ax_stress_vs_elongation.plot(undamaged_elongation_list, undamaged_stress_list, '-k', lw=1)
-  ax_stress_vs_elongation.plot(undamaged_elongation_list, stress_model, '-r', lw=1)
+  ax_stress_vs_elongation.plot(undamaged_elongation_list, undamaged_stress_list, '-k', label="model", lw=1)
+  ax_stress_vs_elongation.plot(undamaged_elongation_list, stress_model, '-r', label="exp",lw=1)
   ax_stress_vs_elongation.set_xlabel('elongation [-]', font=fonts.serif(), fontsize=26)
   ax_stress_vs_elongation.set_ylabel('S [kPa]', font=fonts.serif(), fontsize=26)
   ax_stress_vs_elongation.legend(prop=fonts.serif(), loc='upper left', framealpha=0.7)
@@ -209,14 +257,13 @@ from scipy.optimize import minimize
 
 def find_optimal_parameters(datafile, sheet, minimization_method):
 
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
+  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
   c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init = 45, 192, 62, 0.1, 1, 1, 0.5
   initial_guess_values = [c1_init, c2_init, c3_init, beta_init, tau_init, eta_init, alpha_init]
   bounds_values = [(1, 200), (1, 200), (1, 200), (0.01, 50), (1, 100), (1, 5), (0.1, 5)]
   # beta eta and alpha have to be positive
   def minimization_function(params):
       stress_list_model = compute_analytical_stress(datafile, sheet, [params])
-      n = len(stress_list_model)
       stress_list_exp = undamaged_stress_list
       least_square = mean_squared_error(stress_list_exp, stress_list_model)
       return least_square
@@ -232,9 +279,9 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
   createfigure = CreateFigure()
   fonts = Fonts()
   savefigure = SaveFigure()
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
+  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
   params_opti = find_optimal_parameters(datafile, sheet, minimization_method)
-  large_tension_utils.export_optimization_params_as_pkl(datafile, sheet, params_opti, minimization_method, suffix)
+  large_tension_utils.export_optimization_params_as_pkl_mission_rd(datafile, sheet, params_opti, minimization_method, suffix)
   stress_list_model = compute_analytical_stress(datafile, sheet, [params_opti])
   fig_stress_vs_elongation = createfigure.rectangle_figure(pixels=180)
   ax_stress_vs_elongation = fig_stress_vs_elongation.gca()
@@ -257,10 +304,9 @@ def plot_comparison_stress_model_experiment(datafile, sheet, minimization_method
   plt.close(fig_stress_vs_time)
   
 
-
 from typing_extensions import ParamSpec
 def make_adaptive_plot_stress_vs_time(datafile, sheet):
-  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = extract_undamaged_data(datafile, sheet)
+  undamaged_time_list, undamaged_elongation_list, undamaged_stress_list, complete_time_list, complete_elongation_list, complete_stress_list = large_tension_utils.extract_undamaged_vs_complete_as_pkl_mission_rd(datafile, sheet)
 
   time_exp, elongation_exp, stress_exp = undamaged_time_list, undamaged_elongation_list, undamaged_stress_list
   # c1_init, c2_init, c3_init, c4_init, eta_0_init, eta_init, alpha_init = 4, 6.2, 0.3, 0.07, 1,  1, 0.5
@@ -432,9 +478,8 @@ def make_adaptive_plot_stress_vs_time(datafile, sheet):
 
   
 if __name__ == "__main__":
-  # datafile = "231012_large_tension_data.xlsx"
   datafile = "240319_large_tension_data.xlsx"
-
+#   datafile = "231012_large_tension_data.xlsx"
   files_zwick = Files_Zwick('large_tension_data.xlsx')
 
 
@@ -442,24 +487,32 @@ if __name__ == "__main__":
   datafile_as_pds, sheets_list_with_data = files_zwick.get_sheets_from_datafile(datafile)
 
   minimization_method_list = ['Powell']# ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
-  suffix = "undamaged_tau_cst_pk2"
-  sheet_list_article = ["C2PA", "C3PA", "C1PB"]
-  make_adaptive_plot_stress_vs_time(datafile,"C4V3E1")
+  
+  suffix = "mission_rd_traction_relaxation_decharge"
+#   suffix = "test"#mission_rd_traction_relaxation_decharge"
 
-  # for minimization_method in minimization_method_list:
-  #   for sheet in sheet_list_article:
-  #       print('started', minimization_method, sheet)
-  #       plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
-  #       print('done succeed', minimization_method, sheet)
-  #       print("--- %s seconds ---" % (time.time() - start_time))
+#   sheet_list_article = ["C4V3E1", "C0V1E1"]#, "C3PA", "C1PB"] #liste des onglets à lire
+#   sheet_list_article = ["C0V1E1"]#, "C3PA", "C1PB"] #liste des onglets à lire
 
-  # for minimization_method in minimization_method_list:
-  #   for sheet in sheet_list_article:
-  #       params = large_tension_utils.extract_optimization_params_from_pkl(datafile, sheet, 'Powell', suffix)
-  #       print(sheet)
-  #       print ('c1, c2, c3, beta, tau, eta, alpha')
-  #       print(params)
-  #       plot_exp_vs_model_params_opti(datafile, sheet, [params], 'Powell', suffix)
+#   sheet_list_article = ["C0V1E1"]#sheets_list_with_data
+
+  for minimization_method in minimization_method_list:
+    for sheet in sheets_list_with_data:
+        # make_adaptive_plot_stress_vs_time(datafile, sheet)
+        extract_undamaged_data(datafile, sheet)
+        plot_undamaged_vs_total_data(datafile, sheet)
+        print('started', minimization_method, sheet)
+        plot_comparison_stress_model_experiment(datafile, sheet, minimization_method, suffix)
+        print('done succeed', minimization_method, sheet)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+  for minimization_method in minimization_method_list:
+    for sheet in sheets_list_with_data:
+        params = large_tension_utils.extract_optimization_params_from_pkl_mission_rd(datafile, sheet, 'Powell', suffix)
+        print(sheet)
+        print ('c1, c2, c3, beta, tau, eta, alpha')
+        print(params)
+        plot_exp_vs_model_params_opti(datafile, sheet, [params], 'Powell', suffix)
 
 
       
